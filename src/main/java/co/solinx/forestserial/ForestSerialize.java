@@ -47,6 +47,7 @@ public class ForestSerialize {
         int currentLength = 5;    //一个字节类标识+四个字节类名长度
         //从Object中取得对象真实的类
         Class classz = obj.getClass();
+        System.out.println(classz.getSuperclass());
         //类全限定名
         String className = classz.getCanonicalName();
         byte[] classNameByte = className.getBytes();
@@ -63,8 +64,10 @@ public class ForestSerialize {
         for (Field field : classz.getDeclaredFields()) {
             field.setAccessible(true);
             try {
+
                 String typeName = field.getType().getSimpleName();
-//                System.out.println(typeName);
+                System.out.println(field.getType());
+                System.out.println(typeName);
                 byte[] temp;
                 //根据对应的数据类型转为Byte数组
                 switch (typeName) {
@@ -130,7 +133,6 @@ public class ForestSerialize {
                         currentLength += temp.length;
                         break;
                     case "boolean":
-                        System.out.println(typeName);
                         objByte[currentLength++]=DataTypeConstant.BOOLEAN;//类型
                         System.arraycopy(TypeToByteArray.intToByteArr(1), 0, objByte, currentLength, 4);
                         currentLength = currentLength + 4;
