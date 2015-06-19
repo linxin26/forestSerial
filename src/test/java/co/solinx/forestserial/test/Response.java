@@ -5,11 +5,11 @@ import java.io.Serializable;
 public class Response implements Serializable {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -5544929078118767872L;
-	int sn;
-	Object Result;
+	int sn=9;
+	Object Result="aa";
 
 	public int getSn() {
 		return sn;

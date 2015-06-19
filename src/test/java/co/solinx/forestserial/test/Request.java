@@ -8,6 +8,7 @@ public class Request implements Serializable {
 	 */
 //	private static long serialVersionUID = 6776150053843966262L;
 	int id;
+	int message;
 	Integer sn;
 	long longv;
 	Long longL;
@@ -85,10 +86,20 @@ public class Request implements Serializable {
 		this.bool = bool;
 	}
 
+
+	public int getMessage() {
+		return message;
+	}
+
+	public void setMessage(int message) {
+		this.message = message;
+	}
+
 	@Override
 	public String toString() {
 		return "Request{" +
 				"id=" + id +
+				", message=" + message +
 				", sn=" + sn +
 				", longv=" + longv +
 				", longL=" + longL +
