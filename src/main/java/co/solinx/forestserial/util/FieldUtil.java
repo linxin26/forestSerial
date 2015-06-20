@@ -1,6 +1,7 @@
 package co.solinx.forestserial.util;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -35,14 +36,55 @@ public class FieldUtil {
         return newField;
     }
 
+    /**
+     * 取得对象类型字段
+     *
+     * @param fields
+     * @return
+     */
+    public Field[] getObjectTypeField(Field[] fields) {
+        ArrayList<Field> objectTypeList = new ArrayList<>();
+        for (Field field : fields) {
+            if (!field.getType().isPrimitive()) {
+                objectTypeList.add(field);
+            }
+        }
+        Field[] objectTypes = new Field[0];
+        if (objectTypeList != null) {
+            objectTypes = objectTypeList.toArray(objectTypes);
+        }
+
+        return objectTypes;
+    }
 
     /**
-     * ȡ���ֶε�ֵ
+     * 取得原生类型字段
+     *
+     * @param fields
+     * @return
+     */
+    public Field[] getPrimitiveTypeField(Field[] fields) {
+        ArrayList<Field> primitiveList = new ArrayList();
+        for (Field field : fields) {
+            if (field.getType().isPrimitive()) {
+                primitiveList.add(field);
+            }
+        }
+        Field[] primitive = new Field[0];
+        if (primitiveList != null) {
+            primitive = primitiveList.toArray(primitive);
+        }
+        return primitive;
+    }
+
+    /**
+     * 取得字段值
+     *
      * @param field
      * @param obj
      * @return
      */
-    public Object getFieldValue(Field field,Object obj) {
+    public Object getFieldValue(Field field, Object obj) {
         Object value = null;
         try {
             field.setAccessible(true);
