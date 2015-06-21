@@ -3,6 +3,7 @@ package co.solinx.forestserial.coders;
 import co.solinx.forestserial.data.Test;
 import co.solinx.forestserial.util.FieldUtil;
 import co.solinx.forestserial.util.StringUtil;
+import co.solinx.forestserial.util.TypeToByteArray;
 
 import java.lang.reflect.Field;
 
@@ -16,6 +17,7 @@ public class ByteEncoder {
 
         Test request = new Test();
         request.setA(10);
+        request.setB(5);
 
         ByteEncoder encoder = new ByteEncoder();
         encoder.encoder(request);
@@ -41,7 +43,7 @@ public class ByteEncoder {
         Field[] primitiveFields=fieldUtil.getPrimitiveTypeField(fieldArray);
         Field[] objectFields=fieldUtil.getObjectTypeField(fieldArray);
 
-        this.primitiveTypeToByte(primitiveFields);
+        this.primitiveTypeToByte(primitiveFields,obj);
 //        for (Field field: fieldArray){
 //
 //               System.out.println( field.getType().isPrimitive());
@@ -55,11 +57,33 @@ public class ByteEncoder {
         return null;
     }
 
-    public byte[] primitiveTypeToByte(Field[] fields){
+    /**
+     * 原始类型转换为byte数组
+     * @param fields
+     * @param obj
+     * @return
+     */
+    public byte[] primitiveTypeToByte(Field[] fields,Object obj){
+        byte[] primitiveByte=new byte[fields.length*4];
         for (int i = 0; i < fields.length; i++) {
-            System.out.println(fields[i].getType().getName());
+            Field field=fields[i];
+            field.setAccessible(true);
+            byte[] fieldByte;
+            try {
+
+                if(field.getType().getName().equals("int")){
+                    int value=field.getInt(obj);
+                    fieldByte= TypeToByteArray.intToByteArr(value);
+                    System.arraycopy(fieldByte,0,primitiveByte,i*4,fieldByte.length);
+                    System.out.println(field.get(obj));
+                }
+
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
         }
-        return null;
+        System.out.println(StringUtil.bytesToString(primitiveByte));
+        return primitiveByte;
     }
 
 
