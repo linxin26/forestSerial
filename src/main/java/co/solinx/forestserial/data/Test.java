@@ -12,6 +12,12 @@ public class Test {
     private long cc;
     private String bb;
     private String ba;
+    private boolean bl=false;
+    private float fl;
+    private double dl;
+    private byte bt;
+    private char cr;
+    private short st;
 
 
     public int getA() {
@@ -44,5 +50,53 @@ public class Test {
 
     public void setBb(String bb) {
         this.bb = bb;
+    }
+
+    public boolean isBl() {
+        return bl;
+    }
+
+    public void setBl(boolean bl) {
+        this.bl = bl;
+    }
+
+    public float getFl() {
+        return fl;
+    }
+
+    public void setFl(float fl) {
+        this.fl = fl;
+    }
+
+    public double getDl() {
+        return dl;
+    }
+
+    public void setDl(double dl) {
+        this.dl = dl;
+    }
+
+    public byte getBt() {
+        return bt;
+    }
+
+    public void setBt(byte bt) {
+        this.bt = bt;
+    }
+
+    public char getCr() {
+        return cr;
+    }
+
+    public void setCr(char cr) {
+        this.cr = cr;
+    }
+
+    public short getSt() {
+        return st;
+    }
+
+    public void setSt(short st) {
+        this.st = st;
     }
 }
