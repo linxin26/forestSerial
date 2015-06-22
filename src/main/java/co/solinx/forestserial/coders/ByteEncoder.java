@@ -6,7 +6,6 @@ import co.solinx.forestserial.util.StringUtil;
 import co.solinx.forestserial.util.TypeToByteArray;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Type;
 
 /**
  * Created by linx on 2015/6/19.
@@ -20,7 +19,7 @@ public class ByteEncoder {
         request.setA(10);
         request.setB(5);
         request.setCc(254);
-        request.setBl(true);
+        request.setBl(false);
         request.setBt((byte) 12);
         request.setCr('A');
         request.setSt((short) 27);
@@ -28,17 +27,19 @@ public class ByteEncoder {
         request.setDl(13.2);
 
         ByteEncoder encoder = new ByteEncoder();
-        encoder.encoder(request);
-
+        ByteDecoder decoder=new ByteDecoder();
+        byte[] dataByte= encoder.encoder(request);
+        Test temp= (Test) decoder.decoder(dataByte);
+        System.out.println(temp);
     }
 
     public byte[] encoder(Object obj) {
         FieldUtil fieldUtil = new FieldUtil();
-        byte[] byteData = new byte[100];
-        byteData[0] = 88;
 
         String className = this.getClassName(obj);
         byte[] clazz = className.getBytes();
+        byte[] byteData = new byte[clazz.length+2];
+        byteData[0] = 88;
         //类长度
         byteData[1] = (byte) clazz.length;
         //类全限定名
@@ -51,7 +52,7 @@ public class ByteEncoder {
         Field[] primitiveFields = fieldUtil.getPrimitiveTypeField(fieldArray);
         Field[] objectFields = fieldUtil.getObjectTypeField(fieldArray);
 
-        this.primitiveTypeToByte(primitiveFields, obj);
+        byte[] primitiveByte= this.primitiveTypeToByte(primitiveFields, obj);
 //        for (Field field: fieldArray){
 //
 //               System.out.println( field.getType().isPrimitive());
@@ -59,10 +60,14 @@ public class ByteEncoder {
 
         System.out.println(StringUtil.bytesToString(byteData));
         System.out.println(fieldUtil.getFieldValue(fieldArray[0], obj));
+        byte[] result=new byte[primitiveByte.length+byteData.length];
+        System.arraycopy(byteData,0,result,0,byteData.length);
+        System.arraycopy(primitiveByte,0,result,byteData.length,primitiveByte.length);
 
         System.out.println(className);
+        System.out.println(StringUtil.bytesToString(result));
 
-        return null;
+        return result;
     }
 
     public byte[] objectFieldTypeToByte(Field[] fields, Object obj) {

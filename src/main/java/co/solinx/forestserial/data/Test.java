@@ -99,4 +99,21 @@ public class Test {
     public void setSt(short st) {
         this.st = st;
     }
+
+    @Override
+    public String toString() {
+        return "Test{" +
+                "b=" + b +
+                ", a=" + a +
+                ", cc=" + cc +
+                ", bb='" + bb + '\'' +
+                ", ba='" + ba + '\'' +
+                ", bl=" + bl +
+                ", fl=" + fl +
+                ", dl=" + dl +
+                ", bt=" + bt +
+                ", cr=" + cr +
+                ", st=" + st +
+                '}';
+    }
 }

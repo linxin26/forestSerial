@@ -19,7 +19,7 @@ public class fstSerialize {
      */
     public static void main(String[] args) {
         Request request=new Request();
-        request.setId(123);
+//        request.setId(123);
         request.setSn(21);
 
         FSTConfiguration conf=FSTConfiguration.createDefaultConfiguration();

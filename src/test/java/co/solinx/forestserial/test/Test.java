@@ -8,7 +8,7 @@ import java.io.Serializable;
 public class Test extends Response implements Serializable {
 
     //    private float fl = 10;
-    private int baaaa = 10;
+    private int baaaa = 128;
     private int d= 11;
     private String message = "a1";
     private String msg = "b";
