@@ -3,7 +3,7 @@ package co.solinx.forestserial.data;
 /**
  * Created by linx on 2015/6/19.
  */
-public class Test {
+public class Test extends Response{
 
 
     private int b;
@@ -100,6 +100,14 @@ public class Test {
         this.st = st;
     }
 
+    public String getBa() {
+        return ba;
+    }
+
+    public void setBa(String ba) {
+        this.ba = ba;
+    }
+
     @Override
     public String toString() {
         return "Test{" +
@@ -114,6 +122,6 @@ public class Test {
                 ", bt=" + bt +
                 ", cr=" + cr +
                 ", st=" + st +
-                '}';
+                "} " + super.toString();
     }
 }

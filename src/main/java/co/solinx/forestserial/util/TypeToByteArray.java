@@ -21,6 +21,14 @@ public class TypeToByteArray {
         return arr;
     }
 
+    public static byte[] charToByteArr(char data)
+    {
+        byte[] bytes = new byte[2];
+        bytes[1] = (byte) (data);
+        bytes[0] = (byte) (data >> 8);
+        return bytes;
+    }
+
     /**
      * short转Byte数组
      *
@@ -99,6 +107,11 @@ public class TypeToByteArray {
         return s;
     }
 
+    public static long getLong(byte[] bytes) {
+        return (0xffL & (long) bytes[7]) | (0xff00L & ((long) bytes[6] << 8)) | (0xff0000L & ((long) bytes[5] << 16)) | (0xff000000L & ((long) bytes[4] << 24))
+                | (0xff00000000L & ((long) bytes[3] << 32)) | (0xff0000000000L & ((long) bytes[2] << 40)) | (0xff000000000000L & ((long) bytes[1] << 48)) | (0xff00000000000000L & ((long) bytes[0] << 56));
+    }
+
     public static void main(String[] args) {
 
         System.out.println((65534 >> 24));
@@ -110,20 +123,20 @@ public class TypeToByteArray {
         System.out.println((65534 >> 8) & 0xff);
         System.out.println(65534 & 0xff);
 
-        byte[] intByte= intToByteArr(0x01020304);
+        byte[] intByte = intToByteArr(0x01020304);
 //		System.out.println(intByte);
 //		System.out.println(hBytesToInt(intByte));
 
         System.out.println(0x01020304);
 
-        String temp="01020304";
+        String temp = "01020304";
         temp.getBytes();
-        byte[] intByteTemp={0x04,0x03 ,0x02,0x01};
-        System.out.println("byte[]="+hBytesToInt(intByteTemp));
-        System.out.println("byte[]="+StringUtil.bytesToString(intByte));
+        byte[] intByteTemp = {0x04, 0x03, 0x02, 0x01};
+        System.out.println("byte[]=" + hBytesToInt(intByteTemp));
+        System.out.println("byte[]=" + StringUtil.bytesToString(intByte));
 
-        byte[] tempf= intToByteArr(65534);
-        System.out.println("byte[]="+StringUtil.bytesToString(tempf));
+        byte[] tempf = intToByteArr(65534);
+        System.out.println("byte[]=" + StringUtil.bytesToString(tempf));
     }
 
 }

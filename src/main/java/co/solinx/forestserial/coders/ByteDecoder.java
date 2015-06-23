@@ -1,9 +1,11 @@
 package co.solinx.forestserial.coders;
 
 import co.solinx.forestserial.util.FieldUtil;
+import co.solinx.forestserial.util.StringUtil;
 import co.solinx.forestserial.util.TypeToByteArray;
 
 import java.lang.reflect.Field;
+import java.nio.ByteBuffer;
 
 /**
  * Created by linx on 2015-06-22.
@@ -25,53 +27,65 @@ public class ByteDecoder {
         FieldUtil fieldUtil=new FieldUtil();
         Field[] fieldArray=fieldUtil.fieldSort(clazz.getClass().getDeclaredFields());
         Field[] primitiveFields = fieldUtil.getPrimitiveTypeField(fieldArray);
+        Field[] objectFields=fieldUtil.getObjectTypeField(fieldArray);
 
-        this.dePrimitive(clazz,primitiveFields,fieldByte);
+        ByteBuffer byteBuf=ByteBuffer.wrap(fieldByte);
+        this.dePrimitive(clazz,primitiveFields,byteBuf);
+        this.deObject(clazz,objectFields,byteBuf);
 
         System.out.println(clazz);
         return clazz;
     }
 
-    public void dePrimitive(Object obj,Field[] fields,byte[]dataByte){
+    public void deObject(Object obj,Field[] fields,ByteBuffer byteBuf){
+        for (Field field:fields){
+            String typeName=field.getType().getSimpleName();
+            field.setAccessible(true);
+            try {
+                if ("String".equals(typeName)) {
+                    byteBuf.get();  //类型0f
+                    int length = byteBuf.get();
+                    byte[] valueByte = new byte[length];
+                    byteBuf.get(valueByte);
+                    field.set(obj, new String(valueByte));
+                }
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    public void dePrimitive(Object obj,Field[] fields,ByteBuffer byteBuf){
         int index=0;
         try {
         for (Field field:fields){
-            System.out.println(field);
             field.setAccessible(true);
             String type= field.getType().getName();
             if(type.equals("int")) {
-                byte[] iByte=new byte[4];
-                System.arraycopy(dataByte,index,iByte,0,4);
-                int value= TypeToByteArray.hBytesToInt(iByte);
-                    field.setInt(obj, value);
+                    field.setInt(obj, byteBuf.getInt());
                 index=index+4;
             }else if(type.equals("long")){
-                byte[] iByte=new byte[4];
-                System.arraycopy(dataByte,index,iByte,0,4);
-                int value= TypeToByteArray.hBytesToInt(iByte);
-                field.setLong(obj, value);
-                index=index+4;
+                field.setLong(obj, byteBuf.getLong());
+                index=index+8;
             }else if(type.equals("float")){
                 byte[] iByte=new byte[4];
-                System.arraycopy(dataByte,index,iByte,0,4);
+                byteBuf.get(iByte);
                 int value= TypeToByteArray.hBytesToInt(iByte);
-                field.setFloat(obj, value);
+                field.setFloat(obj,Float.intBitsToFloat( value));
                 index=index+4;
             }else if(type.equals("double")){
-                byte[] iByte=new byte[4];
-                System.arraycopy(dataByte,index,iByte,0,4);
-                int value= TypeToByteArray.hBytesToInt(iByte);
-                field.setDouble(obj, value);
-                index=index+4;
+                byte[] iByte=new byte[8];
+                byteBuf.get(iByte);
+                long value= TypeToByteArray.getLong(iByte);
+                field.setDouble(obj, Double.longBitsToDouble(value));
+                index=index+8;
             }else if(type.equals("char")){
-                byte[] iByte=new byte[4];
-                System.arraycopy(dataByte,index,iByte,0,4);
-                int value= TypeToByteArray.hBytesToInt(iByte);
-                field.setChar(obj, (char) value);
-                index=index+4;
+                field.setChar(obj, byteBuf.getChar());
+                index=index+2;
             }else if(type.equals("boolean")){
                 byte[] iByte=new byte[4];
-                System.arraycopy(dataByte,index,iByte,0,4);
+                byteBuf.get(iByte);
                 int value= TypeToByteArray.hBytesToInt(iByte);
                 boolean result;
                 if(value==1){
@@ -82,17 +96,11 @@ public class ByteDecoder {
                 field.setBoolean(obj,result);
                 index=index+4;
             }else if(type.equals("short")){
-                byte[] iByte=new byte[4];
-                System.arraycopy(dataByte,index,iByte,0,4);
-                int value= TypeToByteArray.hBytesToInt(iByte);
-                field.setShort(obj, (short) value);
-                index=index+4;
+                field.setShort(obj, byteBuf.getShort());
+                index=index+2;
             }else if(type.equals("byte")){
-                byte[] iByte=new byte[4];
-                System.arraycopy(dataByte,index,iByte,0,4);
-                int value= TypeToByteArray.hBytesToInt(iByte);
-                field.setByte(obj, (byte) value);
-                index=index+4;
+                field.setByte(obj, byteBuf.get());
+                index=index+1;
             }else{
                 index=index+4;
             }
