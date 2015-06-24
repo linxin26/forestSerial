@@ -27,6 +27,9 @@ public class fstSerialize {
 
 
         Test test=new Test();
+        test.getAa().setSn(16);
+        test.getBb().setSn(15);
+        test.getResponse().setResult("bb");
 //       test.setR(request);
         byte[] datas= conf.asByteArray(test);
 
@@ -34,8 +37,6 @@ public class fstSerialize {
         System.out.println(new String(datas));
         System.out.println( conf.asObject(datas).toString());
 
-        System.out.println(StringUtil.bytesToString(fstSerialize.getBytes(10.1f)));
-       System.out.println(StringUtil.bytesToString(fstSerialize.getBytes(12.1d)));
     }
 
     public static byte[] getBytes(int data)

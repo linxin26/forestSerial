@@ -26,6 +26,7 @@ public class ByteDecoder {
         Object clazz= this.getClazzInstance(claName);
         FieldUtil fieldUtil=new FieldUtil();
         Field[] fieldArray=fieldUtil.fieldSort(clazz.getClass().getDeclaredFields());
+
         Field[] primitiveFields = fieldUtil.getPrimitiveTypeField(fieldArray);
         Field[] objectFields=fieldUtil.getObjectTypeField(fieldArray);
 
@@ -38,16 +39,60 @@ public class ByteDecoder {
     }
 
     public void deObject(Object obj,Field[] fields,ByteBuffer byteBuf){
+//        System.out.println("deObject : "+StringUtil.bytesToString(byteBuf.array()));
+//        System.out.println("position : "+byteBuf.position());
         for (Field field:fields){
             String typeName=field.getType().getSimpleName();
+//            System.out.println(field);
             field.setAccessible(true);
             try {
                 if ("String".equals(typeName)) {
+//                    System.out.println("String ");
                     byteBuf.get();  //类型0f
                     int length = byteBuf.get();
                     byte[] valueByte = new byte[length];
                     byteBuf.get(valueByte);
-                    field.set(obj, new String(valueByte));
+                    String value=new String(valueByte);
+                    field.set(obj, value);
+                }else if ("Integer".equals(typeName)){
+                    int value=byteBuf.getInt();
+                    field.set(obj, value);
+                }else if("Long".equals(typeName)){
+                    long value=byteBuf.getLong();
+                    field.set(obj, value);
+                }else if("Float".equals(typeName)){
+                    float value=byteBuf.getFloat();
+                    field.set(obj,value);
+                }else if("Double".equals(typeName)){
+                    double value=byteBuf.getDouble();
+                    field.set(obj,value);
+                }else if("Character".equals(typeName)){
+                    char value=byteBuf.getChar();
+                    field.set(obj,value);
+                }else if("Short".equals(typeName)){
+                    short value=byteBuf.getShort();
+                    field.set(obj,value);
+                }else if("Boolean".equals(typeName)){
+                    int value=byteBuf.getInt();
+
+                    System.out.println("value : "+value);
+                    boolean result;
+                    if (value==1){
+                        result=true;
+                    }else{
+                        result=true;
+                    }
+                    field.set(obj,result);
+                }else if("Byte".equals(typeName)){
+                    byte value=byteBuf.get();
+                    field.set(obj,value);
+                }else if("Object".equals(typeName)){
+                    byteBuf.get();  //类型0f
+                    int length = byteBuf.get();
+                    byte[] valueByte = new byte[length];
+                    byteBuf.get(valueByte);
+                    String value=new String(valueByte);
+                    field.set(obj, value);
                 }
             }catch(Exception e){
                 e.printStackTrace();

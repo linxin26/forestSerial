@@ -7,6 +7,14 @@ public class Test extends Response{
 
 
     private int b;
+    private Integer inte;
+    private Long longNum;
+    private Short shortNum;
+    private Character charNum;
+    private Float floatNum;
+    private Double doubleNum;
+    private Boolean booleanNum;
+    private Byte byteNum;
 
     private int a;
     private long cc;
@@ -18,6 +26,10 @@ public class Test extends Response{
     private byte bt;
     private char cr;
     private short st;
+    private String stringString;
+    private Long zzzz;
+    private Object obj;
+    private Response response;
 
 
     public int getA() {
@@ -108,11 +120,108 @@ public class Test extends Response{
         this.ba = ba;
     }
 
+
+    public Integer getInte() {
+        return inte;
+    }
+
+    public void setInte(Integer inte) {
+        this.inte = inte;
+    }
+
+    public Long getLongNum() {
+        return longNum;
+    }
+
+    public void setLongNum(Long longNum) {
+        this.longNum = longNum;
+    }
+
+    public Short getShortNum() {
+        return shortNum;
+    }
+
+    public void setShortNum(Short shortNum) {
+        this.shortNum = shortNum;
+    }
+
+    public Character getCharNum() {
+        return charNum;
+    }
+
+    public void setCharNum(Character charNum) {
+        this.charNum = charNum;
+    }
+
+    public Float getFloatNum() {
+        return floatNum;
+    }
+
+    public void setFloatNum(Float floatNum) {
+        this.floatNum = floatNum;
+    }
+
+    public Double getDoubleNum() {
+        return doubleNum;
+    }
+
+    public void setDoubleNum(Double doubleNum) {
+        this.doubleNum = doubleNum;
+    }
+
+    public Boolean getBooleanNum() {
+        return booleanNum;
+    }
+
+    public void setBooleanNum(Boolean booleanNum) {
+        this.booleanNum = booleanNum;
+    }
+
+    public Byte getByteNum() {
+        return byteNum;
+    }
+
+    public void setByteNum(Byte byteNum) {
+        this.byteNum = byteNum;
+    }
+
+    public String getStringString() {
+        return stringString;
+    }
+
+    public void setStringString(String stringString) {
+        this.stringString = stringString;
+    }
+
+    public Long getZzzz() {
+        return zzzz;
+    }
+
+    public void setZzzz(Long zzzz) {
+        this.zzzz = zzzz;
+    }
+
+    public void setObj(Object obj) {
+        this.obj = obj;
+    }
+
+    public void setResponse(Response response) {
+        this.response = response;
+    }
+
     @Override
     public String toString() {
         return "Test{" +
-                "b=" + b +
-                ", a=" + a +
+                "a=" + a +
+                ", b=" + b +
+                ", inte=" + inte +
+                ", longNum=" + longNum +
+                ", shortNum=" + shortNum +
+                ", charNum=" + charNum +
+                ", floatNum=" + floatNum +
+                ", doubleNum=" + doubleNum +
+                ", booleanNum=" + booleanNum +
+                ", byteNum=" + byteNum +
                 ", cc=" + cc +
                 ", bb='" + bb + '\'' +
                 ", ba='" + ba + '\'' +
@@ -122,6 +231,10 @@ public class Test extends Response{
                 ", bt=" + bt +
                 ", cr=" + cr +
                 ", st=" + st +
+                ", stringString='" + stringString + '\'' +
+                ", zzzz=" + zzzz +
+                ", obj=" + obj +
+                ", response=" + response +
                 "} " + super.toString();
     }
 }
