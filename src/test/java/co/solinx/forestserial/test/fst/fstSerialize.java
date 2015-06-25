@@ -27,9 +27,9 @@ public class fstSerialize {
 
 
         Test test=new Test();
-        test.getAa().setSn(16);
-        test.getBb().setSn(15);
-        test.getResponse().setResult("bb");
+//        test.getAa().setSn(16);
+//        test.getBb().setSn(15);
+//        test.getResponse().setResult("bb");
 //       test.setR(request);
         byte[] datas= conf.asByteArray(test);
 

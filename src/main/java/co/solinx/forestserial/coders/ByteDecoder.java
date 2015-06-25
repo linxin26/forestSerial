@@ -13,8 +13,10 @@ import java.nio.ByteBuffer;
 public class ByteDecoder {
 
     public Object decoder(byte[] byteData) {
-        int flag = byteData[0];
-        int claLength = byteData[1];
+
+        System.out.println("-------------------------------decoder-------------------------");
+        int flag = byteData[0];   //标志位
+        int claLength = byteData[1];   //类名长度
         byte[] claNameByte = new byte[claLength];
         System.arraycopy(byteData, 2, claNameByte, 0, claLength);
         String claName = new String(claNameByte);
@@ -33,9 +35,47 @@ public class ByteDecoder {
         ByteBuffer byteBuf=ByteBuffer.wrap(fieldByte);
         this.dePrimitive(clazz,primitiveFields,byteBuf);
         this.deObject(clazz,objectFields,byteBuf);
-
+        this.superClassToByte(clazz,clazz.getClass().getSuperclass(),byteBuf);
         System.out.println(clazz);
         return clazz;
+    }
+
+    /**
+     * 父类转为
+     * @param obj
+     * @param superClass
+     * @return
+     */
+    public byte[] superClassToByte(Object obj,Class superClass,ByteBuffer byteBuffer){
+        System.out.println("--------------superClassToByte-----------------");
+        System.out.println(superClass.getName());
+        String className=superClass.getSimpleName();
+        byte[]  superByte=new byte[0];
+        if (className!="object"){
+            Field[] fields= superClass.getDeclaredFields();
+         this.fieldToByte(obj,fields,byteBuffer);
+        }
+
+        return superByte;
+    }
+
+    /**
+     * Field转为Byte
+     * @param obj
+     * @param fields
+     * @return
+     */
+    public void fieldToByte(Object obj,Field[] fields,ByteBuffer byteBuf) {
+
+        FieldUtil fieldUtil =new FieldUtil();
+        Field[]  fieldArray= fieldUtil.fieldSort(fields);
+
+        Field[] primitiveFields = fieldUtil.getPrimitiveTypeField(fieldArray);
+        Field[] objectFields = fieldUtil.getObjectTypeField(fieldArray);
+
+        this.dePrimitive(obj,primitiveFields,byteBuf);
+        this.deObject(obj,objectFields,byteBuf);
+
     }
 
     public void deObject(Object obj,Field[] fields,ByteBuffer byteBuf){
@@ -74,8 +114,6 @@ public class ByteDecoder {
                     field.set(obj,value);
                 }else if("Boolean".equals(typeName)){
                     int value=byteBuf.getInt();
-
-                    System.out.println("value : "+value);
                     boolean result;
                     if (value==1){
                         result=true;
@@ -87,12 +125,41 @@ public class ByteDecoder {
                     byte value=byteBuf.get();
                     field.set(obj,value);
                 }else if("Object".equals(typeName)){
-                    byteBuf.get();  //类型0f
-                    int length = byteBuf.get();
-                    byte[] valueByte = new byte[length];
-                    byteBuf.get(valueByte);
-                    String value=new String(valueByte);
-                    field.set(obj, value);
+                   if(byteBuf.hasRemaining()) {
+                       byteBuf.get();  //类型0f
+                       int length = byteBuf.get();
+                       byte[] valueByte = new byte[length];
+                       byteBuf.get(valueByte);
+                       String value = new String(valueByte);
+                       field.set(obj, value);
+                   }
+                }else{
+                    //类类型
+                    System.out.println("Field : "+field.getType().getName());
+                    String className=field.getType().getName();
+                    FieldUtil fieldUtil=new FieldUtil();
+                     Object clazz= Class.forName(className).newInstance();
+
+                    byte type=byteBuf.get();
+                    byte length=byteBuf.get();
+                    byte[] data=new byte[length];
+                    byteBuf.get(data);
+
+                    Field[] fieldArray=fieldUtil.fieldSort(clazz.getClass().getDeclaredFields());
+
+                    Field[] primitiveFields = fieldUtil.getPrimitiveTypeField(fieldArray);
+                    Field[] objectFields=fieldUtil.getObjectTypeField(fieldArray);
+
+                    for (Field tempField: primitiveFields){
+                        System.out.println("primitiveFields : "+tempField);
+                    }
+                    System.out.println("data : "+StringUtil.bytesToString(data));
+                    ByteBuffer tempBuf=ByteBuffer.wrap(data);
+                    this.dePrimitive(clazz,primitiveFields,tempBuf);
+                    this.deObject(clazz,objectFields,tempBuf);
+
+                    System.out.println("classType : "+type);
+                    field.set(obj,clazz);
                 }
             }catch(Exception e){
                 e.printStackTrace();
@@ -101,6 +168,12 @@ public class ByteDecoder {
         }
     }
 
+    /**
+     * 解码原始数据类型
+     * @param obj 对象
+     * @param fields 字段集合
+     * @param byteBuf Buffer
+     */
     public void dePrimitive(Object obj,Field[] fields,ByteBuffer byteBuf){
         int index=0;
         try {

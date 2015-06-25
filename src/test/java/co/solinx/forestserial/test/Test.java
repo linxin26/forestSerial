@@ -8,7 +8,7 @@ import java.nio.ByteBuffer;
 /**
  * Created by linx on 2015/6/19.
  */
-public class Test   implements Serializable {
+public class Test  extends Response implements Serializable {
 
 //        private float fl = 10.5f;
 //    private int baaaa = 128;
@@ -16,9 +16,9 @@ public class Test   implements Serializable {
 //    private String message = "a1";
 //    private String msg = "b";
 //    private Object obj="obj";
-    private Response response=new Response();
-    private Response aa=new Response();
-    private Response bb=new Response();
+//    private Response response=new Response();
+//    private Response aa=new Response();
+//    private Response bb=new Response();
 
 //    private Integer integ = 120;
 //    private Object test = "12";
@@ -47,17 +47,17 @@ public class Test   implements Serializable {
                 '}';
     }
 
-    public Response getAa() {
-        return aa;
-    }
-
-    public Response getResponse() {
-        return response;
-    }
-
-    public Response getBb() {
-        return bb;
-    }
+//    public Response getAa() {
+//        return aa;
+//    }
+//
+//    public Response getResponse() {
+//        return response;
+//    }
+//
+//    public Response getBb() {
+//        return bb;
+//    }
 
     public static void main(String[] args){
         ByteBuffer byteBuf=ByteBuffer.allocate(1);
