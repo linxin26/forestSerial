@@ -26,15 +26,12 @@ public class ByteDecoder {
         System.out.println(claName);
 
         Object clazz= this.getClazzInstance(claName);
-        FieldUtil fieldUtil=new FieldUtil();
-        Field[] fieldArray=fieldUtil.fieldSort(clazz.getClass().getDeclaredFields());
-
-        Field[] primitiveFields = fieldUtil.getPrimitiveTypeField(fieldArray);
-        Field[] objectFields=fieldUtil.getObjectTypeField(fieldArray);
+        Field[] fieldArray=clazz.getClass().getDeclaredFields();
 
         ByteBuffer byteBuf=ByteBuffer.wrap(fieldByte);
-        this.dePrimitive(clazz,primitiveFields,byteBuf);
-        this.deObject(clazz,objectFields,byteBuf);
+        //解码字段
+        this.fieldToByte(clazz,fieldArray,byteBuf);
+        //解码父类
         this.superClassToByte(clazz,clazz.getClass().getSuperclass(),byteBuf);
         System.out.println(clazz);
         return clazz;
@@ -51,9 +48,14 @@ public class ByteDecoder {
         System.out.println(superClass.getName());
         String className=superClass.getSimpleName();
         byte[]  superByte=new byte[0];
-        if (className!="object"){
+        if (!"Object".equals(className)){
             Field[] fields= superClass.getDeclaredFields();
-         this.fieldToByte(obj,fields,byteBuffer);
+
+            for (Field field : fields){
+                System.out.println(field);
+            }
+           this.fieldToByte(obj,fields,byteBuffer);
+            this.superClassToByte(obj,superClass.getSuperclass(),byteBuffer);
         }
 
         return superByte;
@@ -137,26 +139,19 @@ public class ByteDecoder {
                     //类类型
                     System.out.println("Field : "+field.getType().getName());
                     String className=field.getType().getName();
-                    FieldUtil fieldUtil=new FieldUtil();
                      Object clazz= Class.forName(className).newInstance();
 
                     byte type=byteBuf.get();
                     byte length=byteBuf.get();
                     byte[] data=new byte[length];
                     byteBuf.get(data);
-
-                    Field[] fieldArray=fieldUtil.fieldSort(clazz.getClass().getDeclaredFields());
-
-                    Field[] primitiveFields = fieldUtil.getPrimitiveTypeField(fieldArray);
-                    Field[] objectFields=fieldUtil.getObjectTypeField(fieldArray);
-
-                    for (Field tempField: primitiveFields){
-                        System.out.println("primitiveFields : "+tempField);
-                    }
-                    System.out.println("data : "+StringUtil.bytesToString(data));
+                    Field[] fieldArray=clazz.getClass().getDeclaredFields();
                     ByteBuffer tempBuf=ByteBuffer.wrap(data);
-                    this.dePrimitive(clazz,primitiveFields,tempBuf);
-                    this.deObject(clazz,objectFields,tempBuf);
+                    //解码字段
+                    this.fieldToByte(clazz,fieldArray,tempBuf);
+
+                    //todo 类类型父类解码
+//                    this.superClassToByte(clazz,clazz.getClass().getSuperclass(),tempBuf);
 
                     System.out.println("classType : "+type);
                     field.set(obj,clazz);
@@ -181,7 +176,10 @@ public class ByteDecoder {
             field.setAccessible(true);
             String type= field.getType().getName();
             if(type.equals("int")) {
-                    field.setInt(obj, byteBuf.getInt());
+
+                int value=byteBuf.getInt();
+                System.out.println("-----------------------int----"+field+"   position:"+byteBuf.position()+"  value: "+value);
+                    field.setInt(obj, value);
                 index=index+4;
             }else if(type.equals("long")){
                 field.setLong(obj, byteBuf.getLong());

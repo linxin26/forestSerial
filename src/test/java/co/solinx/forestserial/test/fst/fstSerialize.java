@@ -6,6 +6,9 @@ import co.solinx.forestserial.util.StringUtil;
 import co.solinx.forestserial.util.TypeToByteArray;
 import org.nustaq.serialization.FSTConfiguration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by linx on 2015/6/19.
  */
@@ -31,6 +34,11 @@ public class fstSerialize {
 //        test.getBb().setSn(15);
 //        test.getResponse().setResult("bb");
 //       test.setR(request);
+
+        List<String> stringList=new ArrayList<>();
+        stringList.add("AA");
+        test.setIntegerList(stringList);
+
         byte[] datas= conf.asByteArray(test);
 
         System.out.println(StringUtil.bytesToString(datas));

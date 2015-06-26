@@ -2,7 +2,7 @@ package co.solinx.forestserial.data;
 
 import java.io.Serializable;
 
-public class Response implements Serializable {
+public class Response extends BaseSuperClass implements Serializable {
 
 	/**
 	 * 
@@ -33,7 +33,10 @@ public class Response implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Response [sn=" + sn + ", Result=" + Result + "]";
+		return "Response{" +
+				"Result=" + Result +
+				", sn=" + sn +
+				"} " + super.toString();
 	}
 
 }

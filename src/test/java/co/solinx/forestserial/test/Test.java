@@ -4,11 +4,13 @@ import co.solinx.forestserial.util.StringUtil;
 
 import java.io.Serializable;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by linx on 2015/6/19.
  */
-public class Test  extends Response implements Serializable {
+public class Test   implements Serializable {
 
 //        private float fl = 10.5f;
 //    private int baaaa = 128;
@@ -30,6 +32,16 @@ public class Test  extends Response implements Serializable {
 //        r = request;
 //    }
 
+    List<String> integerList=new ArrayList<>();
+
+
+    public List<String> getIntegerList() {
+        return integerList;
+    }
+
+    public void setIntegerList(List<String> integerList) {
+        this.integerList = integerList;
+    }
 
     @Override
     public String toString() {
