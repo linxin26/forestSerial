@@ -12,7 +12,7 @@ import java.nio.ByteBuffer;
  */
 public class ByteDecoder {
 
-    public Object decoder(byte[] byteData) {
+    public Object decoder(byte[] byteData) throws IllegalAccessException {
 
         System.out.println("-------------------------------decoder-------------------------");
         int flag = byteData[0];   //标志位
@@ -23,7 +23,7 @@ public class ByteDecoder {
 
         byte[] fieldByte=new byte[byteData.length-(claLength+2)];
         System.arraycopy(byteData,claLength+2,fieldByte,0,fieldByte.length);
-        System.out.println(claName);
+        System.out.println("解码类名： "+claName);
 
         Object clazz= this.getClazzInstance(claName);
         Field[] fieldArray=clazz.getClass().getDeclaredFields();
@@ -33,7 +33,6 @@ public class ByteDecoder {
         this.fieldToByte(clazz,fieldArray,byteBuf);
         //解码父类
         this.superClassToByte(clazz,clazz.getClass().getSuperclass(),byteBuf);
-        System.out.println(clazz);
         return clazz;
     }
 
@@ -43,21 +42,19 @@ public class ByteDecoder {
      * @param superClass
      * @return
      */
-    public byte[] superClassToByte(Object obj,Class superClass,ByteBuffer byteBuffer){
-        System.out.println("--------------superClassToByte-----------------");
-        System.out.println(superClass.getName());
+    public byte[] superClassToByte(Object obj,Class superClass,ByteBuffer byteBuffer) throws IllegalAccessException {
         String className=superClass.getSimpleName();
         byte[]  superByte=new byte[0];
         if (!"Object".equals(className)){
             Field[] fields= superClass.getDeclaredFields();
 
-            for (Field field : fields){
-                System.out.println(field);
-            }
+//            for (Field field : fields){
+//                System.out.println(field);
+//            }
            this.fieldToByte(obj,fields,byteBuffer);
+            System.out.println(" currentClass ： "+superClass + "  superClass.getSuperclass： "+superClass.getSuperclass());
             this.superClassToByte(obj,superClass.getSuperclass(),byteBuffer);
         }
-
         return superByte;
     }
 
@@ -67,17 +64,16 @@ public class ByteDecoder {
      * @param fields
      * @return
      */
-    public void fieldToByte(Object obj,Field[] fields,ByteBuffer byteBuf) {
-
+    public void fieldToByte(Object obj,Field[] fields,ByteBuffer byteBuf) throws IllegalAccessException {
         FieldUtil fieldUtil =new FieldUtil();
         Field[]  fieldArray= fieldUtil.fieldSort(fields);
 
         Field[] primitiveFields = fieldUtil.getPrimitiveTypeField(fieldArray);
+
         Field[] objectFields = fieldUtil.getObjectTypeField(fieldArray);
 
         this.dePrimitive(obj,primitiveFields,byteBuf);
         this.deObject(obj,objectFields,byteBuf);
-
     }
 
     public void deObject(Object obj,Field[] fields,ByteBuffer byteBuf){
@@ -137,7 +133,6 @@ public class ByteDecoder {
                    }
                 }else{
                     //类类型
-                    System.out.println("Field : "+field.getType().getName());
                     String className=field.getType().getName();
                      Object clazz= Class.forName(className).newInstance();
 
@@ -149,11 +144,8 @@ public class ByteDecoder {
                     ByteBuffer tempBuf=ByteBuffer.wrap(data);
                     //解码字段
                     this.fieldToByte(clazz,fieldArray,tempBuf);
-
                     //todo 类类型父类解码
-//                    this.superClassToByte(clazz,clazz.getClass().getSuperclass(),tempBuf);
-
-                    System.out.println("classType : "+type);
+                    this.superClassToByte(clazz,clazz.getClass().getSuperclass(),byteBuf);
                     field.set(obj,clazz);
                 }
             }catch(Exception e){
@@ -169,36 +161,28 @@ public class ByteDecoder {
      * @param fields 字段集合
      * @param byteBuf Buffer
      */
-    public void dePrimitive(Object obj,Field[] fields,ByteBuffer byteBuf){
-        int index=0;
+    public void dePrimitive(Object obj,Field[] fields,ByteBuffer byteBuf) throws IllegalAccessException {
         try {
         for (Field field:fields){
             field.setAccessible(true);
             String type= field.getType().getName();
             if(type.equals("int")) {
-
                 int value=byteBuf.getInt();
-                System.out.println("-----------------------int----"+field+"   position:"+byteBuf.position()+"  value: "+value);
                     field.setInt(obj, value);
-                index=index+4;
             }else if(type.equals("long")){
                 field.setLong(obj, byteBuf.getLong());
-                index=index+8;
             }else if(type.equals("float")){
                 byte[] iByte=new byte[4];
                 byteBuf.get(iByte);
                 int value= TypeToByteArray.hBytesToInt(iByte);
                 field.setFloat(obj,Float.intBitsToFloat( value));
-                index=index+4;
             }else if(type.equals("double")){
                 byte[] iByte=new byte[8];
                 byteBuf.get(iByte);
                 long value= TypeToByteArray.getLong(iByte);
                 field.setDouble(obj, Double.longBitsToDouble(value));
-                index=index+8;
             }else if(type.equals("char")){
                 field.setChar(obj, byteBuf.getChar());
-                index=index+2;
             }else if(type.equals("boolean")){
                 byte[] iByte=new byte[4];
                 byteBuf.get(iByte);
@@ -210,19 +194,15 @@ public class ByteDecoder {
                     result=false;
                 }
                 field.setBoolean(obj,result);
-                index=index+4;
             }else if(type.equals("short")){
                 field.setShort(obj, byteBuf.getShort());
-                index=index+2;
             }else if(type.equals("byte")){
                 field.setByte(obj, byteBuf.get());
-                index=index+1;
-            }else{
-                index=index+4;
             }
         }
         } catch (IllegalAccessException e) {
             e.printStackTrace();
+            throw  e;
         }
     }
 

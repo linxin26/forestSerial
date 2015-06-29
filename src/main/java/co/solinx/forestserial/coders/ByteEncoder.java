@@ -16,7 +16,7 @@ import java.nio.ByteBuffer;
 public class ByteEncoder {
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IllegalAccessException {
         Test request = new Test();
         request.setA(10);
         request.setB(5);
@@ -40,10 +40,12 @@ public class ByteEncoder {
         request.setStringString("Stringing");
         request.setZzzz(9999999l);
         request.setObj(12);
+
         Response response=new Response();
-        response.setResult("ppp");
+        response.setResult("类字段");
         response.setSn(998);
         response.setBaseID(188);
+
         request.setResponse(response);
         request.setBaseClassID(190000);
         request.setResult("result");
@@ -58,6 +60,12 @@ public class ByteEncoder {
         System.out.println(temp.toString());
     }
 
+    /**
+     * byteBuffer自定义Put方法，支持Buffer的自动扩容
+     * @param byteBuf 传入Buffer
+     * @param bytes 返回Buffer
+     * @return
+     */
     public static ByteBuffer put(ByteBuffer byteBuf, byte[] bytes) {
         ByteBuffer tempBuf;
         //检查buffer剩余容量
@@ -70,9 +78,6 @@ public class ByteEncoder {
 
             tempBuf.put(curByte);
             tempBuf.put(bytes);
-//            System.out.println("扩容");
-//            System.out.println(StringUtil.bytesToString(bytes));
-//            System.out.println(StringUtil.bytesToString(tempBuf.array()));
         } else {
             tempBuf = ByteBuffer.allocate(byteBuf.array().length);
             byte[] temp = new byte[byteBuf.position()];
@@ -80,7 +85,6 @@ public class ByteEncoder {
             tempBuf.put(temp);
             tempBuf.put(bytes);
         }
-//        byteBuf.put(bytes);
         return tempBuf;
     }
 
@@ -96,10 +100,9 @@ public class ByteEncoder {
          * 每个引用类型
          */
 
-        FieldUtil fieldUtil = new FieldUtil();
 
-        String className = this.getClassName(obj);
-        byte[] clazz = className.getBytes();
+        byte[] classNameByte = this.getClassNameByte(obj);
+        byte[] clazz =classNameByte;
         byte[] byteData = new byte[clazz.length + 2];
         byteData[0] = 88;
         //类长度
@@ -109,13 +112,10 @@ public class ByteEncoder {
         //所有声明的字段字段
         Field[] fieldArray = obj.getClass().getDeclaredFields();
 
-        //java
-        String superClass=obj.getClass().getSuperclass().getSimpleName();
-        System.out.println("superClass : "+superClass);
-        byte[] superByte= this.superClassToByte(obj,obj.getClass().getSuperclass());
-
-        //对字段按名称排序
-        fieldArray = fieldUtil.fieldSort(fieldArray);
+        //父类
+        Class superClass=obj.getClass().getSuperclass();
+        //父类
+        byte[] superByte= this.superClassToByte(obj,superClass);
 
         byte[] fieldByte= this.fieldToByte(obj,fieldArray);
 
@@ -140,10 +140,8 @@ public class ByteEncoder {
         System.out.println("--------------superClassToByte-----------------");
         String className=superClass.getSimpleName();
         byte[]  superByte=new byte[0];
-        System.out.println("className: "+className);
-        System.out.println("superClass by superClass "+superClass.getSuperclass());
+        System.out.println(" currentClass： "+className+"   superClass： "+superClass.getSuperclass());
         if (!className.equals("Object")){
-            System.out.println(className);
             //递归编码父类
             byte[] byteData=this.superClassToByte(obj,superClass.getSuperclass());
 
@@ -176,10 +174,8 @@ public class ByteEncoder {
         byte[] primitiveByte = this.primitiveTypeToByte(primitiveFields, obj);
         byte[] objectByte = this.objectFieldTypeToByte(objectFields, obj);
 
-        System.out.println("fieldToByte---------");
-        System.out.println(StringUtil.bytesToString(primitiveByte));
-        System.out.println(StringUtil.bytesToString(objectByte));
-        System.out.println("fieldToByte---------");
+        System.out.println("原始类型： "+StringUtil.bytesToString(primitiveByte));
+        System.out.println("对象类型： "+StringUtil.bytesToString(objectByte));
         ByteBuffer buffer=ByteBuffer.allocate(primitiveByte.length+objectByte.length);
         buffer.put(primitiveByte);
         buffer.put(objectByte);
@@ -260,7 +256,7 @@ public class ByteEncoder {
                         byteBuf = this.put(byteBuf, valueBytes);
                     }
                 } else {
-                    //ClassType
+                    //编码类
                     String className = field.getType().getTypeName();
 //                    System.out.println(field.get(Class.forName(className).newInstance()));
 
@@ -288,10 +284,6 @@ public class ByteEncoder {
             //所有声明的字段字段
             Field[] fieldArray = obj.getClass().getDeclaredFields();
 
-            for (Field field: fieldArray){
-                System.out.println(field);
-            }
-
             //对字段按名称排序
             fieldArray = fieldUtil.fieldSort(fieldArray);
 
@@ -311,12 +303,15 @@ public class ByteEncoder {
             System.arraycopy(objectByte,0,resultByte,primitiveByte.length+2,objectByte.length);
 
             //todo 字段为类类型的父类还没处理
-//            byte[] superClassByte= this.superClassToByte(obj,obj.getClass().getSuperclass());
-//            ByteBuffer byteBuffer=ByteBuffer.allocate(resultByte.length+superClassByte.length);
-//            byteBuffer.put(resultByte);
-//            byteBuffer.put(superClassByte);
+            System.out.println("-------------------------字段的父类 "+ obj.getClass().getSuperclass());
+            byte[] superClassByte= this.superClassToByte(obj,obj.getClass().getSuperclass());
+            System.out.println("-------------------------字段的父类 "+StringUtil.bytesToString(superClassByte));
+
+            ByteBuffer byteBuffer=ByteBuffer.allocate(resultByte.length+superClassByte.length);
+            byteBuffer.put(resultByte);
+            byteBuffer.put(superClassByte);
 //
-//            resultByte=byteBuffer.array();
+            resultByte=byteBuffer.array();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -391,10 +386,10 @@ public class ByteEncoder {
         return resultByte;
     }
 
-    public String getClassName(Object obj) {
+    public byte[] getClassNameByte(Object obj) {
         String className = obj.getClass().getName();
 
-        return className;
+        return className.getBytes();
     }
 
 
