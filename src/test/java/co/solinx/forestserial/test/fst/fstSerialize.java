@@ -1,7 +1,5 @@
 package co.solinx.forestserial.test.fst;
 
-import co.solinx.forestserial.test.Request;
-import co.solinx.forestserial.test.Test;
 import co.solinx.forestserial.util.StringUtil;
 import co.solinx.forestserial.util.TypeToByteArray;
 import org.nustaq.serialization.FSTConfiguration;
@@ -35,9 +33,9 @@ public class fstSerialize {
 //        test.getResponse().setResult("bb");
 //       test.setR(request);
 
-        List<String> stringList=new ArrayList<>();
-        stringList.add("AA");
-        test.setIntegerList(stringList);
+//        List<String> stringList=new ArrayList<>();
+//        stringList.add("AA");
+//        test.setIntegerList(stringList);
 
         byte[] datas= conf.asByteArray(test);
 

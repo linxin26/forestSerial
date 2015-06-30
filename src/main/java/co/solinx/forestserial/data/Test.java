@@ -1,5 +1,7 @@
 package co.solinx.forestserial.data;
 
+import java.util.List;
+
 /**
  * Created by linx on 2015/6/19.
  */
@@ -30,6 +32,8 @@ public class Test extends Response{
     private Long zzzz;
     private Object obj;
     private Response response;
+
+    private List<Integer> integerList;
 
 
     public int getA() {
@@ -209,6 +213,10 @@ public class Test extends Response{
         this.response = response;
     }
 
+    public void setIntegerList(List<Integer> integerList) {
+        this.integerList = integerList;
+    }
+
     @Override
     public String toString() {
         return "Test{" +
@@ -235,6 +243,7 @@ public class Test extends Response{
                 ", zzzz=" + zzzz +
                 ", obj=" + obj +
                 ", response=" + response +
+                ", integerList=" + integerList +
                 "} " + super.toString();
     }
 }

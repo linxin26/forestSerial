@@ -1,4 +1,4 @@
-package co.solinx.forestserial.test;
+package co.solinx.forestserial.test.fst;
 
 import co.solinx.forestserial.util.StringUtil;
 
@@ -31,17 +31,18 @@ public class Test   implements Serializable {
 //    public void setR(Request request) {
 //        r = request;
 //    }
+    private Integer integer;
 
-    List<String> integerList=new ArrayList<>();
+//    List<String> integerList=new ArrayList<>();
 
-
-    public List<String> getIntegerList() {
-        return integerList;
-    }
-
-    public void setIntegerList(List<String> integerList) {
-        this.integerList = integerList;
-    }
+//
+//    public List<String> getIntegerList() {
+//        return integerList;
+//    }
+//
+//    public void setIntegerList(List<String> integerList) {
+//        this.integerList = integerList;
+//    }
 
     @Override
     public String toString() {

@@ -1,18 +1,19 @@
 package co.solinx.forestserial.coders;
 
 import co.solinx.forestserial.util.FieldUtil;
-import co.solinx.forestserial.util.StringUtil;
 import co.solinx.forestserial.util.TypeToByteArray;
 
 import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by linx on 2015-06-22.
  */
-public class ByteDecoder {
+public class ByteDecoder implements Decoder{
 
-    public Object decoder(byte[] byteData) throws IllegalAccessException {
+    public Object decoder(byte[] byteData) throws Exception {
 
         System.out.println("-------------------------------decoder-------------------------");
         int flag = byteData[0];   //标志位
@@ -38,13 +39,11 @@ public class ByteDecoder {
 
     /**
      * 父类转为
-     * @param obj
-     * @param superClass
-     * @return
+     * @param obj 对象
+     * @param superClass 父类
      */
-    public byte[] superClassToByte(Object obj,Class superClass,ByteBuffer byteBuffer) throws IllegalAccessException {
+    public void superClassToByte(Object obj,Class superClass,ByteBuffer byteBuffer) throws IllegalAccessException {
         String className=superClass.getSimpleName();
-        byte[]  superByte=new byte[0];
         if (!"Object".equals(className)){
             Field[] fields= superClass.getDeclaredFields();
 
@@ -55,14 +54,14 @@ public class ByteDecoder {
             System.out.println(" currentClass ： "+superClass + "  superClass.getSuperclass： "+superClass.getSuperclass());
             this.superClassToByte(obj,superClass.getSuperclass(),byteBuffer);
         }
-        return superByte;
     }
 
     /**
-     * Field转为Byte
-     * @param obj
-     * @param fields
-     * @return
+     * 解码byte
+     * @param obj 对象
+     * @param fields 字段组
+     * @param byteBuf byteBuffer
+     * @throws IllegalAccessException
      */
     public void fieldToByte(Object obj,Field[] fields,ByteBuffer byteBuf) throws IllegalAccessException {
         FieldUtil fieldUtil =new FieldUtil();
@@ -82,6 +81,7 @@ public class ByteDecoder {
         for (Field field:fields){
             String typeName=field.getType().getSimpleName();
 //            System.out.println(field);
+//            System.out.println(typeName);
             field.setAccessible(true);
             try {
                 if ("String".equals(typeName)) {
@@ -116,7 +116,7 @@ public class ByteDecoder {
                     if (value==1){
                         result=true;
                     }else{
-                        result=true;
+                        result=false;
                     }
                     field.set(obj,result);
                 }else if("Byte".equals(typeName)){
@@ -131,6 +131,11 @@ public class ByteDecoder {
                        String value = new String(valueByte);
                        field.set(obj, value);
                    }
+                }else if("List".equals(typeName)){
+//                    System.out.println("-----------------------------------List "+byteBuf.getInt());
+                    List list=new ArrayList<Integer>();
+                    list.add(byteBuf.getInt());
+                    field.set(obj,list);
                 }else{
                     //类类型
                     String className=field.getType().getName();
@@ -138,15 +143,17 @@ public class ByteDecoder {
 
                     byte type=byteBuf.get();
                     byte length=byteBuf.get();
-                    byte[] data=new byte[length];
-                    byteBuf.get(data);
-                    Field[] fieldArray=clazz.getClass().getDeclaredFields();
-                    ByteBuffer tempBuf=ByteBuffer.wrap(data);
-                    //解码字段
-                    this.fieldToByte(clazz,fieldArray,tempBuf);
-                    //todo 类类型父类解码
-                    this.superClassToByte(clazz,clazz.getClass().getSuperclass(),byteBuf);
-                    field.set(obj,clazz);
+                    if(length>0) {
+                        byte[] data = new byte[length];
+                        byteBuf.get(data);
+                        Field[] fieldArray = clazz.getClass().getDeclaredFields();
+                        ByteBuffer tempBuf = ByteBuffer.wrap(data);
+                        //解码字段
+                        this.fieldToByte(clazz, fieldArray, tempBuf);
+                        //todo 类类型父类解码
+                        this.superClassToByte(clazz, clazz.getClass().getSuperclass(), byteBuf);
+                        field.set(obj, clazz);
+                    }
                 }
             }catch(Exception e){
                 e.printStackTrace();

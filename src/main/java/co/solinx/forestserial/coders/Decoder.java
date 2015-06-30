@@ -5,4 +5,6 @@ package co.solinx.forestserial.coders;
  */
 public interface Decoder {
 
+    Object decoder(byte[] byteData) throws Exception;
+
 }
