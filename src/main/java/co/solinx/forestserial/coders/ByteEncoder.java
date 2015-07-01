@@ -6,6 +6,7 @@ import co.solinx.forestserial.util.FieldUtil;
 import co.solinx.forestserial.util.StringUtil;
 import co.solinx.forestserial.util.TypeToByteArray;
 
+import javax.lang.model.type.TypeKind;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -15,7 +16,7 @@ import java.util.List;
 /**
  * Created by linx on 2015/6/19.
  */
-public class ByteEncoder {
+public class ByteEncoder implements Encoder{
 
 
     public static void main(String[] args) throws Exception {
@@ -306,21 +307,20 @@ public class ByteEncoder {
                     }
                     byteBuf = this.put(byteBuf, valueBytes);
                 }else if("List".equals(typeName)){
-                    List<Integer> value= (List<Integer>) field.get(obj);
                     Type type=field.getGenericType();
                     fieldByte=new byte[0];
                     if(type instanceof ParameterizedType){
-                        Class clazz= (Class) ((ParameterizedType) type).getActualTypeArguments()[0];
-                        for (Integer temp: value){
-                            fieldByte = TypeToByteArray.intToByteArr(temp);
-                            System.out.println(StringUtil.bytesToString(fieldByte));
+                        Type clazz=  ((ParameterizedType) type).getActualTypeArguments()[0];
+                        if("java.lang.Integer".equals(clazz.getTypeName())) {
+                            List<Integer> value= (List<Integer>) field.get(obj);
+                            for (Integer temp : value) {
+                                fieldByte = TypeToByteArray.intToByteArr(temp);
+                                System.out.println(StringUtil.bytesToString(fieldByte));
+                            }
                         }
-
-                        System.out.println(clazz.getName());
 
                     }
                     byteBuf=this.put(byteBuf,fieldByte);
-                    System.out.println("------------------------------------List   "+value);
                 } else {
                     //编码类
                     String className = field.getType().getTypeName();
