@@ -15,6 +15,8 @@ public class ByteDecoder implements Decoder{
 
     public Object decoder(byte[] byteData) throws Exception {
 
+
+
         System.out.println("-------------------------------decoder-------------------------");
         int flag = byteData[0];   //标志位
         int claLength = byteData[1];   //类名长度
@@ -133,9 +135,11 @@ public class ByteDecoder implements Decoder{
                    }
                 }else if("List".equals(typeName)){
 //                    System.out.println("-----------------------------------List "+byteBuf.getInt());
-                    List list=new ArrayList<Integer>();
-                    list.add(byteBuf.getInt());
-                    field.set(obj,list);
+                    if (byteBuf.get()!=0) {
+                        List list = new ArrayList<Integer>();
+                        list.add(byteBuf.getInt());
+                        field.set(obj, list);
+                    }
                 }else{
                     //类类型
                     String className=field.getType().getName();
