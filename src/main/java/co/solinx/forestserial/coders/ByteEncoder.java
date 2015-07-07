@@ -1,19 +1,11 @@
 package co.solinx.forestserial.coders;
 
-import co.solinx.forestserial.common.CodeType;
 import co.solinx.forestserial.data.Response;
 import co.solinx.forestserial.data.Test;
 import co.solinx.forestserial.serializer.ClassInfo;
-import co.solinx.forestserial.util.FieldUtil;
 import co.solinx.forestserial.util.StringUtil;
-import co.solinx.forestserial.util.TypeToByteArray;
 
-import javax.lang.model.type.TypeKind;
-import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.nio.ByteBuffer;
-import java.util.List;
 
 /**
  * Created by linx on 2015/6/19.
