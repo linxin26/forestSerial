@@ -18,6 +18,8 @@ public class ClassInfo {
     FieldInfo fieldInfo;
     Object obj;
     BufferStream bufferStream;
+    FieldUtil fieldUtil = new FieldUtil();
+    String className;
 
     public ClassInfo(Object obj) {
         try {
@@ -34,6 +36,83 @@ public class ClassInfo {
         bufferStream=new BufferStream(dataByte);
     }
 
+    /**
+     * 类名
+     * @return
+     */
+    public String getClassName(){
+        if (bufferStream!=null){
+             int flat=bufferStream.getByte();
+            int length=bufferStream.getByte();
+            className= bufferStream.getString(length);
+        }else{
+            className=classInfo.getSimpleName();
+        }
+        return className;
+    }
+
+    public Object getClazzInstance(String clazzName) {
+
+        Object instance = null;
+        try {
+            System.out.println("--------------------------------- "+clazzName);
+            Class cla  = Class.forName(clazzName);
+            instance= cla.newInstance();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return instance;
+    }
+
+    /**
+     * 解码字段
+     */
+    public void deField(Object obj){
+        this.obj=obj;
+       Field[] fields=this.getDeclaredFields();
+        Field[]  fieldArray= fieldUtil.fieldSort(fields);
+
+
+        DeFieldInfo deFieldInfo=new DeFieldInfo();
+
+        deFieldInfo.deField(obj,fieldArray,bufferStream);
+
+    }
+
+
+    public void superClassDeCode(Object obj,Class superClass){
+        String className=superClass.getSimpleName();
+        if (!"Object".equals(className)){
+            Field[] fields= superClass.getDeclaredFields();
+
+            this.deField(obj, fields, bufferStream);
+            System.out.println(" currentClass ： "+superClass + "  superClass.getSuperclass： "+superClass.getSuperclass());
+            this.superClassDeCode(obj,superClass.getSuperclass());
+        }
+    }
+
+    public void deField(Object obj,Field[] fields,BufferStream bufferStream){
+        this.obj=obj;
+
+        Field[]  fieldArray= fieldUtil.fieldSort(fields);
+
+        Field[] primitiveFields = fieldUtil.getPrimitiveTypeField(fieldArray);
+        Field[] objectFields = fieldUtil.getObjectTypeField(fieldArray);
+
+        DeFieldInfo deFieldInfo=new DeFieldInfo();
+
+
+        deFieldInfo.deObjectField(obj,objectFields,bufferStream);
+        deFieldInfo.dePrimitiveField(obj,primitiveFields,bufferStream);
+
+    }
+
+
+
     public Field[]  getDeclaredFields(){
         return obj.getClass().getDeclaredFields();
     }
@@ -45,7 +124,7 @@ public class ClassInfo {
 
 
     public byte[] classTypeToByte(Object obj) {
-        FieldUtil fieldUtil = new FieldUtil();
+
         System.out.println("------------------------classTypeToByte-----------------------------");
         byte[] resultByte = new byte[0];
         try {

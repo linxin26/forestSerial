@@ -1,5 +1,7 @@
 package co.solinx.forestserial.coders;
 
+import co.solinx.forestserial.serializer.ClassInfo;
+import co.solinx.forestserial.serializer.DeFieldInfo;
 import co.solinx.forestserial.util.FieldUtil;
 import co.solinx.forestserial.util.TypeToByteArray;
 
@@ -25,17 +27,22 @@ public class ByteDecoder implements Decoder{
         String claName = new String(claNameByte);
 
         byte[] fieldByte=new byte[byteData.length-(claLength+2)];
-        System.arraycopy(byteData,claLength+2,fieldByte,0,fieldByte.length);
+        System.arraycopy(byteData, claLength + 2, fieldByte, 0, fieldByte.length);
         System.out.println("解码类名： "+claName);
 
-        Object clazz= this.getClazzInstance(claName);
+        ClassInfo classInfo=new ClassInfo(byteData);
+        Object clazz= this.getClazzInstance(classInfo.getClassName());
         Field[] fieldArray=clazz.getClass().getDeclaredFields();
 
         ByteBuffer byteBuf=ByteBuffer.wrap(fieldByte);
         //解码字段
-        this.fieldToByte(clazz,fieldArray,byteBuf);
+//        this.fieldToByte(clazz,fieldArray,byteBuf);
+        classInfo.deField(clazz);
+
         //解码父类
-        this.superClassToByte(clazz,clazz.getClass().getSuperclass(),byteBuf);
+//        this.superClassToByte(clazz,clazz.getClass().getSuperclass(),byteBuf);
+//        classInfo.superClassDeCode(clazz,clazz.getClass().getSuperclass());
+
         return clazz;
     }
 
@@ -82,7 +89,7 @@ public class ByteDecoder implements Decoder{
 //        System.out.println("position : "+byteBuf.position());
         for (Field field:fields){
             String typeName=field.getType().getSimpleName();
-//            System.out.println(field);
+            System.out.println(field);
 //            System.out.println(typeName);
             field.setAccessible(true);
             try {
