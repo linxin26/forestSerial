@@ -1,5 +1,6 @@
 package co.solinx.forestserial.coders;
 
+import co.solinx.forestserial.Buffer.BufferStream;
 import co.solinx.forestserial.serializer.ClassInfo;
 import co.solinx.forestserial.serializer.DeFieldInfo;
 import co.solinx.forestserial.util.FieldUtil;
@@ -37,11 +38,11 @@ public class ByteDecoder implements Decoder{
         ByteBuffer byteBuf=ByteBuffer.wrap(fieldByte);
         //解码字段
 //        this.fieldToByte(clazz,fieldArray,byteBuf);
-        classInfo.deField(clazz);
+        BufferStream buffer= classInfo.deField(clazz);
 
         //解码父类
 //        this.superClassToByte(clazz,clazz.getClass().getSuperclass(),byteBuf);
-//        classInfo.superClassDeCode(clazz,clazz.getClass().getSuperclass());
+        classInfo.superClassDeCode(clazz,clazz.getClass().getSuperclass());
 
         return clazz;
     }
@@ -59,6 +60,7 @@ public class ByteDecoder implements Decoder{
 //            for (Field field : fields){
 //                System.out.println(field);
 //            }
+            System.out.println("  superClassToByte:    "+byteBuffer.position());
            this.fieldToByte(obj,fields,byteBuffer);
             System.out.println(" currentClass ： "+superClass + "  superClass.getSuperclass： "+superClass.getSuperclass());
             this.superClassToByte(obj,superClass.getSuperclass(),byteBuffer);

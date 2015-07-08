@@ -37,8 +37,9 @@ public class DeFieldInfo {
     public void deObjectField(Object obj,Field[] fields,BufferStream bufferStream){
         System.out.println("start position : " +bufferStream.getPosition());
         for (Field field:fields){
-            String typeName=field.getType().getSimpleName();
+
             System.out.println(field);
+            String typeName=field.getType().getSimpleName();
             field.setAccessible(true);
             try {
                 if ("String".equals(typeName)) {
@@ -51,39 +52,29 @@ public class DeFieldInfo {
                     byte[] valueByte = new byte[length];
                     bufferStream.getByte(valueByte);
                     String value=new String(valueByte);
-                    System.out.println("String : "+value);
-                    System.out.println("valueByte : "+StringUtil.bytesToString(valueByte));
 //                    System.out.println("Length : "+length);
 //                    System.out.println("value : "+value);
                     field.set(obj, value);
                 }else if ("Integer".equals(typeName)){
                     int value=bufferStream.getInt();
-                    System.out.println("Integer : "+value);
                     field.set(obj, value);
                 }else if("Long".equals(typeName)){
-                    System.out.println("position  : "+bufferStream.getPosition());
                     long value=bufferStream.getLong();
-                    System.out.println("Long : "+value);
                     field.set(obj, value);
                 }else if("Float".equals(typeName)){
                     float value=bufferStream.getFloat();
-                    System.out.println("Float : "+value);
                     field.set(obj,value);
                 }else if("Double".equals(typeName)){
                     double value=bufferStream.getDouble();
-                    System.out.println("Double : "+value);
                     field.set(obj,value);
                 }else if("Character".equals(typeName)){
                     char value=bufferStream.getChar();
-                    System.out.println("Character : "+value);
                     field.set(obj,value);
                 }else if("Short".equals(typeName)){
                     short value=bufferStream.getShort();
-                    System.out.println("Short : "+value);
                     field.set(obj,value);
                 }else if("Boolean".equals(typeName)){
                     int value=bufferStream.getInt();
-                    System.out.println("Boolean : "+value);
                     boolean result;
                     if (value==1){
                         result=true;
@@ -93,7 +84,6 @@ public class DeFieldInfo {
                     field.set(obj,result);
                 }else if("Byte".equals(typeName)){
                     byte value=bufferStream.getByte();
-                    System.out.println("Byte : "+value);
                     field.set(obj,value);
                 }else if("Object".equals(typeName)){
                     if(bufferStream.hasRemaining()) {
@@ -103,7 +93,6 @@ public class DeFieldInfo {
                         bufferStream.getByte(valueByte);
 
                         String value = new String(valueByte);
-                        System.out.println("Object : " + value);
                         field.set(obj, value);
                     }
                 }else if("List".equals(typeName)){
@@ -112,7 +101,6 @@ public class DeFieldInfo {
                         List list = new ArrayList<Integer>();
                         list.add(bufferStream.getInt());
                         field.set(obj, list);
-                        System.out.println("List : " + list);
                     }
                 }else{
                     //类类型
@@ -121,7 +109,6 @@ public class DeFieldInfo {
 
                     byte type=bufferStream.getByte();
                     byte length=bufferStream.getByte();
-                    System.out.println("Class : " + length);
                     if(length>0) {
                         byte[] data = new byte[length];
                         bufferStream.getByte(data);
@@ -157,7 +144,7 @@ public class DeFieldInfo {
 //                System.out.println(field);
 //            }
             this.deField(obj, fields, byteBuffer);
-            System.out.println(" currentClass ： "+superClass + "  superClass.getSuperclass： "+superClass.getSuperclass());
+            System.out.println(" defieldInfo currentClass ： "+superClass + "  superClass.getSuperclass： "+superClass.getSuperclass());
             this.superClassToByte(obj,superClass.getSuperclass(),byteBuffer);
         }
     }

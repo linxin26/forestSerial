@@ -71,7 +71,7 @@ public class ClassInfo {
     /**
      * 解码字段
      */
-    public void deField(Object obj){
+    public BufferStream deField(Object obj){
         this.obj=obj;
        Field[] fields=this.getDeclaredFields();
         Field[]  fieldArray= fieldUtil.fieldSort(fields);
@@ -80,17 +80,24 @@ public class ClassInfo {
         DeFieldInfo deFieldInfo=new DeFieldInfo();
 
         deFieldInfo.deField(obj,fieldArray,bufferStream);
-
+        return bufferStream;
     }
 
 
     public void superClassDeCode(Object obj,Class superClass){
         String className=superClass.getSimpleName();
+        System.out.println("className : "+className);
         if (!"Object".equals(className)){
             Field[] fields= superClass.getDeclaredFields();
 
+//            for (Field field: fields){
+//                System.out.println(field);
+//            }
+
             this.deField(obj, fields, bufferStream);
-            System.out.println(" currentClass ： "+superClass + "  superClass.getSuperclass： "+superClass.getSuperclass());
+            System.out.println("getPosition  :  " + bufferStream.getPosition());
+//            System.out.println("getPosition  :  " + bufferStream.getPosition()+"  —— "+bufferStream.getByte());
+//            System.out.println(" currentClass ： " + superClass + "  superClass.getSuperclass： " + superClass.getSuperclass());
             this.superClassDeCode(obj,superClass.getSuperclass());
         }
     }
@@ -106,8 +113,9 @@ public class ClassInfo {
         DeFieldInfo deFieldInfo=new DeFieldInfo();
 
 
+        deFieldInfo.dePrimitiveField(obj, primitiveFields, bufferStream);
         deFieldInfo.deObjectField(obj,objectFields,bufferStream);
-        deFieldInfo.dePrimitiveField(obj,primitiveFields,bufferStream);
+
 
     }
 
