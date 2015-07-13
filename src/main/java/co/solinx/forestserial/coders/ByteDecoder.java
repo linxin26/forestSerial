@@ -17,8 +17,6 @@ public class ByteDecoder implements Decoder {
         System.arraycopy(byteData, 2, claNameByte, 0, claLength);
         String claName = new String(claNameByte);
 
-        byte[] fieldByte = new byte[byteData.length - (claLength + 2)];
-        System.arraycopy(byteData, claLength + 2, fieldByte, 0, fieldByte.length);
         System.out.println("解码类名： " + claName);
 
         ClassInfo classInfo = new ClassInfo(byteData);

@@ -18,6 +18,7 @@ public class FieldInfo {
 
     Field[] fields;
     ClassInfo classInfo;
+    FieldUtil fieldUtil = new FieldUtil();
 
     public FieldInfo(ClassInfo classInfo){
         fields=classInfo.getDeclaredFields();
@@ -34,7 +35,7 @@ public class FieldInfo {
      */
     public byte[] fieldToByte(Object obj, Field[] fields) {
 
-        FieldUtil fieldUtil = new FieldUtil();
+
         Field[] fieldArray = fieldUtil.fieldSort(fields);
 
         Field[] primitiveFields = fieldUtil.getPrimitiveTypeField(fieldArray);
@@ -105,16 +106,12 @@ public class FieldInfo {
                     fieldByte[0] = value;
                     byteBuf.put(fieldByte);
                 }
-
-
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
         }
-//        System.out.println(StringUtil.bytesToString(primitiveByte));
         byte[] resultByte = new byte[byteBuf.position()];
         System.arraycopy(byteBuf.array(), 0, resultByte, 0, byteBuf.position());
-//        System.out.println(StringUtil.bytesToString(resultByte));
         return resultByte;
     }
 

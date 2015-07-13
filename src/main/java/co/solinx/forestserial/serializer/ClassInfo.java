@@ -181,7 +181,7 @@ public class ClassInfo {
     }
 
     /**
-     * 父类转为
+     * encode父类
      *
      * @param obj 当前对象
      * @param superClass 父类
@@ -195,19 +195,23 @@ public class ClassInfo {
         if (!className.equals("Object")) {
             //递归编码父类
             byte[] byteData = this.superClassToByte(obj, superClass.getSuperclass());
-
+            //字段
             Field[] fields = superClass.getDeclaredFields();
             superByte = fieldInfo.fieldToByte(obj, fields);
             ByteBuffer byteBuffer = ByteBuffer.allocate(superByte.length + byteData.length);
             byteBuffer.put(superByte);
             byteBuffer.put(byteData);
-
             superByte = byteBuffer.array();
         }
 
         return superByte;
     }
 
+
+    /**
+     * encode className
+     * @return
+     */
     public byte[] getClassNameByte(){
         byte[] nameByte=classInfo.getName().getBytes();
         byte[] className=new byte[nameByte.length+2];
@@ -218,12 +222,5 @@ public class ClassInfo {
 
         return className;
     }
-
-    public Object deCodeClassName(){
-//        bufferStream
-
-        return null;
-    }
-
 
 }
