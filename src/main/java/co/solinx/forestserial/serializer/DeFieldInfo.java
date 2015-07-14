@@ -95,12 +95,29 @@ public class DeFieldInfo {
                         String value = new String(valueByte);
                         field.set(obj, value);
                     }
-                }else if("List".equals(typeName)){
+                }else if("List".equals(typeName)||"ArrayList".equals(typeName)){
 //                    System.out.println("-----------------------------------List "+byteBuf.getInt());
-                    if (bufferStream.getByte()!=0) {
+                   int type= bufferStream.getByte()&0xff;
+                    System.out.println("-----------------------------------List "+type);
+                    if(type==0xf2){
                         List list = new ArrayList<Integer>();
-                        list.add(bufferStream.getInt());
+                        int itemCunt=bufferStream.getByte();
+                        for (int i=0;i<itemCunt;i++) {
+                            list.add(bufferStream.getInt());
+                        }
                         field.set(obj, list);
+                    } else if(type==0xf3){
+                        List list=new ArrayList<String>();
+                        int length=bufferStream.getByte();
+
+                        for(int i=0;i<length;i++) {
+                            int num=bufferStream.getByte();
+                            byte[] temp = new byte[num];
+                            bufferStream.getByte(temp);
+                            list.add(new String(temp));
+                        }
+                        field.set(obj, list);
+
                     }
                 }else{
                     //类类型

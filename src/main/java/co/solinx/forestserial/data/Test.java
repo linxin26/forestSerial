@@ -1,5 +1,6 @@
 package co.solinx.forestserial.data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,6 +35,8 @@ public class Test extends Response{
     private Response response;
 
     private List<Integer> integerList;
+    private List<String> stringList;
+    private ArrayList<String> arrayList;
 
 
     public int getA() {
@@ -217,6 +220,14 @@ public class Test extends Response{
         this.integerList = integerList;
     }
 
+    public void setStringList(List<String> stringList) {
+        this.stringList = stringList;
+    }
+
+    public void setArrayList(ArrayList<String> arrayList) {
+        this.arrayList = arrayList;
+    }
+
     @Override
     public String toString() {
         return "Test{" +
@@ -244,6 +255,18 @@ public class Test extends Response{
                 ", obj=" + obj +
                 ", response=" + response +
                 ", integerList=" + integerList +
+                ", stringList=" + stringList +
+                ", arrayList=" + arrayList +
                 "} " + super.toString();
     }
+
+    private String toStirng(List<String> list){
+        String value = null;
+        for (int i=0;i<list.size();i++){
+            System.out.println(list.get(i));
+            value+=list.get(i);
+        }
+        return value;
+    }
+
 }

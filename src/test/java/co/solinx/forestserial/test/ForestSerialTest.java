@@ -24,8 +24,21 @@ public class ForestSerialTest {
 
         List<Integer> integerList=new ArrayList<>();
         integerList.add(12);
+        integerList.add(13);
+        integerList.add(8888);
 
         forestSerial.setIntegerList(integerList);
+
+        List<String> stringList=new ArrayList<>();
+        stringList.add("sList");
+        stringList.add("tempList");
+        forestSerial.setStringList(stringList);
+
+
+        ArrayList<String> arrayList=new ArrayList<>();
+        arrayList.add("arrayList");
+        forestSerial.setArrayList(arrayList);
+
 
         ByteDecoder decoder=new ByteDecoder();
         ByteEncoder encoder=new ByteEncoder();

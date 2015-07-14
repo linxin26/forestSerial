@@ -129,7 +129,7 @@ public class FieldInfo {
         for (Field field : fields) {
             String typeName = field.getType().getSimpleName();
             field.setAccessible(true);
-//            System.out.println(typeName);
+            System.out.println(typeName);
             try {
                 if (typeName.equals("String")) {
                     String value = (String) field.get(obj);
@@ -233,21 +233,39 @@ public class FieldInfo {
                         valueBytes[1] = 0;
                     }
                     byteBuf = ByteBufferTool.put(byteBuf, valueBytes);
-                }else if("List".equals(typeName)){
+                }else if("List".equals(typeName)||"ArrayList".equals(typeName)){
                     if(field.get(obj)!=null) {
                         Type type = field.getGenericType();
                         fieldByte = new byte[0];
                         if (type instanceof ParameterizedType) {
                             Type clazz = ((ParameterizedType) type).getActualTypeArguments()[0];
+
                             if ("java.lang.Integer".equals(clazz.getTypeName())) {
+                                System.out.println("java.lang.Integer------------------   "+clazz.getTypeName());
                                 List<Integer> value = (List<Integer>) field.get(obj);
+                                ByteBuffer buffer=ByteBuffer.allocate(value.size()*4);
                                 for (Integer temp : value) {
                                     fieldByte = TypeToByteArray.intToByteArr(temp);
+                                    buffer.put(fieldByte);
                                     System.out.println(StringUtil.bytesToString(fieldByte));
                                 }
-                                byte[] byteData=new byte[fieldByte.length+1];
+                                byte[] byteData=new byte[buffer.position()+2];
                                 byteData[0]= (byte) 0xf2;
-                                System.arraycopy(fieldByte,0,byteData,1,fieldByte.length);
+                                byteData[1]= (byte) value.size();
+                                System.arraycopy(buffer.array(),0,byteData,2,buffer.position());
+                                fieldByte=byteData;
+                            }else if("java.lang.String".equals(clazz.getTypeName())){
+                                System.out.println("clazz------------------   "+clazz.getTypeName());
+                               List<String> value=(List<String>)field.get(obj);
+                                ByteBuffer buffer=ByteBuffer.allocate(4);
+                                for (String temp : value){
+                                    buffer.put((byte) temp.getBytes().length);
+                                    buffer=ByteBufferTool.put(buffer,temp.getBytes());
+                                }
+                               byte[] byteData=new byte[buffer.position()+2];
+                                byteData[0]=(byte)0xf3;
+                                byteData[1]= (byte) value.size();
+                                System.arraycopy(buffer.array(),0,byteData,2,buffer.position());
                                 fieldByte=byteData;
                             }
 
