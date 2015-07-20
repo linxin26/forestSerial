@@ -1,5 +1,6 @@
 package co.solinx.forestserial.test;
 
+import co.solinx.forestserial.ForestSerialized;
 import co.solinx.forestserial.coders.ByteDecoder;
 import co.solinx.forestserial.coders.ByteEncoder;
 import co.solinx.forestserial.data.Response;
@@ -40,12 +41,12 @@ public class ForestSerialTest {
         forestSerial.setArrayList(arrayList);
 
 
-        ByteDecoder decoder=new ByteDecoder();
-        ByteEncoder encoder=new ByteEncoder();
-        byte[] byteData= encoder.encoder(forestSerial);
+        ForestSerialized forestSerialied=new ForestSerialized();
+
+        byte[] byteData= forestSerialied.serialize(forestSerial);
 
         try {
-            System.out.println(decoder.decoder(byteData));
+            System.out.println(forestSerialied.deSerialize(byteData));
         } catch (Exception e) {
             e.printStackTrace();
         }

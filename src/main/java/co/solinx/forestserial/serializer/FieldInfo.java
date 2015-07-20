@@ -52,6 +52,47 @@ public class FieldInfo {
         return buffer.array();
     }
 
+
+    public byte[] fieldToByte(Object obj){
+        System.out.println("------------------------classTypeToByte-----------------------------");
+        byte[] resultByte = new byte[0];
+        try {
+            if (obj == null) {
+                resultByte = new byte[2];
+                resultByte[0] = 0x1f;
+                resultByte[1] = 0;
+                return resultByte;
+            }
+            //所有声明的字段字段
+            Field[] fieldArray = obj.getClass().getDeclaredFields();
+
+            //对字段按名称排序
+            fieldArray = fieldUtil.fieldSort(fieldArray);
+              byte[] fieldByte=  this.fieldToByte(obj,fieldArray);
+
+            resultByte = new byte[fieldByte.length + 2];
+            resultByte[0] = 0x1f;
+            resultByte[1] = (byte) (fieldByte.length);  //todo   现在长度只是一个字节，后面要修改
+            System.arraycopy(fieldByte, 0, resultByte, 2, fieldByte.length);
+
+            //todo 字段为类类型的父类还没处理
+            System.out.println("-------------------------字段的父类 " + obj.getClass().getSuperclass());
+            byte[] superClassByte = classInfo.superClassToByte(obj, obj.getClass().getSuperclass());
+            System.out.println("-------------------------字段的父类 " + StringUtil.bytesToString(superClassByte));
+
+            ByteBuffer byteBuffer = ByteBuffer.allocate(resultByte.length + superClassByte.length);
+            byteBuffer.put(resultByte);
+            byteBuffer.put(superClassByte);
+//
+            resultByte = byteBuffer.array();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return resultByte;
+    }
+
+
+
     /**
      * 原始类型转换为byte数组
      *
@@ -278,13 +319,11 @@ public class FieldInfo {
                 } else {
                     //编码类
                     String className = field.getType().getTypeName();
-//                    System.out.println(field.get(Class.forName(className).newInstance()));
-
-//                    System.out.println(field.get(obj));
                     Object value = field.get(obj);
-
-                    byte[] classObject = classInfo.classTypeToByte(value);
-                    byteBuf = ByteBufferTool.put(byteBuf, classObject);
+                    if(value!=null) {
+                        byte[] classObject = this.fieldToByte(value);
+                        byteBuf = ByteBufferTool.put(byteBuf, classObject);
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();

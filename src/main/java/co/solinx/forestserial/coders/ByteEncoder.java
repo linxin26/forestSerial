@@ -1,5 +1,6 @@
 package co.solinx.forestserial.coders;
 
+import co.solinx.forestserial.common.CodeType;
 import co.solinx.forestserial.data.Response;
 import co.solinx.forestserial.data.Test;
 import co.solinx.forestserial.serializer.ClassInfo;
@@ -57,6 +58,8 @@ public class ByteEncoder implements Encoder{
         System.out.println(temp.toString());
     }
 
+
+
     /**
      * 对象转码为Byte[]
      *
@@ -65,7 +68,7 @@ public class ByteEncoder implements Encoder{
      */
     public byte[] encoder(Object obj) {
         /**
-         * Byte[]=标志+类名长度+原始类型+引用类型+父类
+         * Byte[]=标志+类名长度+类名+原始类型+引用类型+父类
          * 每个引用类型
          */
 
@@ -84,7 +87,10 @@ public class ByteEncoder implements Encoder{
 
         System.out.println("类名：" + StringUtil.bytesToString(classNameByte));
 
-        ByteBuffer fieldBuf = ByteBuffer.allocate(fieldByte.length + superByte.length + classNameByte.length);
+        ByteBuffer fieldBuf = ByteBuffer.allocate(1+fieldByte.length + superByte.length + classNameByte.length);
+        byte[] flag=new byte[1];
+        flag[0]= CodeType.CLASS_NAME;
+        fieldBuf.put(flag);
         fieldBuf.put(classNameByte);
         fieldBuf.put(fieldByte);
         fieldBuf.put(superByte);
