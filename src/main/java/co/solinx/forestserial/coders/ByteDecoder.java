@@ -11,40 +11,15 @@ public class ByteDecoder implements Decoder {
 
 
         System.out.println("-------------------------------decoder-------------------------");
-        int flag = byteData[0];   //标志位
-        int claLength = byteData[1];   //类名长度
-        byte[] claNameByte = new byte[claLength];
-        System.arraycopy(byteData, 2, claNameByte, 0, claLength);
-        String claName = new String(claNameByte);
-
-        System.out.println("解码类名： " + claName);
 
         ClassInfo classInfo = new ClassInfo(byteData);
-        Object clazz = this.getClazzInstance(classInfo.getClassName());
+        Object clazz = classInfo.getInstanceObject();
         //解码字段
-        classInfo.deField(clazz);
+        classInfo.deField();
 
         //解码父类
         classInfo.superClassDeCode(clazz, clazz.getClass().getSuperclass());
 
         return clazz;
     }
-
-
-    public Object getClazzInstance(String clazzName) {
-
-        Object instance = null;
-        try {
-            Class cla = Class.forName(clazzName);
-            instance = cla.newInstance();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return instance;
-    }
-
 }

@@ -51,6 +51,11 @@ public class ClassInfo {
         return className;
     }
 
+    public Object getInstanceObject(){
+        this.obj = this.getClazzInstance(this.getClassName());
+        return obj;
+    }
+
     public Object getClazzInstance(String clazzName) {
 
         Object instance = null;
@@ -71,8 +76,8 @@ public class ClassInfo {
     /**
      * 解码字段
      */
-    public BufferStream deField(Object obj){
-        this.obj=obj;
+    public BufferStream deField(){
+
        Field[] fields=this.getDeclaredFields();
         Field[]  fieldArray= fieldUtil.fieldSort(fields);
 
