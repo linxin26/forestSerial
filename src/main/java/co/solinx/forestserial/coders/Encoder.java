@@ -7,4 +7,10 @@ public interface Encoder {
 
     byte[] encoder(Object obj);
 
+    void writeClass(Class clazz);
+
+    void writeTag(byte tag);
+
+     byte[] toByte();
+
 }

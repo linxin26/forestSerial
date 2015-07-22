@@ -1,17 +1,25 @@
 package co.solinx.forestserial.coders;
 
+import co.solinx.forestserial.common.ByteBufferTool;
 import co.solinx.forestserial.common.CodeType;
 import co.solinx.forestserial.data.Response;
 import co.solinx.forestserial.data.Test;
 import co.solinx.forestserial.serializer.ClassInfo;
 import co.solinx.forestserial.util.StringUtil;
+import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 
 /**
  * Created by linx on 2015/6/19.
  */
 public class ByteEncoder implements Encoder{
+
+    OutputStream outputStream=new ByteOutputStream();
+    ByteBuffer buffer=ByteBuffer.allocate(20);
 
 
     public static void main(String[] args) throws Exception {
@@ -96,6 +104,34 @@ public class ByteEncoder implements Encoder{
         fieldBuf.put(superByte);
         System.out.println("合并后：" + StringUtil.bytesToString(fieldBuf.array()));
         return fieldBuf.array();
+    }
+
+    public void writeClass(Class clazz){
+          byte[] names= clazz.getName().getBytes();
+         buffer.putInt(names.length);
+        buffer= ByteBufferTool.put(buffer,names);
+    }
+
+
+    public void writeTag(byte tag){
+        buffer.put(tag);
+    }
+
+    public void writePrimitiveField(Field fields,Object obj){
+
+    }
+
+    public byte[] toByte(){
+        byte[] bytes=new byte[buffer.capacity() - buffer.remaining()];
+      System.arraycopy(buffer.array(), 0, bytes, 0, bytes.length);
+        return bytes;
+    }
+
+    public void writeInt(int val){
+        // -128 = short byte, -127 == 4 byte
+        if(val>-127&&val<=127){
+
+        }
     }
 
 }

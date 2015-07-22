@@ -26,7 +26,7 @@ public class Test   implements Serializable {
 //    private Object test = "12";
 //    private long size = 120;
 //    private boolean bool = true;
-//    private int zm = 90;
+    private int zm = 90;
 
 //    public void setR(Request request) {
 //        r = request;
@@ -56,7 +56,7 @@ public class Test   implements Serializable {
 //                ", test=" + test +
 //                ", size=" + size +
 //                ", bool=" + bool +
-//                ", zm=" + zm +
+                ", zm=" + zm +
                 '}';
     }
 

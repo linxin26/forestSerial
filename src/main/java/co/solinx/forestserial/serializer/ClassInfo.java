@@ -89,9 +89,26 @@ public class ClassInfo {
     }
 
 
+    public void deField(Object obj,Field[] fields,BufferStream bufferStream){
+        this.obj=obj;
+
+        Field[]  fieldArray= fieldUtil.fieldSort(fields);
+
+        Field[] primitiveFields = fieldUtil.getPrimitiveTypeField(fieldArray);
+        Field[] objectFields = fieldUtil.getObjectTypeField(fieldArray);
+
+        DeFieldInfo deFieldInfo=new DeFieldInfo();
+
+
+        deFieldInfo.dePrimitiveField(obj, primitiveFields, bufferStream);
+        deFieldInfo.deObjectField(obj, objectFields, bufferStream);
+
+
+    }
+
     public void superClassDeCode(Object obj,Class superClass){
         String className=superClass.getSimpleName();
-        System.out.println("className : "+className);
+        System.out.println("className : " + className);
         if (!"Object".equals(className)){
             Field[] fields= superClass.getDeclaredFields();
 
@@ -107,26 +124,12 @@ public class ClassInfo {
         }
     }
 
-    public void deField(Object obj,Field[] fields,BufferStream bufferStream){
-        this.obj=obj;
-
-        Field[]  fieldArray= fieldUtil.fieldSort(fields);
-
-        Field[] primitiveFields = fieldUtil.getPrimitiveTypeField(fieldArray);
-        Field[] objectFields = fieldUtil.getObjectTypeField(fieldArray);
-
-        DeFieldInfo deFieldInfo=new DeFieldInfo();
-
-
-        deFieldInfo.dePrimitiveField(obj, primitiveFields, bufferStream);
-        deFieldInfo.deObjectField(obj,objectFields,bufferStream);
-
-
-    }
-
 
 
     public Field[]  getDeclaredFields(){
+        if (obj==null){
+            this.obj = this.getClazzInstance(this.getClassName());
+        }
         return obj.getClass().getDeclaredFields();
     }
 
