@@ -6,12 +6,14 @@ import co.solinx.forestserial.data.Response;
 import co.solinx.forestserial.data.Test;
 import co.solinx.forestserial.serializer.ClassInfo;
 import co.solinx.forestserial.util.StringUtil;
+import co.solinx.forestserial.util.TypeToByteArray;
 import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
+import java.util.List;
 
 /**
  * Created by linx on 2015/6/19.
@@ -19,7 +21,7 @@ import java.nio.ByteBuffer;
 public class ByteEncoder implements Encoder{
 
     OutputStream outputStream=new ByteOutputStream();
-    ByteBuffer buffer=ByteBuffer.allocate(20);
+    ByteBuffer buffer=ByteBuffer.allocate(200);
 
 
     public static void main(String[] args) throws Exception {
@@ -108,9 +110,10 @@ public class ByteEncoder implements Encoder{
 
     public void writeClass(Class clazz){
           byte[] names= clazz.getName().getBytes();
-         buffer.putInt(names.length);
+         writeInt(names.length);
         buffer= ByteBufferTool.put(buffer,names);
     }
+
 
 
     public void writeTag(byte tag){
@@ -127,11 +130,31 @@ public class ByteEncoder implements Encoder{
         return bytes;
     }
 
-    public void writeInt(int val){
-        // -128 = short byte, -127 == 4 byte
-        if(val>-127&&val<=127){
+    public void writeInt(int val) {
 
+        // -128 = short byte, -127 == 4 byte
+        if (val > -127 && val <= 127) {
+            buffer= ByteBufferTool.put(buffer,new byte[]{(byte) val});
+        }else if(val>=Short.MIN_VALUE && val<=Short.MAX_VALUE){
+            buffer.put((byte) -128);
+            buffer.putShort((short) val);
+        } else {
+            buffer.put((byte) -127);
+            buffer.putInt(val);
         }
+    }
+
+    public void writeByte(byte val){
+        buffer.put(val);
+    }
+
+    public void writeList(List list){
+
+    }
+
+    public void writeString(String val){
+        writeInt(val.getBytes().length);
+        buffer.put(val.getBytes());
     }
 
 }

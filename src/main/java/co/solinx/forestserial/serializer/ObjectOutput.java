@@ -8,6 +8,10 @@ import co.solinx.forestserial.util.StringUtil;
 
 import java.io.OutputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.nio.ByteBuffer;
+import java.util.List;
 
 /**
  * Created by linx on 2015/7/22.
@@ -28,6 +32,7 @@ public class ObjectOutput {
 
        this.writeField(obj);
 
+        System.out.println(StringUtil.bytesToString(encoder.toByte()));
     }
 
    public void writeField(Object obj){
@@ -38,8 +43,13 @@ public class ObjectOutput {
        Field[] primitiveField= fieldUtil.getPrimitiveTypeField(fields);
        Field[] objectField=fieldUtil.getObjectTypeField(fields);
 
-       this.writePrimitiveField(primitiveField,obj);
-       this.writeObjectField(objectField,obj);
+       try {
+
+           this.writePrimitiveField(primitiveField, obj);
+           this.writeObjectField(objectField, obj);
+       }catch(Exception e){
+           e.printStackTrace();
+       }
    }
 
 
@@ -49,14 +59,48 @@ public class ObjectOutput {
              encoder.writeClass(obj.getClass());
     }
 
-    public void writePrimitiveField(Field[] fields,Object obj){
+    public void writePrimitiveField(Field[] fields,Object obj) throws IllegalAccessException {
         for (Field field:fields){
-
+            field.setAccessible(true);
+            if("int".equals(field.getType().getName())){
+                int value=field.getInt(obj);
+                encoder.writeInt(value);
+                System.out.println("int value "+value);
+            }
         }
     }
 
-    public void writeObjectField(Field[] fields,Object obj){
+    public void writeObjectField(Field[] fields,Object obj) throws IllegalAccessException {
         for(Field field: fields){
+            field.setAccessible(true);
+            if("ArrayList".equals(field.getType().getSimpleName())|| "List".equals(field.getType().getSimpleName())){
+
+                  Object value= field.get(obj);
+                if(value!=null) {
+                    Type type=field.getGenericType();
+                    if( type instanceof ParameterizedType){
+                        Type clazz = ((ParameterizedType) type).getActualTypeArguments()[0];
+                        if ("java.lang.Integer".equals(clazz.getTypeName())) {
+                            List<Integer> valueList = (List<Integer>) field.get(obj);
+                            encoder.writeByte((byte) 0x99);
+                            encoder.writeByte((byte) 0x11);
+                            encoder.writeInt(valueList.size());
+                            for (Integer temp : valueList) {
+                                encoder.writeInt(temp);
+                            }
+                        }else if("java.lang.String".equals(clazz.getTypeName())){
+                            List<String> valueList = (List<String>) field.get(obj);
+                            encoder.writeByte((byte) 0x99);
+                            encoder.writeByte((byte) 0x12);
+                            encoder.writeInt(valueList.size());
+                            for (String temp : valueList) {
+                                encoder.writeString(temp);
+                            }
+                        }
+                    }
+                }
+                System.out.println(field.getType().getName());
+            }
 
         }
     }
@@ -68,5 +112,8 @@ public class ObjectOutput {
         System.out.println( classInfo.getDeclaredFields().length);
     }
 
+    public byte[] toBytes(){
+        return encoder.toByte();
+    }
 
 }
