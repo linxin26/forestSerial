@@ -32,6 +32,12 @@ public class ObjectInput {
         return clazz;
     }
 
+    public void readObject(Object obj,Class cla) throws IllegalAccessException {
+        String className= (String) decoder.readObject();
+            readFields(obj,cla);
+
+    }
+
     public Object readFields(Object obj) throws IllegalAccessException {
 
         Field[] fields = obj.getClass().getDeclaredFields();
@@ -41,26 +47,82 @@ public class ObjectInput {
         Field[] objectField=fieldUtil.getObjectTypeField(fields);
 
 
-        this.readPrimitiveField(primitiveField,obj);
-        this.readObjectField(objectField,obj);
+        this.readPrimitiveField(primitiveField, obj);
+        this.readObjectField(objectField, obj);
+
+       readSuperClass(obj);
+
         return obj;
     }
+
+    public Object readFields(Object obj,Class clazz) throws IllegalAccessException {
+
+        Field[] fields = clazz.getDeclaredFields();
+        FieldUtil fieldUtil=new FieldUtil();
+        fields=fieldUtil.fieldSort(fields);
+        Field[] primitiveField= fieldUtil.getPrimitiveTypeField(fields);
+        Field[] objectField=fieldUtil.getObjectTypeField(fields);
+
+
+        this.readPrimitiveField(primitiveField, obj);
+        this.readObjectField(objectField, obj);
+
+
+        return obj;
+    }
+
+    public void readSuperClass(Object obj) throws IllegalAccessException {
+        System.out.println(obj.getClass().getSuperclass().getName());
+
+        readObject(obj, obj.getClass().getSuperclass());
+//        readFields(obj,obj.getClass().getSuperclass());
+    }
+
 
     public void readPrimitiveField(Field[] fields,Object obj) throws IllegalAccessException {
         for(Field field: fields){
             field.setAccessible(true);
-            if("int".equals(field.getType().getName()))
+            if("int".equals(field.getType().getName())) {
                 field.set(obj, readInt());
+            }else if("long".equals(field.getType().getName())){
+                field.set(obj,readLong());
+            }else if("short".equals(field.getType().getName())){
+                field.set(obj,readShort());
+            }else if("byte".equals(field.getType().getName())){
+                field.set(obj,readByte());
+            }
         }
     }
 
     public void readObjectField(Field[] fields,Object obj) throws IllegalAccessException {
         for (Field field: fields){
             field.setAccessible(true);
-            if("List".equals(field.getType().getSimpleName())|| "ArrayList".equals(field.getType().getSimpleName())){
+            String typeName=field.getType().getSimpleName();
+            if("Integer".equals(typeName)){
+                field.set(obj,readInt());
+            }else if("Short".equals(typeName)){
+                field.set(obj,readShort());
+            }else if("Long".equals(typeName)){
+                Long value=readLong();
+
+                field.set(obj,value);
+            }else if("Byte".equals(typeName)){
+                field.set(obj,readByte());
+            }else if("Character".equals(typeName)){
+
+            }else if("Float".equals(typeName)){
+
+            }else if("Double".equals(typeName)){
+
+            }else if("Boolean".equals(typeName)){
+
+            }else if("Object".equals(typeName)){
+
+            }else if("String".equals(typeName)){
+
+            }else if("List".equals(typeName)|| "ArrayList".equals(typeName)){
                   byte flag= readByte();
                 int type=readByte();
-                System.out.println("type    " +String.valueOf(type&0xff  ));
                 if(type==0x11) {
                     int size = readInt();
                     List<Integer> integerList = new ArrayList<>();
@@ -70,13 +132,14 @@ public class ObjectInput {
                     field.set(obj, integerList);
                 }else if(type==0x12){
                     int size = readInt();
-                    System.out.println(size);
                     List<String> integerList = new ArrayList<>();
                     for (int i = 0; i < size; i++) {
                         integerList.add(readString(readInt()));
                     }
                     field.set(obj, integerList);
                 }
+            }else{
+                field.set(obj, readObject());
             }
         }
     }
@@ -92,6 +155,14 @@ public class ObjectInput {
     public int readInt(){
 
         return decoder.readInt();
+    }
+
+    public long readLong(){
+        return decoder.readLong();
+    }
+
+    public short readShort(){
+        return decoder.readShort();
     }
 
     public byte readByte(){

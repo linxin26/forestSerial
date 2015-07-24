@@ -45,9 +45,19 @@ public class ForestSerialized {
     public static void main(String[] args){
         Test forestSerial=new Test();
         Response response=new Response();
+        response.setSn(199999992);
+        response.setBaseID(9999);
 
         forestSerial.setA(221);
         forestSerial.setB(122);
+        forestSerial.setSt((short) 20);
+        forestSerial.setBt((byte) 12);
+        forestSerial.setCc(12345678);
+        forestSerial.setInte(612);
+        forestSerial.setByteNum((byte) 1);
+        forestSerial.setLongNum(987l);
+        forestSerial.setShortNum((short) 3);
+        forestSerial.setSuperSn(888);
         forestSerial.setResponse(response);
 
         List<Integer> integerList=new ArrayList<>();

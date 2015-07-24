@@ -15,9 +15,13 @@ public interface Encoder {
 
     void writeInt(int val);
 
+    void writeLong(long val);
+
     void writeString(String val);
 
     void writeByte(byte val);
+
+    void writeShort(short val);
 
     void writeList(List list);
 

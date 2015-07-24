@@ -21,7 +21,7 @@ import java.util.List;
 public class ByteEncoder implements Encoder{
 
     OutputStream outputStream=new ByteOutputStream();
-    ByteBuffer buffer=ByteBuffer.allocate(200);
+    ByteBuffer buffer=ByteBuffer.allocate(500);
 
 
     public static void main(String[] args) throws Exception {
@@ -144,9 +144,35 @@ public class ByteEncoder implements Encoder{
         }
     }
 
+    public void writeShort(short val){
+        if(val>-127&& val<=127){
+            buffer=ByteBufferTool.put(buffer,new byte[]{(byte) val});
+        }else{
+            buffer.put((byte) -128);
+            buffer.putShort(val);
+        }
+    }
+
+    public void writeLong(long val){
+         if(val>-127 && val<=127){
+             buffer=ByteBufferTool.put(buffer,new byte[]{(byte) val});
+         }else if(val>=Short.MIN_VALUE&& val<=Short.MAX_VALUE){
+             buffer.put((byte) -128);
+             buffer.putShort((short) val);
+         }else if(val>=Integer.MIN_VALUE&& val<=Integer.MAX_VALUE){
+            buffer.put((byte) -127);
+             buffer.putInt((int) val);
+         }else{
+             buffer.put((byte) -126);
+             buffer.putLong(val);
+         }
+    }
+
     public void writeByte(byte val){
         buffer.put(val);
     }
+
+
 
     public void writeList(List list){
 
