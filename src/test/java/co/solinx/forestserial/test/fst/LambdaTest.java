@@ -6,12 +6,14 @@ package co.solinx.forestserial.test.fst;
 public class LambdaTest {
 
 
-
-            public static void main(String[] args){
-                Runnable r=()->{
-                    System.out.println("lambdaTest ");
-                };
-                r.run();
+    public static void main(String[] args) {
+        Runnable rn = new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("lambdaTest");
             }
+        };
+        rn.run();
+    }
 
 }

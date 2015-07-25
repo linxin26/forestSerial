@@ -50,6 +50,8 @@ public class ForestSerialized {
 
         forestSerial.setA(221);
         forestSerial.setB(122);
+
+
         forestSerial.setSt((short) 20);
         forestSerial.setBt((byte) 12);
         forestSerial.setCc(12345678);
