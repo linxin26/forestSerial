@@ -2,7 +2,7 @@ package co.solinx.forestserial.serializer;
 
 import co.solinx.forestserial.coders.ByteEncoder;
 import co.solinx.forestserial.coders.Encoder;
-import co.solinx.forestserial.common.CodeType;
+import co.solinx.forestserial.common.DataType;
 import co.solinx.forestserial.util.FieldUtil;
 
 import java.io.OutputStream;
@@ -81,7 +81,7 @@ public class ObjectOutput {
     }
 
     public void writeObjectHeader(Class clazz){
-        encoder.writeTag(CodeType.CLASS_NAME);
+        encoder.writeTag(DataType.CLASS_NAME);
         encoder.writeClass(clazz);
     }
 

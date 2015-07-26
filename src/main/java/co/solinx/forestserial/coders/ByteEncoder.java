@@ -1,15 +1,13 @@
 package co.solinx.forestserial.coders;
 
 import co.solinx.forestserial.common.ByteBufferTool;
-import co.solinx.forestserial.common.CodeType;
+import co.solinx.forestserial.common.DataType;
 import co.solinx.forestserial.data.Response;
 import co.solinx.forestserial.data.Test;
 import co.solinx.forestserial.serializer.ClassInfo;
 import co.solinx.forestserial.util.StringUtil;
-import co.solinx.forestserial.util.TypeToByteArray;
 import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
@@ -99,7 +97,7 @@ public class ByteEncoder implements Encoder{
 
         ByteBuffer fieldBuf = ByteBuffer.allocate(1+fieldByte.length + superByte.length + classNameByte.length);
         byte[] flag=new byte[1];
-        flag[0]= CodeType.CLASS_NAME;
+        flag[0]= DataType.CLASS_NAME;
         fieldBuf.put(flag);
         fieldBuf.put(classNameByte);
         fieldBuf.put(fieldByte);

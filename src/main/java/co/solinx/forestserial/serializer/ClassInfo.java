@@ -1,9 +1,7 @@
 package co.solinx.forestserial.serializer;
 
 import co.solinx.forestserial.Buffer.BufferStream;
-import co.solinx.forestserial.common.CodeType;
 import co.solinx.forestserial.util.FieldUtil;
-import co.solinx.forestserial.util.StringUtil;
 
 import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
