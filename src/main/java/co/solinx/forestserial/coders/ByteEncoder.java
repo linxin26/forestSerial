@@ -6,9 +6,7 @@ import co.solinx.forestserial.data.Response;
 import co.solinx.forestserial.data.Test;
 import co.solinx.forestserial.serializer.ClassInfo;
 import co.solinx.forestserial.util.StringUtil;
-import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 
-import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 import java.util.List;
@@ -18,7 +16,6 @@ import java.util.List;
  */
 public class ByteEncoder implements Encoder{
 
-    OutputStream outputStream=new ByteOutputStream();
     ByteBuffer buffer=ByteBuffer.allocate(500);
 
 
