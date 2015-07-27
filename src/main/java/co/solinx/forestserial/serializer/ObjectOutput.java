@@ -4,6 +4,7 @@ import co.solinx.forestserial.coders.ByteEncoder;
 import co.solinx.forestserial.coders.Encoder;
 import co.solinx.forestserial.common.DataType;
 import co.solinx.forestserial.util.FieldUtil;
+import co.solinx.forestserial.util.TypeToByteArray;
 
 import java.io.OutputStream;
 import java.lang.reflect.Field;
@@ -44,7 +45,7 @@ public class ObjectOutput {
 
            this.writePrimitiveField(primitiveField, obj);
            this.writeObjectField(objectField, obj);
-           writeSuperClass(obj);
+           writeSuperClass(obj, obj.getClass().getSuperclass());
        }catch(Exception e){
            e.printStackTrace();
        }
@@ -60,9 +61,7 @@ public class ObjectOutput {
         Field[] primitiveField= fieldUtil.getPrimitiveTypeField(fields);
         Field[] objectField=fieldUtil.getObjectTypeField(fields);
 
-        for (Field field: primitiveField){
-            System.out.println(field);
-        }
+
 
         try {
 
@@ -75,9 +74,16 @@ public class ObjectOutput {
 
     }
 
-    public void writeSuperClass(Object obj){
-        System.out.println(obj.getClass().getSuperclass().getName());
-        writeObject(obj, obj.getClass().getSuperclass());
+    public void writeSuperClass(Object obj,Class superClass){
+        System.out.println("class ：" + obj.getClass().getName());
+        System.out.println("superClass ：" + superClass.getName());
+//        Class superClass=obj.getClass().getSuperclass();
+        if(!"Object".equals(superClass.getSimpleName())) {
+            writeSuperClass(obj,superClass.getSuperclass());
+            writeObject(obj, superClass);
+        } else {
+            System.out.println("exit ：" + superClass.getName());
+        }
     }
 
     public void writeObjectHeader(Class clazz){
@@ -88,18 +94,31 @@ public class ObjectOutput {
     public void writePrimitiveField(Field[] fields,Object obj) throws IllegalAccessException {
         for (Field field:fields){
             field.setAccessible(true);
-            if("int".equals(field.getType().getName())){
+            String type=field.getType().getName();
+            if("int".equals(type)){
                 int value=field.getInt(obj);
                 encoder.writeInt(value);
-            }else if("long".equals(field.getType().getName())){
+            }else if("long".equals(type)){
                  long value=field.getLong(obj);
                  encoder.writeLong(value);
-            }else if("byte".equals(field.getType().getName())){
+            }else if("byte".equals(type)){
                 byte value=field.getByte(obj);
                 encoder.writeByte(value);
-            }else if("short".equals(field.getType().getName())){
+            }else if("short".equals(type)){
                 short value=field.getShort(obj);
                 encoder.writeShort(value);
+            }else if("char".equals(type)){
+                char value=field.getChar(obj);
+                encoder.writeChar(value);
+            }else if("float".equals(type)){
+                float value=field.getFloat(obj);
+                encoder.writeFloat(value);
+            }else if("double".equals(type)){
+                double value=field.getDouble(obj);
+                encoder.writeDouble(value);
+            }else if("boolean".equals(type)){
+                boolean value=field.getBoolean(obj);
+                encoder.writeBoolean(value);
             }
         }
     }
@@ -150,17 +169,55 @@ public class ObjectOutput {
                     }
                 }
             }else if("Character".equals(typeName)){
-
+                Character value= (Character) field.get(obj);
+                if (value!=null) {
+                    encoder.writeByte((byte) 1);
+                    encoder.writeChar(value);
+                }else{
+                    encoder.writeByte((byte) 0);
+                }
             }else if("Float".equals(typeName)){
-
+                  Float value= (Float) field.get(obj);
+                if(value!=null) {
+                    encoder.writeByte((byte) 1);
+                    encoder.writeFloat(value);
+                }else{
+                    encoder.writeByte((byte) 0);
+                }
             }else if("Double".equals(typeName)){
+                Double value= (Double) field.get(obj);
+                if(value!=null){
+                    encoder.writeByte((byte) 1);
+                    encoder.writeDouble(value);
+                }else{
+                    encoder.writeByte((byte) 0);
+                }
 
             }else if("Boolean".equals(typeName)){
-
+                Boolean value= (Boolean) field.get(obj);
+                if(value!=null){
+                    encoder.writeByte((byte) 1);
+                    encoder.writeBoolean(value);
+                }else{
+                    encoder.writeByte((byte) 0);
+                }
             }else if("Object".equals(typeName)){
+                Object value=field.get(obj);
+                if(value!=null){
+                    encoder.writeByte((byte) 1);
+                    encoder.writeObject(value);
+                }else{
+                    encoder.writeByte((byte) 0);
+                }
 
             }else if("String".equals(typeName)){
-
+                String value= (String) field.get(obj);
+                if(value!=null){
+                    encoder.writeByte((byte) 1);
+                    encoder.writeString(value);
+                }else{
+                    encoder.writeByte((byte) 0);
+                }
             }else{
                   Object value=field.get(obj);
                   if(value!=null){

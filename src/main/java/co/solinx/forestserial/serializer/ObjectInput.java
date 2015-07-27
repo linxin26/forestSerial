@@ -34,7 +34,7 @@ public class ObjectInput {
 
     public void readObject(Object obj,Class cla) throws IllegalAccessException {
         String className= (String) decoder.readObject();
-            readFields(obj,cla);
+            readFields(obj, cla);
 
     }
 
@@ -46,11 +46,14 @@ public class ObjectInput {
         Field[] primitiveField= fieldUtil.getPrimitiveTypeField(fields);
         Field[] objectField=fieldUtil.getObjectTypeField(fields);
 
+        for (Field field: fields){
+            System.out.println(field);
+        }
 
         this.readPrimitiveField(primitiveField, obj);
         this.readObjectField(objectField, obj);
 
-       readSuperClass(obj);
+       readSuperClass(obj, obj.getClass().getSuperclass());
 
         return obj;
     }
@@ -63,6 +66,11 @@ public class ObjectInput {
         Field[] primitiveField= fieldUtil.getPrimitiveTypeField(fields);
         Field[] objectField=fieldUtil.getObjectTypeField(fields);
 
+        System.out.println("start---------");
+        for (Field field: fields){
+            System.out.println(field);
+        }
+        System.out.println("end------------");
 
         this.readPrimitiveField(primitiveField, obj);
         this.readObjectField(objectField, obj);
@@ -71,10 +79,15 @@ public class ObjectInput {
         return obj;
     }
 
-    public void readSuperClass(Object obj) throws IllegalAccessException {
-        System.out.println(obj.getClass().getSuperclass().getName());
+    public void readSuperClass(Object obj,Class superClass) throws IllegalAccessException {
+//        System.out.println("read  " + superClass.getName());
 
-        readObject(obj, obj.getClass().getSuperclass());
+       if(!"Object".equals(superClass.getSimpleName())) {
+           readSuperClass(obj,superClass.getSuperclass());
+           readObject(obj, superClass);
+
+       }
+
 //        readFields(obj,obj.getClass().getSuperclass());
     }
 
@@ -82,14 +95,23 @@ public class ObjectInput {
     public void readPrimitiveField(Field[] fields,Object obj) throws IllegalAccessException {
         for(Field field: fields){
             field.setAccessible(true);
-            if("int".equals(field.getType().getName())) {
+            String type=field.getType().getName();
+            if("int".equals(type)) {
                 field.set(obj, readInt());
-            }else if("long".equals(field.getType().getName())){
+            }else if("long".equals(type)){
                 field.set(obj,readLong());
-            }else if("short".equals(field.getType().getName())){
+            }else if("short".equals(type)){
                 field.set(obj,readShort());
-            }else if("byte".equals(field.getType().getName())){
+            }else if("byte".equals(type)){
                 field.set(obj,readByte());
+            }else if("char".equals(type)){
+                field.set(obj,readChar());
+            }else if("float".equals(type)){
+                field.set(obj,readFloat());
+            }else if("double".equals(type)){
+                field.set(obj,readDouble());
+            }else if("boolean".equals(type)){
+                field.set(obj,readBoolean());
             }
         }
     }
@@ -109,17 +131,29 @@ public class ObjectInput {
             }else if("Byte".equals(typeName)){
                 field.set(obj,readByte());
             }else if("Character".equals(typeName)){
-
+                if(readByte()==1) {
+                    field.set(obj, readChar());
+                }
             }else if("Float".equals(typeName)){
-
+                if(readByte()==1) {
+                    field.set(obj, readFloat());
+                }
             }else if("Double".equals(typeName)){
-
+                if(readByte()==1) {
+                    field.set(obj, readDouble());
+                }
             }else if("Boolean".equals(typeName)){
-
+                if(readByte()==1) {
+                    field.set(obj, readBoolean());
+                }
             }else if("Object".equals(typeName)){
-
+                if(readByte()==1) {
+                    field.set(obj, readObjectValue());
+                }
             }else if("String".equals(typeName)){
-
+                if(readByte()==1) {
+                    field.set(obj, readString());
+                }
             }else if("List".equals(typeName)|| "ArrayList".equals(typeName)){
                   byte flag= readByte();
                 int type=readByte();
@@ -170,4 +204,27 @@ public class ObjectInput {
     }
 
 
+    public char readChar(){
+        return decoder.readChar();
+    }
+
+    public float readFloat(){
+        return decoder.readFloat();
+    }
+
+    public double readDouble(){
+        return decoder.readDouble();
+    }
+
+    public boolean readBoolean(){
+        return decoder.readBoolean();
+    }
+
+    public String readString(){
+        return decoder.readString();
+    }
+
+    public Object readObjectValue() {
+        return decoder.readObjectValue();
+    }
 }

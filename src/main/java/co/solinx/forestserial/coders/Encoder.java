@@ -23,6 +23,16 @@ public interface Encoder {
 
     void writeShort(short val);
 
+    void writeChar(char val);
+
+    void writeFloat(float val);
+
+    void writeDouble(double val);
+
+     void writeBoolean(boolean val);
+
+     void writeObject(Object obj);
+
     void writeList(List list);
 
      byte[] toByte();

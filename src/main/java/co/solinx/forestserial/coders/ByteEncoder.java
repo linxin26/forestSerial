@@ -151,6 +151,34 @@ public class ByteEncoder implements Encoder{
         }
     }
 
+    public void writeFloat(float val){
+        buffer.putInt(Float.floatToIntBits(val));
+    }
+
+    public void writeDouble(double val){
+        buffer.putLong(Double.doubleToLongBits(val));
+    }
+
+    public void writeChar(char val){
+        if(val<255&val>=0){
+            buffer.put((byte) val);
+        }else{
+            buffer.put((byte) 255);
+            buffer.putChar(val);
+        }
+    }
+
+    public void writeBoolean(boolean val){
+        buffer.put((byte) (val?1:0));
+    }
+
+    public void writeObject(Object obj){
+        System.out.println("_____________________"+obj.toString().getBytes().length);
+        System.out.println(obj);
+        buffer.putInt(obj.toString().getBytes().length);
+        buffer.put(obj.toString().getBytes());
+    }
+
     public void writeLong(long val){
          if(val>-127 && val<=127){
              buffer=ByteBufferTool.put(buffer,new byte[]{(byte) val});
@@ -169,6 +197,7 @@ public class ByteEncoder implements Encoder{
     public void writeByte(byte val){
         buffer.put(val);
     }
+
 
 
 

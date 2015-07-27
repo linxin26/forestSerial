@@ -37,7 +37,7 @@ public class ByteDecoder implements Decoder {
     public Object readObject(){
         byte flag= readByte();
         int length=readInt();
-        System.out.println("length ： " + length );
+        System.out.println("length ： " + length);
         String className= readString(length);
 
         System.out.println("length ： " + length + "  ClassName ：" + className);
@@ -52,8 +52,9 @@ public class ByteDecoder implements Decoder {
     }
 
     public String readString(){
-
-        return null;
+        int length=readInt();
+        String value= readString(length);
+        return value;
     }
 
     public byte readByte(){
@@ -89,6 +90,18 @@ public class ByteDecoder implements Decoder {
         return result;
     }
 
+
+    public char readChar(){
+        byte value=buffer.get();
+        char result;
+        if(value<255&&value>=0){
+            result= (char) value;
+        }else{
+            result=buffer.getChar();
+        }
+        return result;
+    }
+
     public short readShort(){
         byte value=buffer.get();
         short result;
@@ -101,7 +114,22 @@ public class ByteDecoder implements Decoder {
     }
 
     public float readFloat(){
+        int value=buffer.getInt();
+        return Float.intBitsToFloat(value);
+    }
 
-        return buffer.getFloat();
+    public double readDouble(){
+        long value=buffer.getLong();
+        return Double.longBitsToDouble(value);
+    }
+
+    public Object readObjectValue(){
+        int length=buffer.getInt();
+        return new String(readString(length));
+    }
+
+    public boolean readBoolean(){
+        byte value=buffer.get();
+        return value==1?true:false;
     }
 }

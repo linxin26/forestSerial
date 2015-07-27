@@ -6,6 +6,7 @@ import co.solinx.forestserial.data.Response;
 import co.solinx.forestserial.data.Test;
 import co.solinx.forestserial.serializer.ObjectInput;
 import co.solinx.forestserial.serializer.ObjectOutput;
+import co.solinx.forestserial.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,9 +48,23 @@ public class ForestSerialized {
         Response response=new Response();
         response.setSn(199999992);
         response.setBaseID(9999);
+        response.setBaseClassID(22222);
 
         forestSerial.setA(221);
         forestSerial.setB(122);
+
+
+//        forestSerial.setCr('A');
+        forestSerial.setCharNum('Z');
+        forestSerial.setFl(10.9f);
+        forestSerial.setDl(20.3d);
+        forestSerial.setBooleanNum(true);
+        forestSerial.setBl(true);
+        forestSerial.setBa("string");
+
+        Response temp= new Response();
+        temp.setResult("Object");
+        forestSerial.setObj("ObjectValue");
 
 
         forestSerial.setSt((short) 20);
@@ -61,6 +76,8 @@ public class ForestSerialized {
         forestSerial.setShortNum((short) 3);
         forestSerial.setSuperSn(888);
         forestSerial.setResponse(response);
+        forestSerial.setBaseID(7477);
+        forestSerial.setBaseClassID(6666);
 
         List<Integer> integerList=new ArrayList<>();
         integerList.add(12);
@@ -81,6 +98,7 @@ public class ForestSerialized {
         ForestSerialized serialized=new ForestSerialized();
         byte[] datas= serialized.enOutput(forestSerial);
 
+        System.out.println(StringUtil.bytesToString(datas));
         System.out.println(serialized.deInput(datas));
     }
 
