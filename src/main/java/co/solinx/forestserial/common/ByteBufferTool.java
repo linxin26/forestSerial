@@ -1,5 +1,7 @@
 package co.solinx.forestserial.common;
 
+import java.nio.ByteBuffer;
+
 /**
  * Created by linx on 2015/7/2.
  */
@@ -30,6 +32,17 @@ public class ByteBufferTool {
             System.arraycopy(byteBuf.array(), 0, temp, 0, byteBuf.position());
             tempBuf.put(temp);
             tempBuf.put(bytes);
+        }
+        return tempBuf;
+    }
+
+    public static ByteBuffer dilatation(ByteBuffer byteBuf,int size){
+        ByteBuffer tempBuf=byteBuf;
+        if(byteBuf.remaining()<size){
+            tempBuf=ByteBuffer.allocate(byteBuf.array().length+size);
+            byte[] curByte=new byte[byteBuf.position()];
+            System.arraycopy(byteBuf.array(),0,curByte,0,byteBuf.position());
+            tempBuf.put(curByte);
         }
         return tempBuf;
     }

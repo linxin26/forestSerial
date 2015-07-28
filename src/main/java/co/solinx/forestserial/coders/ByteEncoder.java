@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class ByteEncoder implements Encoder{
 
-    ByteBuffer buffer=ByteBuffer.allocate(500);
+    ByteBuffer buffer=ByteBuffer.allocate(100);
 
 
     public static void main(String[] args) throws Exception {
@@ -112,6 +112,7 @@ public class ByteEncoder implements Encoder{
 
 
     public void writeTag(byte tag){
+        buffer=ByteBufferTool.dilatation(buffer,1);
         buffer.put(tag);
     }
 
@@ -127,9 +128,10 @@ public class ByteEncoder implements Encoder{
 
     public void writeInt(int val) {
 
+        buffer=ByteBufferTool.dilatation(buffer,5);
         // -128 = short byte, -127 == 4 byte
         if (val > -127 && val <= 127) {
-            buffer= ByteBufferTool.put(buffer,new byte[]{(byte) val});
+            buffer.put((byte) val);
         }else if(val>=Short.MIN_VALUE && val<=Short.MAX_VALUE){
             buffer.put((byte) -128);
             buffer.putShort((short) val);
@@ -140,8 +142,9 @@ public class ByteEncoder implements Encoder{
     }
 
     public void writeShort(short val){
+        buffer=ByteBufferTool.dilatation(buffer,3);
         if(val>-127&& val<=127){
-            buffer=ByteBufferTool.put(buffer,new byte[]{(byte) val});
+            buffer.put((byte) val);
         }else{
             buffer.put((byte) -128);
             buffer.putShort(val);
@@ -149,14 +152,17 @@ public class ByteEncoder implements Encoder{
     }
 
     public void writeFloat(float val){
+        buffer=ByteBufferTool.dilatation(buffer,4);
         buffer.putInt(Float.floatToIntBits(val));
     }
 
     public void writeDouble(double val){
+        buffer=ByteBufferTool.dilatation(buffer,8);
         buffer.putLong(Double.doubleToLongBits(val));
     }
 
     public void writeChar(char val){
+        buffer=ByteBufferTool.dilatation(buffer,2);
         if(val<255&val>=0){
             buffer.put((byte) val);
         }else{
@@ -172,11 +178,13 @@ public class ByteEncoder implements Encoder{
     public void writeObject(Object obj){
         System.out.println("_____________________"+obj.toString().getBytes().length);
         System.out.println(obj);
+        buffer=ByteBufferTool.dilatation(buffer,obj.toString().getBytes().length+4);
         buffer.putInt(obj.toString().getBytes().length);
         buffer.put(obj.toString().getBytes());
     }
 
     public void writeLong(long val){
+        buffer=ByteBufferTool.dilatation(buffer,9);
          if(val>-127 && val<=127){
              buffer=ByteBufferTool.put(buffer,new byte[]{(byte) val});
          }else if(val>=Short.MIN_VALUE&& val<=Short.MAX_VALUE){
@@ -192,6 +200,7 @@ public class ByteEncoder implements Encoder{
     }
 
     public void writeByte(byte val){
+        buffer=ByteBufferTool.dilatation(buffer,1);
         buffer.put(val);
     }
 
@@ -203,6 +212,7 @@ public class ByteEncoder implements Encoder{
     }
 
     public void writeString(String val){
+        buffer=ByteBufferTool.dilatation(buffer, 4 + val.getBytes().length);
         writeInt(val.getBytes().length);
         buffer.put(val.getBytes());
     }

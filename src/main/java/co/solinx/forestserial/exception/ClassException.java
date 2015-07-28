@@ -9,6 +9,7 @@ public class ClassException extends RuntimeException{
 
     public ClassException(String message) {
         super(message);
+        this.errorCode=Integer.valueOf(message);
     }
 
     public ClassException() {
@@ -17,5 +18,13 @@ public class ClassException extends RuntimeException{
 
     public ClassException(String message, Throwable cause) {
         super(message, cause);
+    }
+
+
+    @Override
+    public String toString() {
+        return "ClassException{" +
+                "errorCode=" + errorCode +
+                "} " + super.toString();
     }
 }

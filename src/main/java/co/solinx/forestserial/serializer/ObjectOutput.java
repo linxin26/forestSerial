@@ -129,23 +129,40 @@ public class ObjectOutput {
             String typeName=field.getType().getSimpleName();
             if("Integer".equals(typeName)){
                 Integer value= (Integer) field.get(obj);
-                encoder.writeInt(value);
+                if(value!=null) {
+                    encoder.writeByte((byte) 1);
+                    encoder.writeInt(value);
+                }else{
+                    encoder.writeByte((byte) 0);
+                }
             }else if("Short".equals(typeName)){
                 Short value= (Short) field.get(obj);
-                encoder.writeShort(value);
+                if(value!=null) {
+                    encoder.writeByte((byte) 1);
+                    encoder.writeShort(value);
+                }else{
+                    encoder.writeByte((byte) 0);
+                }
             }else if("Byte".equals(typeName)){
                 Byte value= (Byte) field.get(obj);
-                encoder.writeByte(value);
+                if(value!=null) {
+                    encoder.writeByte((byte) 1);
+                    encoder.writeByte(value);
+                }else{
+                    encoder.writeByte((byte) 0);
+                }
             }else if("Long".equals(typeName)){
                 Long value= (Long) field.get(obj);
                if(value!=null) {
+                   encoder.writeByte((byte) 1);
                    encoder.writeLong(value);
                }else{
-                   encoder.writeLong(0);
+                   encoder.writeByte((byte) 0);
                }
             }else if("ArrayList".equals(typeName)|| "List".equals(typeName)){
                   Object value= field.get(obj);
                 if(value!=null) {
+                    encoder.writeByte((byte) 1);
                     Type type=field.getGenericType();
                     if( type instanceof ParameterizedType){
                         Type clazz = ((ParameterizedType) type).getActualTypeArguments()[0];
@@ -167,6 +184,8 @@ public class ObjectOutput {
                             }
                         }
                     }
+                }else{
+                    encoder.writeByte((byte) 0);
                 }
             }else if("Character".equals(typeName)){
                 Character value= (Character) field.get(obj);
@@ -221,7 +240,10 @@ public class ObjectOutput {
             }else{
                   Object value=field.get(obj);
                   if(value!=null){
+                      encoder.writeByte((byte) 1);
                       writeObject(value);
+                  }else{
+                      encoder.writeByte((byte) 0);
                   }
             }
 

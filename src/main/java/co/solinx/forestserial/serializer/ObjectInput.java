@@ -46,9 +46,6 @@ public class ObjectInput {
         Field[] primitiveField= fieldUtil.getPrimitiveTypeField(fields);
         Field[] objectField=fieldUtil.getObjectTypeField(fields);
 
-        for (Field field: fields){
-            System.out.println(field);
-        }
 
         this.readPrimitiveField(primitiveField, obj);
         this.readObjectField(objectField, obj);
@@ -66,11 +63,6 @@ public class ObjectInput {
         Field[] primitiveField= fieldUtil.getPrimitiveTypeField(fields);
         Field[] objectField=fieldUtil.getObjectTypeField(fields);
 
-        System.out.println("start---------");
-        for (Field field: fields){
-            System.out.println(field);
-        }
-        System.out.println("end------------");
 
         this.readPrimitiveField(primitiveField, obj);
         this.readObjectField(objectField, obj);
@@ -121,15 +113,21 @@ public class ObjectInput {
             field.setAccessible(true);
             String typeName=field.getType().getSimpleName();
             if("Integer".equals(typeName)){
-                field.set(obj,readInt());
+                if(readByte()==1) {
+                    field.set(obj, readInt());
+                }
             }else if("Short".equals(typeName)){
-                field.set(obj,readShort());
+                if(readByte()==1) {
+                    field.set(obj, readShort());
+                }
             }else if("Long".equals(typeName)){
-                Long value=readLong();
-
-                field.set(obj,value);
+                if(readByte()==1) {
+                    field.set(obj, readLong());
+                }
             }else if("Byte".equals(typeName)){
-                field.set(obj,readByte());
+                if(readByte()==1) {
+                    field.set(obj, readByte());
+                }
             }else if("Character".equals(typeName)){
                 if(readByte()==1) {
                     field.set(obj, readChar());
@@ -147,6 +145,8 @@ public class ObjectInput {
                     field.set(obj, readBoolean());
                 }
             }else if("Object".equals(typeName)){
+                System.out.println("--------------------------------------------");
+                System.out.println(field);
                 if(readByte()==1) {
                     field.set(obj, readObjectValue());
                 }
@@ -155,25 +155,29 @@ public class ObjectInput {
                     field.set(obj, readString());
                 }
             }else if("List".equals(typeName)|| "ArrayList".equals(typeName)){
-                  byte flag= readByte();
-                int type=readByte();
-                if(type==0x11) {
-                    int size = readInt();
-                    List<Integer> integerList = new ArrayList<>();
-                    for (int i = 0; i < size; i++) {
-                        integerList.add(readInt());
+                if(readByte()==1) {
+                    byte flag = readByte();
+                    int type = readByte();
+                    if (type == 0x11) {
+                        int size = readInt();
+                        List<Integer> integerList = new ArrayList<>();
+                        for (int i = 0; i < size; i++) {
+                            integerList.add(readInt());
+                        }
+                        field.set(obj, integerList);
+                    } else if (type == 0x12) {
+                        int size = readInt();
+                        List<String> integerList = new ArrayList<>();
+                        for (int i = 0; i < size; i++) {
+                            integerList.add(readString(readInt()));
+                        }
+                        field.set(obj, integerList);
                     }
-                    field.set(obj, integerList);
-                }else if(type==0x12){
-                    int size = readInt();
-                    List<String> integerList = new ArrayList<>();
-                    for (int i = 0; i < size; i++) {
-                        integerList.add(readString(readInt()));
-                    }
-                    field.set(obj, integerList);
                 }
             }else{
-                field.set(obj, readObject());
+                if(readByte()==1) {
+                    field.set(obj, readObject());
+                }
             }
         }
     }
