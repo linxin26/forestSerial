@@ -156,22 +156,29 @@ public class ObjectInput {
                 }
             }else if("List".equals(typeName)|| "ArrayList".equals(typeName)){
                 if(readByte()==1) {
+
                     byte flag = readByte();
                     int type = readByte();
+                    int size = readInt();
                     if (type == 0x11) {
-                        int size = readInt();
+
                         List<Integer> integerList = new ArrayList<>();
                         for (int i = 0; i < size; i++) {
                             integerList.add(readInt());
                         }
                         field.set(obj, integerList);
                     } else if (type == 0x12) {
-                        int size = readInt();
                         List<String> integerList = new ArrayList<>();
                         for (int i = 0; i < size; i++) {
                             integerList.add(readString(readInt()));
                         }
                         field.set(obj, integerList);
+                    }else if (type == 0x13) {
+                        List<Long> longList = new ArrayList<>();
+                        for (int i = 0; i < size; i++) {
+                            longList.add(readLong());
+                        }
+                        field.set(obj, longList);
                     }
                 }
             }else{

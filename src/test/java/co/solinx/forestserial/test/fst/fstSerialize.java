@@ -34,15 +34,20 @@ public class fstSerialize {
 //        test.getResponse().setResult("bb");
 //       test.setR(request);
 
-//        List<String> stringList=new ArrayList<>();
-//        stringList.add("AA");
-//        test.setIntegerList(stringList);
+        List<String> stringList=new ArrayList<>();
+        stringList.add("AA");
+        test.setIntegerList(stringList);
+
+
+
 
         byte[] datas= conf.asByteArray(test);
 
         System.out.println(StringUtil.bytesToString(datas));
         System.out.println(new String(datas));
         System.out.println( conf.asObject(datas).toString());
+
+
 
     }
 

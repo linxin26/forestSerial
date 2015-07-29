@@ -33,30 +33,23 @@ public class Test   implements Serializable {
 //    }
     private Integer integer;
 
-//    List<String> integerList=new ArrayList<>();
+    List<String> integerList=new ArrayList<>();
 
 //
 //    public List<String> getIntegerList() {
 //        return integerList;
 //    }
 //
-//    public void setIntegerList(List<String> integerList) {
-//        this.integerList = integerList;
-//    }
+    public void setIntegerList(List<String> integerList) {
+        this.integerList = integerList;
+    }
 
     @Override
     public String toString() {
         return "Test{" +
-//                "r=" + r +
-//                ", id=" + id +
-//                ", sn=" + sn +
-//                ", message='" + message + '\'' +
-//                ", msg='" + msg + '\'' +
-//                ", integ=" + integ +
-//                ", test=" + test +
-//                ", size=" + size +
-//                ", bool=" + bool +
+                "integer=" + integer +
                 ", zm=" + zm +
+                ", integerList=" + integerList +
                 '}';
     }
 

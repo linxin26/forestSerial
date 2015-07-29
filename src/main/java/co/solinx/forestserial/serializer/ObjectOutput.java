@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,6 +44,13 @@ public class ObjectOutput {
 
        try {
 
+//           for (Field field: primitiveField) {
+//               field.setAccessible(true);
+//               String type=field.getType().getSimpleName();
+//               Object value= field.get(obj);
+//               writeFields(value,type);
+//           }
+
            this.writePrimitiveField(primitiveField, obj);
            this.writeObjectField(objectField, obj);
            writeSuperClass(obj, obj.getClass().getSuperclass());
@@ -61,9 +69,8 @@ public class ObjectOutput {
         Field[] primitiveField= fieldUtil.getPrimitiveTypeField(fields);
         Field[] objectField=fieldUtil.getObjectTypeField(fields);
 
+        try{
 
-
-        try {
 
             this.writePrimitiveField(primitiveField, obj);
             this.writeObjectField(objectField, obj);
@@ -161,32 +168,8 @@ public class ObjectOutput {
                }
             }else if("ArrayList".equals(typeName)|| "List".equals(typeName)){
                   Object value= field.get(obj);
-                if(value!=null) {
-                    encoder.writeByte((byte) 1);
-                    Type type=field.getGenericType();
-                    if( type instanceof ParameterizedType){
-                        Type clazz = ((ParameterizedType) type).getActualTypeArguments()[0];
-                        if ("java.lang.Integer".equals(clazz.getTypeName())) {
-                            List<Integer> valueList = (List<Integer>) field.get(obj);
-                            encoder.writeByte((byte) 0x99);
-                            encoder.writeByte((byte) 0x11);
-                            encoder.writeInt(valueList.size());
-                            for (Integer temp : valueList) {
-                                encoder.writeInt(temp);
-                            }
-                        }else if("java.lang.String".equals(clazz.getTypeName())){
-                            List<String> valueList = (List<String>) field.get(obj);
-                            encoder.writeByte((byte) 0x99);
-                            encoder.writeByte((byte) 0x12);
-                            encoder.writeInt(valueList.size());
-                            for (String temp : valueList) {
-                                encoder.writeString(temp);
-                            }
-                        }
-                    }
-                }else{
-                    encoder.writeByte((byte) 0);
-                }
+
+                  writeList(field, value, obj);
             }else if("Character".equals(typeName)){
                 Character value= (Character) field.get(obj);
                 if (value!=null) {
@@ -247,6 +230,71 @@ public class ObjectOutput {
                   }
             }
 
+        }
+    }
+
+    public void writeFields(Object value,String type,int size){
+        System.out.println(value);
+        System.out.println(type);
+        if("java.lang.String".equals(type)){
+            encoder.writeString((String) value);
+        }else if("java.lang.Integer".equals(type)){
+            encoder.writeInt((Integer) value);
+        }else if("java.lang.Long".equals(type)){
+            encoder.writeLong((Long) value);
+        }
+    }
+
+    public void writeList(Field field,Object value,Object obj) throws IllegalAccessException {
+        if(value!=null) {
+            System.out.println("+++++++++++++++++++++++  ");
+            ArrayList list= (ArrayList) value;
+            encoder.writeByte((byte) 1);
+            encoder.writeByte((byte) 0x99);
+            Type type=field.getGenericType();
+            if( type instanceof ParameterizedType){
+                Type clazz = ((ParameterizedType) type).getActualTypeArguments()[0];
+                System.out.println("------------------------------"+clazz);
+                if ("java.lang.Integer".equals(clazz.getTypeName())) {
+                    encoder.writeByte((byte) 0x11);
+                }else if("java.lang.String".equals(clazz.getTypeName())){
+                    encoder.writeByte((byte) 0x12);
+                }else if("java.lang.Long".equals(clazz.getTypeName())){
+                    encoder.writeByte((byte) 0x13);
+                }
+            }
+            encoder.writeInt(list.size());
+
+            for (Object temp:list){
+                 writeFields(temp,temp.getClass().getTypeName(),list.size());
+//                 System.out.println(temp.getClass());
+             }
+
+
+//            Type type=field.getGenericType();
+//            if( type instanceof ParameterizedType){
+//                Type clazz = ((ParameterizedType) type).getActualTypeArguments()[0];
+//                System.out.println("------------------------------"+clazz);
+//                if ("java.lang.Integer".equals(clazz.getTypeName())) {
+//                    List<Integer> valueList = (List<Integer>) field.get(obj);
+//                    encoder.writeByte((byte) 0x99);
+//                    encoder.writeByte((byte) 0x11);
+//                    encoder.writeInt(valueList.size());
+//                    for (Integer temp : valueList) {
+//                        encoder.writeInt(temp);
+//                    }
+//                }else if("java.lang.String".equals(clazz.getTypeName())){
+//                    List<String> valueList = (List<String>) field.get(obj);
+//                    encoder.writeByte((byte) 0x99);
+//                    encoder.writeByte((byte) 0x12);
+//                    encoder.writeInt(valueList.size());
+//                    for (String temp : valueList) {
+//                        encoder.writeString(temp);
+//                    }
+//                }
+//            }
+        }else {
+            encoder.writeByte((byte) 0);
         }
     }
 

@@ -98,6 +98,10 @@ public class ForestSerialized {
         arrayList.add("arrayList");
         forestSerial.setArrayList(arrayList);
 
+        ArrayList<Long> longArrayList=new ArrayList<>();
+        longArrayList.add( 12l);
+        forestSerial.setLongList(longArrayList);
+
 
         ForestSerialized serialized=new ForestSerialized();
         byte[] datas= serialized.enOutput(forestSerial);
