@@ -179,6 +179,12 @@ public class ObjectInput {
                             longList.add(readLong());
                         }
                         field.set(obj, longList);
+                    }else if(type==0x14){
+                        List<Character> charList=new ArrayList<>();
+                        for (int i = 0; i < size; i++) {
+                            charList.add(readChar());
+                        }
+                        field.set(obj, charList);
                     }
                 }
             }else{

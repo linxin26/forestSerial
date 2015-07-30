@@ -38,6 +38,7 @@ public class Test extends Response{
     private List<String> stringList;
     private ArrayList<String> arrayList;
     private ArrayList<Long> longList;
+    private ArrayList<Character> charList;
 
 
     public int getA() {
@@ -237,6 +238,14 @@ public class Test extends Response{
         this.longList = longList;
     }
 
+    public ArrayList<Character> getCharList() {
+        return charList;
+    }
+
+    public void setCharList(ArrayList<Character> charList) {
+        this.charList = charList;
+    }
+
     @Override
     public String toString() {
         return "Test{" +
@@ -267,6 +276,7 @@ public class Test extends Response{
                 ", stringList=" + stringList +
                 ", arrayList=" + arrayList +
                 ", longList=" + longList +
+                ", charList=" + charList +
                 "} " + super.toString();
     }
 
