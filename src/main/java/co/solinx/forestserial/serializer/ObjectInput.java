@@ -187,6 +187,8 @@ public class ObjectInput {
                         field.set(obj, charList);
                     }
                 }
+            }else if("Map".equals(typeName)){
+                readByte();
             }else{
                 if(readByte()==1) {
                     field.set(obj, readObject());

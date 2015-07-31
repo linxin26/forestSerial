@@ -2,6 +2,7 @@ package co.solinx.forestserial.data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by linx on 2015/6/19.
@@ -39,6 +40,7 @@ public class Test extends Response{
     private ArrayList<String> arrayList;
     private ArrayList<Long> longList;
     private ArrayList<Character> charList;
+    private Map<String,Integer> map;
 
 
     public int getA() {
@@ -246,6 +248,14 @@ public class Test extends Response{
         this.charList = charList;
     }
 
+    public Map<String, Integer> getMap() {
+        return map;
+    }
+
+    public void setMap(Map<String, Integer> map) {
+        this.map = map;
+    }
+
     @Override
     public String toString() {
         return "Test{" +
@@ -277,6 +287,7 @@ public class Test extends Response{
                 ", arrayList=" + arrayList +
                 ", longList=" + longList +
                 ", charList=" + charList +
+                ", map=" + map +
                 "} " + super.toString();
     }
 

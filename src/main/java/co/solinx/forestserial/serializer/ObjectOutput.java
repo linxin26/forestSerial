@@ -7,6 +7,11 @@ import co.solinx.forestserial.util.FieldUtil;
 
 import java.io.OutputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by linx on 2015/7/22.
@@ -89,29 +94,29 @@ public class ObjectOutput {
     public void writePrimitiveField(Field[] fields,Object obj) throws IllegalAccessException {
         for (Field field:fields){
             field.setAccessible(true);
-            String type=field.getType().getName();
-            if("int".equals(type)){
+            Type type=field.getType();
+            if(Integer.TYPE==type){
                 int value=field.getInt(obj);
                 encoder.writeInt(value);
-            }else if("long".equals(type)){
+            }else if(Long.TYPE==type){
                  long value=field.getLong(obj);
                  encoder.writeLong(value);
-            }else if("byte".equals(type)){
+            }else if(Byte.TYPE==type){
                 byte value=field.getByte(obj);
                 encoder.writeByte(value);
-            }else if("short".equals(type)){
+            }else if(Short.TYPE==type){
                 short value=field.getShort(obj);
                 encoder.writeShort(value);
-            }else if("char".equals(type)){
+            }else if(Character.TYPE==type){
                 char value=field.getChar(obj);
                 encoder.writeChar(value);
-            }else if("float".equals(type)){
+            }else if(Float.TYPE==type){
                 float value=field.getFloat(obj);
                 encoder.writeFloat(value);
-            }else if("double".equals(type)){
+            }else if(Double.TYPE==type){
                 double value=field.getDouble(obj);
                 encoder.writeDouble(value);
-            }else if("boolean".equals(type)){
+            }else if(Boolean.TYPE==type){
                 boolean value=field.getBoolean(obj);
                 encoder.writeBoolean(value);
             }
@@ -126,7 +131,7 @@ public class ObjectOutput {
                 Object value=field.get(obj);
                 if(value!=null) {
                     encoder.writeByte((byte) 1);
-                    this.writeObjectField(field, value, typeName);
+                    this.writeObjectField(field, value, field.getType());
                 }else{
                     encoder.writeByte((byte) 0);
                 }
@@ -134,32 +139,37 @@ public class ObjectOutput {
         }
     }
 
-    public void writeObjectField(Field field,Object value,String typeName) throws IllegalAccessException {
+    public void writeObjectField(Field field,Object value,Class typeName) throws IllegalAccessException {
 
-            if("Integer".equals(typeName)){
+            if(Integer.class==typeName){
                     encoder.writeInt((Integer) value);
-            }else if("Short".equals(typeName)){
+            }else if(Short.class==typeName){
                     encoder.writeShort((Short) value);
-            }else if("Byte".equals(typeName)){
+            }else if(Byte.class==typeName){
                     encoder.writeByte((Byte) value);
-            }else if("Long".equals(typeName)){
+            }else if(Long.class==typeName){
                    encoder.writeLong((Long) value);
-            }else if("ArrayList".equals(typeName)|| "List".equals(typeName)){
+            }else if(ArrayList.class==typeName|| List.class==typeName){
                     encoder.writeByte((byte) 0x99);
                     ArrayListSerializer listSerializer = new ArrayListSerializer();
                     listSerializer.writeObject(this, field, value, encoder);
-            }else if("Character".equals(typeName)){
+            }else if(Character.class==typeName){
                     encoder.writeChar((Character) value);
-            }else if("Float".equals(typeName)){
+            }else if(Float.class==typeName){
                     encoder.writeFloat((Float) value);
-            }else if("Double".equals(typeName)){
+            }else if(Double.class==typeName){
                     encoder.writeDouble((Double) value);
-            }else if("Boolean".equals(typeName)){
+            }else if(Boolean.class==typeName){
                     encoder.writeBoolean((Boolean) value);
-            }else if("Object".equals(typeName)){
+            }else if(Object.class==typeName){
                     encoder.writeObject(value);
-            }else if("String".equals(typeName)){
+            }else if(String.class==typeName){
                     encoder.writeString((String) value);
+            }else if(Map.class==typeName|| HashMap.class==typeName){
+                encoder.writeByte((byte) 0x98);
+                System.out.println("map-----------------------------------------------------");
+                MapSerializer mapSerializer=new MapSerializer();
+                mapSerializer.writeObject(this,field,value,encoder);
             }else{
                       writeObject(value);
             }

@@ -18,21 +18,29 @@ public class ArrayListSerializer {
             Type type = field.getGenericType();
             if (type instanceof ParameterizedType) {
                 Type clazz = ((ParameterizedType) type).getActualTypeArguments()[0];
-                String typeName=clazz.getTypeName();
-                if ("java.lang.Integer".equals(typeName)) {
+                if (Integer.class==clazz) {
                     encoder.writeByte((byte) 0x11);
-                } else if ("java.lang.String".equals(typeName)) {
+                } else if (String.class==clazz) {
                     encoder.writeByte((byte) 0x12);
-                } else if ("java.lang.Long".equals(typeName)) {
+                } else if (Long.class==clazz) {
                     encoder.writeByte((byte) 0x13);
-                }else if("java.lang.Character".equals(typeName)){
+                }else if(Character.class==clazz){
                     encoder.writeByte((byte) 0x14);
+                }else if(Short.class==clazz){
+                    encoder.writeByte((byte) 0x15);
+                }else if(Byte.class==clazz){
+                    encoder.writeByte((byte) 0x16);
+                }else if(Float.class==clazz){
+                    encoder.writeByte((byte) 0x17);
+                }else if(Double.class==clazz){
+                    encoder.writeByte((byte) 0x18);
+                }else if(Boolean.class==clazz){
+                    encoder.writeByte((byte) 0x19);
                 }
             }
             encoder.writeInt(list.size());
-
             for (Object temp : list) {
-                  objectOutput.writeObjectField(field,temp,temp.getClass().getSimpleName());
+                  objectOutput.writeObjectField(field,temp,temp.getClass());
             }
     }
 

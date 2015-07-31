@@ -10,7 +10,9 @@ import co.solinx.forestserial.serializer.ObjectOutput;
 import co.solinx.forestserial.util.StringUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by linx on 2015/7/20.
@@ -76,6 +78,7 @@ public class ForestSerialized {
         forestSerial.setByteNum((byte) 1);
         forestSerial.setLongNum(987l);
         forestSerial.setShortNum((short) 3);
+        forestSerial.setFloatNum(20.6f);
         forestSerial.setSuperSn(888);
         forestSerial.setResponse(response);
         forestSerial.setBaseID(7477);
@@ -107,6 +110,10 @@ public class ForestSerialized {
         charList.add('A');
         charList.add('B');
         forestSerial.setCharList(charList);
+
+        Map<String,Integer> mapString=new HashMap<>();
+        mapString.put("String",123);
+        forestSerial.setMap(mapString);
 
         ForestSerialized serialized=new ForestSerialized();
         byte[] datas= serialized.enOutput(forestSerial);
