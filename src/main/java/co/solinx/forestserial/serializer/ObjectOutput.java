@@ -142,28 +142,38 @@ public class ObjectOutput {
     public void writeObjectField(Field field,Object value,Class typeName) throws IllegalAccessException {
 
             if(Integer.class==typeName){
+                   encoder.writeByte((byte) 0x10);
                     encoder.writeInt((Integer) value);
             }else if(Short.class==typeName){
+                encoder.writeByte((byte) 0x11);
                     encoder.writeShort((Short) value);
             }else if(Byte.class==typeName){
+                encoder.writeByte((byte) 0x12);
                     encoder.writeByte((Byte) value);
             }else if(Long.class==typeName){
+                encoder.writeByte((byte) 0x13);
                    encoder.writeLong((Long) value);
             }else if(ArrayList.class==typeName|| List.class==typeName){
                     encoder.writeByte((byte) 0x99);
                     ArrayListSerializer listSerializer = new ArrayListSerializer();
                     listSerializer.writeObject(this, field, value, encoder);
             }else if(Character.class==typeName){
+                encoder.writeByte((byte) 0x14);
                     encoder.writeChar((Character) value);
             }else if(Float.class==typeName){
+                encoder.writeByte((byte) 0x15);
                     encoder.writeFloat((Float) value);
             }else if(Double.class==typeName){
+                encoder.writeByte((byte) 0x16);
                     encoder.writeDouble((Double) value);
             }else if(Boolean.class==typeName){
+                encoder.writeByte((byte) 0x17);
                     encoder.writeBoolean((Boolean) value);
             }else if(Object.class==typeName){
+                encoder.writeByte((byte) 0x18);
                     encoder.writeObject(value);
             }else if(String.class==typeName){
+                encoder.writeByte((byte) 0x19);
                     encoder.writeString((String) value);
             }else if(Map.class==typeName|| HashMap.class==typeName){
                 encoder.writeByte((byte) 0x98);

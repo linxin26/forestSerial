@@ -41,6 +41,7 @@ public class Test extends Response{
     private ArrayList<Long> longList;
     private ArrayList<Character> charList;
     private Map<String,Integer> map;
+    private Map<Short,Short> integerMap;
 
 
     public int getA() {
@@ -256,11 +257,18 @@ public class Test extends Response{
         this.map = map;
     }
 
+    public Map<Short, Short> getIntegerMap() {
+        return integerMap;
+    }
+
+    public void setIntegerMap(Map<Short, Short> integerMap) {
+        this.integerMap = integerMap;
+    }
+
     @Override
     public String toString() {
         return "Test{" +
-                "a=" + a +
-                ", b=" + b +
+                "b=" + b +
                 ", inte=" + inte +
                 ", longNum=" + longNum +
                 ", shortNum=" + shortNum +
@@ -269,6 +277,7 @@ public class Test extends Response{
                 ", doubleNum=" + doubleNum +
                 ", booleanNum=" + booleanNum +
                 ", byteNum=" + byteNum +
+                ", a=" + a +
                 ", cc=" + cc +
                 ", bb='" + bb + '\'' +
                 ", ba='" + ba + '\'' +
@@ -288,6 +297,7 @@ public class Test extends Response{
                 ", longList=" + longList +
                 ", charList=" + charList +
                 ", map=" + map +
+                ", integerMap=" + integerMap +
                 "} " + super.toString();
     }
 

@@ -111,9 +111,15 @@ public class ForestSerialized {
         charList.add('B');
         forestSerial.setCharList(charList);
 
+
         Map<String,Integer> mapString=new HashMap<>();
-        mapString.put("String",123);
+        mapString.put("String", 123);
+        mapString.put(String.valueOf(113), 11);
         forestSerial.setMap(mapString);
+
+        Map<Short,Short> integerMap=new HashMap<>();
+        integerMap.put((short)110,(short)120);
+        forestSerial.setIntegerMap(integerMap);
 
         ForestSerialized serialized=new ForestSerialized();
         byte[] datas= serialized.enOutput(forestSerial);

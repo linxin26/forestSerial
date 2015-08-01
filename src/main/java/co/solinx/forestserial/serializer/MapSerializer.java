@@ -11,14 +11,13 @@ import java.util.Map;
  */
 public class MapSerializer {
 
-    public void writeObject(ObjectOutput objectOutput, Field field, Object value, Encoder encoder){
+    public void writeObject(ObjectOutput objectOutput, Field field, Object value, Encoder encoder) throws IllegalAccessException {
         Map map= (Map) value;
-        System.out.println("--------------------------- "+field.getType());
-        System.out.println("--------------------------- "+field.getGenericType());
-
+        encoder.writeInt(map.size());
         for (Iterator iterator= map.entrySet().iterator();iterator.hasNext();){
             Map.Entry temp= (Map.Entry) iterator.next();
-            System.out.println("+++++  "+temp.getKey().getClass());
+            objectOutput.writeObjectField(field,temp.getKey(),temp.getKey().getClass());
+            objectOutput.writeObjectField(field,temp.getValue(),temp.getValue().getClass());
         }
     }
 
