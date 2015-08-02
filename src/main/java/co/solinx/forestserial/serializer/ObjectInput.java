@@ -174,38 +174,8 @@ public class ObjectInput {
                 }
             }else if(List.class==type|| ArrayList.class==type){
                 if(isNotNull()) {
-                    byte flag = readByte();
-                    int typeItem = readByte();
-                    int size = readInt();
-                    if (typeItem == 0x11) {
-                        List<Integer> integerList = new ArrayList<>();
-                        for (int i = 0; i < size; i++) {
-                            readByte();
-                            integerList.add(readInt());
-                        }
-                        field.set(obj, integerList);
-                    } else if (typeItem == 0x12) {
-                        List<String> integerList = new ArrayList<>();
-                        for (int i = 0; i < size; i++) {
-                            readByte();
-                            integerList.add(readString(readInt()));
-                        }
-                        field.set(obj, integerList);
-                    }else if (typeItem == 0x13) {
-                        List<Long> longList = new ArrayList<>();
-                        for (int i = 0; i < size; i++) {
-                            readByte();
-                            longList.add(readLong());
-                        }
-                        field.set(obj, longList);
-                    }else if(typeItem==0x14){
-                        List<Character> charList=new ArrayList<>();
-                        for (int i = 0; i < size; i++) {
-                            readByte();
-                            charList.add(readChar());
-                        }
-                        field.set(obj, charList);
-                    }
+                    ArrayListSerializer serializer=new ArrayListSerializer();
+                    field.set(obj,serializer.instance(this));
                 }
             }else if(Map.class==type){
                 if(isNotNull()){

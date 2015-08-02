@@ -6,6 +6,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by linx on 2015/7/30.
@@ -42,6 +43,35 @@ public class ArrayListSerializer {
             for (Object temp : list) {
                   objectOutput.writeObjectField(field,temp,temp.getClass());
             }
+    }
+
+    public Object instance(ObjectInput input){
+        byte flag = input.readByte();
+        int typeItem = input.readByte();
+        int size = input.readInt();
+        ArrayList integerList = new ArrayList<>(size);
+        if (typeItem == 0x11) {
+            for (int i = 0; i < size; i++) {
+                input.readByte();
+                integerList.add(input.readInt());
+            }
+        } else if (typeItem == 0x12) {
+            for (int i = 0; i < size; i++) {
+                input.readByte();
+                integerList.add(input.readString(input.readInt()));
+            }
+        }else if (typeItem == 0x13) {
+            for (int i = 0; i < size; i++) {
+                input.readByte();
+                integerList.add(input.readLong());
+            }
+        }else if(typeItem==0x14){
+            for (int i = 0; i < size; i++) {
+                input.readByte();
+                integerList.add(input.readChar());
+            }
+        }
+        return integerList;
     }
 
 }
