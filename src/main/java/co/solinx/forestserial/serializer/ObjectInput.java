@@ -87,110 +87,118 @@ public class ObjectInput {
     public void readPrimitiveField(Field[] fields,Object obj) throws IllegalAccessException {
         for(Field field: fields){
             field.setAccessible(true);
-            String type=field.getType().getName();
-            if("int".equals(type)) {
+            Type type=field.getType();
+            if(Integer.TYPE==type) {
                 field.set(obj, readInt());
-            }else if("long".equals(type)){
+            }else if(Long.TYPE==type){
                 field.set(obj,readLong());
-            }else if("short".equals(type)){
+            }else if(Short.TYPE==type){
                 field.set(obj,readShort());
-            }else if("byte".equals(type)){
+            }else if(Byte.TYPE==type){
                 field.set(obj,readByte());
-            }else if("char".equals(type)){
+            }else if(Character.TYPE==type){
                 field.set(obj,readChar());
-            }else if("float".equals(type)){
+            }else if(Float.TYPE==type){
                 field.set(obj,readFloat());
-            }else if("double".equals(type)){
+            }else if(Double.TYPE==type){
                 field.set(obj,readDouble());
-            }else if("boolean".equals(type)){
+            }else if(Boolean.TYPE==type){
                 field.set(obj,readBoolean());
             }
         }
     }
 
+    public boolean isNotNull(){
+        boolean val=false;
+        if(readByte()==1){
+            val=true;
+        }
+        return  val;
+    }
+
     public void readObjectField(Field[] fields,Object obj) throws IllegalAccessException {
         for (Field field: fields){
             field.setAccessible(true);
-            String typeName=field.getType().getSimpleName();
-            if("Integer".equals(typeName)){
-                if(readByte()==1) {
+            Type type=field.getType();
+            if(Integer.class==type){
+                if(isNotNull()) {
                     readByte();
                     field.set(obj, readInt());
                 }
-            }else if("Short".equals(typeName)){
-                if(readByte()==1) {
+            }else if(Short.class==type){
+                if(isNotNull()) {
                     readByte();
                     field.set(obj, readShort());
                 }
-            }else if("Long".equals(typeName)){
-                if(readByte()==1) {
+            }else if(Long.class==type){
+                if(isNotNull()) {
                     readByte();
                     field.set(obj, readLong());
                 }
-            }else if("Byte".equals(typeName)){
-                if(readByte()==1) {
+            }else if(Byte.class==type){
+                if(isNotNull()) {
                     readByte();
                     field.set(obj, readByte());
                 }
-            }else if("Character".equals(typeName)){
-                if(readByte()==1) {
+            }else if(Character.class==type){
+                if(isNotNull()) {
                     readByte();
                     field.set(obj, readChar());
                 }
-            }else if("Float".equals(typeName)){
-                if(readByte()==1) {
+            }else if(Float.class==type){
+                if(isNotNull()) {
                     readByte();
                     field.set(obj, readFloat());
                 }
-            }else if("Double".equals(typeName)){
-                if(readByte()==1) {
+            }else if(Double.class==type){
+                if(isNotNull()) {
                     readByte();
                     field.set(obj, readDouble());
                 }
-            }else if("Boolean".equals(typeName)){
-                if(readByte()==1) {
+            }else if(Boolean.class==type){
+                if(isNotNull()) {
                     readByte();
                     field.set(obj, readBoolean());
                 }
-            }else if("Object".equals(typeName)){
+            }else if(Object.class==type){
                 System.out.println("--------------------------------------------");
                 System.out.println(field);
-                if(readByte()==1) {
+                if(isNotNull()) {
                     readByte();
                     field.set(obj, readObjectValue());
                 }
-            }else if("String".equals(typeName)){
-                if(readByte()==1) {
+            }else if(String.class==type){
+                if(isNotNull()) {
                     readByte();
                     field.set(obj, readString());
                 }
-            }else if("List".equals(typeName)|| "ArrayList".equals(typeName)){
-                if(readByte()==1) {
+            }else if(List.class==type|| ArrayList.class==type){
+                if(isNotNull()) {
                     byte flag = readByte();
-                    int type = readByte();
+                    int typeItem = readByte();
                     int size = readInt();
-                    if (type == 0x11) {
+                    if (typeItem == 0x11) {
                         List<Integer> integerList = new ArrayList<>();
                         for (int i = 0; i < size; i++) {
                             readByte();
                             integerList.add(readInt());
                         }
                         field.set(obj, integerList);
-                    } else if (type == 0x12) {
+                    } else if (typeItem == 0x12) {
                         List<String> integerList = new ArrayList<>();
                         for (int i = 0; i < size; i++) {
                             readByte();
                             integerList.add(readString(readInt()));
                         }
                         field.set(obj, integerList);
-                    }else if (type == 0x13) {
+                    }else if (typeItem == 0x13) {
                         List<Long> longList = new ArrayList<>();
                         for (int i = 0; i < size; i++) {
                             readByte();
                             longList.add(readLong());
                         }
                         field.set(obj, longList);
-                    }else if(type==0x14){
+                    }else if(typeItem==0x14){
                         List<Character> charList=new ArrayList<>();
                         for (int i = 0; i < size; i++) {
                             readByte();
@@ -199,8 +207,8 @@ public class ObjectInput {
                         field.set(obj, charList);
                     }
                 }
-            }else if("Map".equals(typeName)){
-                if(readByte()==1){
+            }else if(Map.class==type){
+                if(isNotNull()){
                     readByte();
                     Map map= new HashMap<>();
                     int size=readInt();
@@ -227,7 +235,7 @@ public class ObjectInput {
                     field.set(obj,map);
                 }
             }else{
-                if(readByte()==1) {
+                if(isNotNull()) {
                     field.set(obj, readObject());
                 }
             }
