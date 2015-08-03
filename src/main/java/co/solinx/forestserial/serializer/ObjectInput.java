@@ -48,7 +48,7 @@ public class ObjectInput {
 
 
         this.readPrimitiveField(primitiveField, obj);
-        this.readObjectField(objectField, obj);
+        this.readObjectFields(objectField, obj);
 
        readSuperClass(obj, obj.getClass().getSuperclass());
 
@@ -65,7 +65,7 @@ public class ObjectInput {
 
 
         this.readPrimitiveField(primitiveField, obj);
-        this.readObjectField(objectField, obj);
+        this.readObjectFields(objectField, obj);
 
 
         return obj;
@@ -116,100 +116,91 @@ public class ObjectInput {
         return  val;
     }
 
-    public void readObjectField(Field[] fields,Object obj) throws IllegalAccessException {
-        for (Field field: fields){
-            field.setAccessible(true);
-            Type type=field.getType();
-            if(Integer.class==type){
-                if(isNotNull()) {
-                    readByte();
-                    field.set(obj, readInt());
-                }
-            }else if(Short.class==type){
-                if(isNotNull()) {
-                    readByte();
-                    field.set(obj, readShort());
-                }
-            }else if(Long.class==type){
-                if(isNotNull()) {
-                    readByte();
-                    field.set(obj, readLong());
-                }
-            }else if(Byte.class==type){
-                if(isNotNull()) {
-                    readByte();
-                    field.set(obj, readByte());
-                }
-            }else if(Character.class==type){
-                if(isNotNull()) {
-                    readByte();
-                    field.set(obj, readChar());
-                }
-            }else if(Float.class==type){
-                if(isNotNull()) {
-                    readByte();
-                    field.set(obj, readFloat());
-                }
-            }else if(Double.class==type){
-                if(isNotNull()) {
-                    readByte();
-                    field.set(obj, readDouble());
-                }
-            }else if(Boolean.class==type){
-                if(isNotNull()) {
-                    readByte();
-                    field.set(obj, readBoolean());
-                }
-            }else if(Object.class==type){
-                System.out.println("--------------------------------------------");
-                System.out.println(field);
-                if(isNotNull()) {
-                    readByte();
-                    field.set(obj, readObjectValue());
-                }
-            }else if(String.class==type){
-                if(isNotNull()) {
-                    readByte();
-                    field.set(obj, readString());
-                }
-            }else if(List.class==type|| ArrayList.class==type){
-                if(isNotNull()) {
-                    ArrayListSerializer serializer=new ArrayListSerializer();
-                    field.set(obj,serializer.instance(this));
-                }
-            }else if(Map.class==type){
-                if(isNotNull()){
-                    readByte();
-                    Map map= new HashMap<>();
-                    int size=readInt();
-                    for (int i=0;i<size;i++){
-                        Object key = null,value = null;
-                        byte keyType=readByte();
-                        if(keyType==0x19){
-                            key=readString();
-                        }else if(keyType==0x10){
-                            key=readInt();
-                        }else if(keyType==0x11){
-                            key=readShort();
-                        }
-                        byte valueType=readByte();
-                        if(valueType==0x10){
-                            value=readInt();
-                        }else if(valueType==0x13){
-
-                        }else if(valueType==0x11){
-                            value=readShort();
-                        }
-                         map.put(key,value);
-                    }
-                    field.set(obj,map);
-                }
-            }else{
-                if(isNotNull()) {
-                    field.set(obj, readObject());
-                }
-            }
+    public void readObjectFields(Field[] fields,Object obj) throws IllegalAccessException {
+        for(Field field:fields){
+             field.setAccessible(true);
+            readObjectField(field,obj);
         }
+    }
+
+    public Object instanceTagData(){
+        Object value = null;
+        byte tag=readByte();
+        switch(tag){
+            case ObjectOutput.INTEGER:
+                value=readInt();
+                break;
+            case ObjectOutput.SHORT:
+                value=readShort();
+                break;
+            case ObjectOutput.BYTE:
+                value=readByte();
+                break;
+            case ObjectOutput.STRING:
+                value=readString();
+                break;
+            case ObjectOutput.FLOAT:
+                value=readFloat();
+                break;
+            case ObjectOutput.DOUBLE:
+                value=readDouble();
+                break;
+            case ObjectOutput.LONG:
+                value=readLong();
+                break;
+            case ObjectOutput.BOOLEAN:
+                value=readBoolean();
+                break;
+            case ObjectOutput.CHAR:
+                value=readChar();
+                break;
+            case ObjectOutput.LIST:
+                ArrayListSerializer serializer = new ArrayListSerializer();
+               value= serializer.instance(this);
+                break;
+            case ObjectOutput.MAP:
+                MapSerializer mapSerializer = new MapSerializer();
+               value= mapSerializer.instance(this);
+                break;
+        }
+        return value;
+    }
+
+    public void readObjectField(Field field,Object obj) throws IllegalAccessException {
+            Type type=field.getType();
+          if(isNotNull()) {
+              if (Integer.class == type&& readByte()==ObjectOutput.INTEGER) {
+                      field.set(obj, readInt());
+              } else if (Short.class == type&& readByte()== ObjectOutput.SHORT) {
+                      field.set(obj, readShort());
+              } else if (Long.class == type&& readByte()==ObjectOutput.LONG) {
+                      field.set(obj, readLong());
+              } else if (Byte.class == type&& readByte()==ObjectOutput.BYTE) {
+                      field.set(obj, readByte());
+              } else if (Character.class == type&& readByte()==ObjectOutput.CHAR) {
+                      field.set(obj, readChar());
+              } else if (Float.class == type&& readByte()==ObjectOutput.FLOAT) {
+                      field.set(obj, readFloat());
+              } else if (Double.class == type&& readByte()==ObjectOutput.DOUBLE) {
+                      field.set(obj, readDouble());
+              } else if (Boolean.class == type&& readByte()==ObjectOutput.BOOLEAN) {
+                      field.set(obj, readBoolean());
+              } else if (Object.class == type&& readByte()==ObjectOutput.OBJECT) {
+                  System.out.println("--------------------------------------------");
+                  System.out.println(field);
+                      field.set(obj, readObjectValue());
+              } else if (String.class == type&& readByte()==ObjectOutput.STRING) {
+                      field.set(obj, readString());
+              } else if ((List.class == type || ArrayList.class == type)&& readByte()==ObjectOutput.LIST) {
+                      ArrayListSerializer serializer = new ArrayListSerializer();
+                      field.set(obj, serializer.instance(this));
+              } else if (Map.class == type&& readByte()==ObjectOutput.MAP) {
+                      MapSerializer serializer = new MapSerializer();
+                      field.set(obj, serializer.instance(this));
+              } else {
+                      field.set(obj, readObject());
+              }
+          }
     }
 
     public String readString(int size){

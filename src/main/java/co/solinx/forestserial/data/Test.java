@@ -9,7 +9,7 @@ import java.util.Map;
  */
 public class Test extends Response{
 
-
+//    private color backage;
     private int b;
     private Integer inte;
     private Long longNum;
@@ -264,6 +264,14 @@ public class Test extends Response{
     public void setIntegerMap(Map<Short, Short> integerMap) {
         this.integerMap = integerMap;
     }
+
+//    public color getBackage() {
+//        return backage;
+//    }
+//
+//    public void setBackage(color backage) {
+//        this.backage = backage;
+//    }
 
     @Override
     public String toString() {

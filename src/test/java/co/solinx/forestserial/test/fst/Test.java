@@ -12,6 +12,12 @@ import java.util.List;
  */
 public class Test   implements Serializable {
 
+
+    public static int staticInt=1;
+    enum  testEnum{
+        one,
+        two
+    };
 //        private float fl = 10.5f;
 //    private int baaaa = 128;
 //    private int d= 11;
@@ -50,6 +56,7 @@ public class Test   implements Serializable {
                 "integer=" + integer +
                 ", zm=" + zm +
                 ", integerList=" + integerList +
+                ", staticInt="+staticInt+
                 '}';
     }
 

@@ -47,8 +47,8 @@ public class fstSerialize {
         System.out.println(new String(datas));
         System.out.println( conf.asObject(datas).toString());
 
-
-
+        System.out.println(Test.staticInt);
+        System.out.println(Test.testEnum.one);
     }
 
     public static byte[] getBytes(int data)

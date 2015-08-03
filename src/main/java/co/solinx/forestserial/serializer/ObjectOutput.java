@@ -20,6 +20,19 @@ public class ObjectOutput {
 
     Encoder encoder=new ByteEncoder();
     ClassInfo classInfo;
+    public static final byte BYTE=0x12;
+    public static final byte INTEGER=0x10;
+    public static final byte SHORT=0x11;
+    public static final byte LONG=0x13;
+    public static final byte CHAR=0x14;
+    public static final byte FLOAT=0x15;
+    public static final byte DOUBLE=0x16;
+    public static final byte STRING=0x19;
+    public static final byte OBJECT=0x18;
+    public static final byte LIST=0x20;
+    public static final byte MAP=0x21;
+    public static final byte BOOLEAN=0x17;
+
 
 
     public ObjectOutput(OutputStream outputStream){
@@ -63,8 +76,6 @@ public class ObjectOutput {
         Field[] objectField=fieldUtil.getObjectTypeField(fields);
 
         try{
-
-
             this.writePrimitiveField(primitiveField, obj);
             this.writeObjectFields(objectField, obj);
 
@@ -127,7 +138,6 @@ public class ObjectOutput {
         if(fields.length>0 && obj!=null){
             for (Field field: fields){
                 field.setAccessible(true);
-                String typeName=field.getType().getSimpleName();
                 Object value=field.get(obj);
                 if(value!=null) {
                     encoder.writeByte((byte) 1);
@@ -139,49 +149,53 @@ public class ObjectOutput {
         }
     }
 
-    public void writeObjectField(Field field,Object value,Class typeName) throws IllegalAccessException {
+    public void writeTag(byte tag){
+        encoder.writeByte(tag);
+    }
 
+    public void writeObjectField(Field field,Object value,Class typeName) throws IllegalAccessException {
             if(Integer.class==typeName){
-                   encoder.writeByte((byte) 0x10);
+                   writeTag(INTEGER);
                     encoder.writeInt((Integer) value);
             }else if(Short.class==typeName){
-                encoder.writeByte((byte) 0x11);
+                    writeTag(SHORT);
                     encoder.writeShort((Short) value);
             }else if(Byte.class==typeName){
-                encoder.writeByte((byte) 0x12);
+                    writeTag(BYTE);
                     encoder.writeByte((Byte) value);
             }else if(Long.class==typeName){
-                encoder.writeByte((byte) 0x13);
+                    writeTag(LONG);
                    encoder.writeLong((Long) value);
             }else if(ArrayList.class==typeName|| List.class==typeName){
-                    encoder.writeByte((byte) 0x99);
+                    writeTag(LIST);
                     ArrayListSerializer listSerializer = new ArrayListSerializer();
                     listSerializer.writeObject(this, field, value, encoder);
             }else if(Character.class==typeName){
-                encoder.writeByte((byte) 0x14);
+                  writeTag(CHAR);
                     encoder.writeChar((Character) value);
             }else if(Float.class==typeName){
-                encoder.writeByte((byte) 0x15);
+                    writeTag(FLOAT);
                     encoder.writeFloat((Float) value);
             }else if(Double.class==typeName){
-                encoder.writeByte((byte) 0x16);
+                   writeTag(DOUBLE);
                     encoder.writeDouble((Double) value);
             }else if(Boolean.class==typeName){
-                encoder.writeByte((byte) 0x17);
+                    writeTag(BOOLEAN);
                     encoder.writeBoolean((Boolean) value);
             }else if(Object.class==typeName){
-                encoder.writeByte((byte) 0x18);
+                    writeTag(OBJECT);
                     encoder.writeObject(value);
             }else if(String.class==typeName){
-                encoder.writeByte((byte) 0x19);
+                   writeTag(STRING);
                     encoder.writeString((String) value);
             }else if(Map.class==typeName|| HashMap.class==typeName){
-                encoder.writeByte((byte) 0x98);
-                System.out.println("map-----------------------------------------------------");
+                   writeTag(MAP);
                 MapSerializer mapSerializer=new MapSerializer();
-                mapSerializer.writeObject(this,field,value,encoder);
+                mapSerializer.writeObject(this, field, value, encoder);
+            }else if(Enum.class==typeName){
+                System.out.println("typeName ========"+typeName);
             }else{
-                      writeObject(value);
+                        writeObject(value);
             }
     }
 
