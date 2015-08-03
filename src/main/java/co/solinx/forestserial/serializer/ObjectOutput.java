@@ -29,6 +29,7 @@ public class ObjectOutput {
     public static final byte LIST=0x20;
     public static final byte MAP=0x21;
     public static final byte BOOLEAN=0x17;
+    public static final byte ENUM=0x22;
 
 
 
@@ -190,8 +191,8 @@ public class ObjectOutput {
                 MapSerializer mapSerializer=new MapSerializer();
                 mapSerializer.writeObject(this, field, value, encoder);
             }else if(field.getType().isEnum()){
-                Enum enumSet= (Enum) value;
-                System.out.println("typeName ========"+enumSet);
+                writeTag(ENUM);
+                encoder.writeString(value.toString());
             }else{
                         writeObject(value);
             }

@@ -198,7 +198,9 @@ public class ObjectInput {
                       MapSerializer serializer = new MapSerializer();
                       field.set(obj, serializer.instance(this));
               }else if(field.getType().isEnum()){
-                  System.out.println("++++++++++++++++++++++++++++");
+                     readByte();
+                  System.out.println("==================== "+readString());
+//                    field.set(obj,);
               } else {
                       field.set(obj, readObject());
               }
