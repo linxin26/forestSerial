@@ -8,10 +8,7 @@ import co.solinx.forestserial.util.FieldUtil;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by linx on 2015/7/22.
@@ -192,8 +189,9 @@ public class ObjectOutput {
                    writeTag(MAP);
                 MapSerializer mapSerializer=new MapSerializer();
                 mapSerializer.writeObject(this, field, value, encoder);
-            }else if(Enum.class==typeName){
-                System.out.println("typeName ========"+typeName);
+            }else if(field.getType().isEnum()){
+                Enum enumSet= (Enum) value;
+                System.out.println("typeName ========"+enumSet);
             }else{
                         writeObject(value);
             }

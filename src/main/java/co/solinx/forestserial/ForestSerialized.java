@@ -122,7 +122,7 @@ public class ForestSerialized {
         integerMap.put((short)110,(short)120);
         forestSerial.setIntegerMap(integerMap);
 
-//        forestSerial.setBackage(color.red);
+        forestSerial.setBackage(color.red);
 
         ForestSerialized serialized=new ForestSerialized();
         byte[] datas= serialized.enOutput(forestSerial);

@@ -27,8 +27,10 @@ public class FieldUtil {
         for (int i = 0; i < fieldName.length; i++) {
             for (int j = 0; j < fields.length; j++) {
                 Field field = fields[j];
-                if (field.getName().equals(fieldName[i])) {
-                    newField[i] = field;
+                if(field.getName().indexOf("$VALUES")==-1) {
+                    if (field.getName().equals(fieldName[i])) {
+                        newField[i] = field;
+                    }
                 }
             }
         }
