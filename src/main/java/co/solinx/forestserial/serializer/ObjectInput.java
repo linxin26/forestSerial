@@ -103,7 +103,7 @@ public class ObjectInput {
             }else if(Double.TYPE==type){
                 field.set(obj,readDouble());
             }else if(Boolean.TYPE==type){
-                field.set(obj,readBoolean());
+                field.set(obj,readBoolean()) ;
             }
         }
     }
@@ -197,14 +197,23 @@ public class ObjectInput {
               } else if (Map.class == type&& readByte()==ObjectOutput.MAP) {
                       MapSerializer serializer = new MapSerializer();
                       field.set(obj, serializer.instance(this));
-              }else if(field.getType().isEnum()){
-                     readByte();
-                  System.out.println("==================== "+readString());
-//                    field.set(obj,);
+              }else if(field.getType().isEnum()&&readByte()==ObjectOutput.ENUM){
+                  try {
+                      field.set(obj, readEnum());
+                  } catch (Exception e) {
+                      e.printStackTrace();
+                  }
               } else {
                       field.set(obj, readObject());
               }
           }
+    }
+
+    public Object readEnum() throws ClassNotFoundException {
+        Class clazz= Class.forName(readString());
+        int ordinal= readInt();
+        Object[] enumConstants= clazz.getEnumConstants();
+        return enumConstants[ordinal];
     }
 
     public String readString(int size){

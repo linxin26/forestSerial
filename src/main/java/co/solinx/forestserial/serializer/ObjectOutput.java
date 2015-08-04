@@ -192,7 +192,8 @@ public class ObjectOutput {
                 mapSerializer.writeObject(this, field, value, encoder);
             }else if(field.getType().isEnum()){
                 writeTag(ENUM);
-                encoder.writeString(value.toString());
+                encoder.writeString(value.getClass().getName());
+                encoder.writeInt(((Enum)value).ordinal());
             }else{
                         writeObject(value);
             }

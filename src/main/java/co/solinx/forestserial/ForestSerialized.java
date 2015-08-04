@@ -4,7 +4,7 @@ import co.solinx.forestserial.coders.ByteDecoder;
 import co.solinx.forestserial.coders.ByteEncoder;
 import co.solinx.forestserial.data.Response;
 import co.solinx.forestserial.data.Test;
-import co.solinx.forestserial.data.color;
+import co.solinx.forestserial.data.Color;
 import co.solinx.forestserial.exception.ClassException;
 import co.solinx.forestserial.serializer.ObjectInput;
 import co.solinx.forestserial.serializer.ObjectOutput;
@@ -122,7 +122,7 @@ public class ForestSerialized {
         integerMap.put((short)110,(short)120);
         forestSerial.setIntegerMap(integerMap);
 
-        forestSerial.setBackage(color.red);
+//        forestSerial.setBackage(Color.red);
 
         ForestSerialized serialized=new ForestSerialized();
         byte[] datas= serialized.enOutput(forestSerial);

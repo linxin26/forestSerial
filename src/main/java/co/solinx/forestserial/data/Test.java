@@ -9,7 +9,7 @@ import java.util.Map;
  */
 public class Test extends Response{
 
-    private color backage;
+    private Color backage;
     private int b;
     private Integer inte;
     private Long longNum;
@@ -265,18 +265,20 @@ public class Test extends Response{
         this.integerMap = integerMap;
     }
 
-    public color getBackage() {
+    public Color getBackage() {
         return backage;
     }
 
-    public void setBackage(color backage) {
+    public void setBackage(Color backage) {
         this.backage = backage;
     }
 
     @Override
     public String toString() {
         return "Test{" +
-                "b=" + b +
+                "a=" + a +
+                ", backage=" + backage +
+                ", b=" + b +
                 ", inte=" + inte +
                 ", longNum=" + longNum +
                 ", shortNum=" + shortNum +
@@ -285,7 +287,6 @@ public class Test extends Response{
                 ", doubleNum=" + doubleNum +
                 ", booleanNum=" + booleanNum +
                 ", byteNum=" + byteNum +
-                ", a=" + a +
                 ", cc=" + cc +
                 ", bb='" + bb + '\'' +
                 ", ba='" + ba + '\'' +

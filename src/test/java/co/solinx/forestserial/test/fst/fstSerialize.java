@@ -34,21 +34,19 @@ public class fstSerialize {
 //        test.getResponse().setResult("bb");
 //       test.setR(request);
 
-        List<String> stringList=new ArrayList<>();
-        stringList.add("AA");
-        test.setIntegerList(stringList);
+//        List<String> stringList=new ArrayList<>();
+//        stringList.add("AA");
+//        test.setIntegerList(stringList);
 
-
+        test.setEnums(testEnum.one);
 
 
         byte[] datas= conf.asByteArray(test);
 
         System.out.println(StringUtil.bytesToString(datas));
         System.out.println(new String(datas));
-        System.out.println( conf.asObject(datas).toString());
+        System.out.println( ((Test)conf.asObject(datas)));
 
-        System.out.println(Test.staticInt);
-        System.out.println(Test.testEnum.one);
     }
 
     public static byte[] getBytes(int data)

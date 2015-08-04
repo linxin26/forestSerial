@@ -14,10 +14,6 @@ public class Test   implements Serializable {
 
 
     public static int staticInt=1;
-    enum  testEnum{
-        one,
-        two
-    };
 //        private float fl = 10.5f;
 //    private int baaaa = 128;
 //    private int d= 11;
@@ -32,6 +28,7 @@ public class Test   implements Serializable {
 //    private Object test = "12";
 //    private long size = 120;
 //    private boolean bool = true;
+    private testEnum enums;
     private int zm = 18239000;
 
 //    public void setR(Request request) {
@@ -50,13 +47,21 @@ public class Test   implements Serializable {
         this.integerList = integerList;
     }
 
+    public testEnum getEnums() {
+        return enums;
+    }
+
+    public void setEnums(testEnum enums) {
+        this.enums = enums;
+    }
+
     @Override
     public String toString() {
         return "Test{" +
-                "integer=" + integer +
+                "enums=" + enums +
                 ", zm=" + zm +
+                ", integer=" + integer +
                 ", integerList=" + integerList +
-                ", staticInt="+staticInt+
                 '}';
     }
 
