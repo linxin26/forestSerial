@@ -30,15 +30,15 @@ public class ObjectOutput {
     public static final byte MAP=0x21;
     public static final byte BOOLEAN=0x17;
     public static final byte ENUM=0x22;
+    private SerializeContext serializeContext=new SerializeContext();
 
 
-
-    public ObjectOutput(OutputStream outputStream){
+    public ObjectOutput(){
 
     }
 
     public void writeObject(Object obj){
-          this.writeObjectHeader(obj.getClass());
+        this.writeObjectHeader(obj.getClass());
         this.initClassInfo(obj);
 
         this.writeField(obj);
@@ -132,7 +132,7 @@ public class ObjectOutput {
         }
     }
 
-    public void writeObjectFields(Field[] fields,Object obj) throws IllegalAccessException {
+    public void writeObjectFields(Field[] fields,Object obj) throws Exception {
         if(fields.length>0 && obj!=null){
             for (Field field: fields){
                 field.setAccessible(true);
@@ -151,7 +151,7 @@ public class ObjectOutput {
         encoder.writeByte(tag);
     }
 
-    public void writeObjectField(Field field,Object value,Class typeName) throws IllegalAccessException {
+    public void writeObjectField(Field field,Object value,Class typeName) throws Exception {
             if(Integer.class==typeName){
                    writeTag(INTEGER);
                     encoder.writeInt((Integer) value);
@@ -166,8 +166,8 @@ public class ObjectOutput {
                    encoder.writeLong((Long) value);
             }else if(ArrayList.class==typeName|| List.class==typeName){
                     writeTag(LIST);
-                    ArrayListSerializer listSerializer = new ArrayListSerializer();
-                    listSerializer.writeObject(this, field, value, encoder);
+                serializeContext.setSerializer(new ArrayListSerializer());
+                serializeContext.writeObject(this, field, value, encoder);
             }else if(Character.class==typeName){
                   writeTag(CHAR);
                     encoder.writeChar((Character) value);
@@ -188,8 +188,8 @@ public class ObjectOutput {
                     encoder.writeString((String) value);
             }else if(Map.class==typeName|| HashMap.class==typeName){
                    writeTag(MAP);
-                MapSerializer mapSerializer=new MapSerializer();
-                mapSerializer.writeObject(this, field, value, encoder);
+                serializeContext.setSerializer(new MapSerializer());
+                serializeContext.writeObject(this, field, value, encoder);
             }else if(field.getType().isEnum()){
                 writeTag(ENUM);
                 encoder.writeString(value.getClass().getName());

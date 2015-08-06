@@ -8,10 +8,10 @@ import java.util.ArrayList;
 /**
  * Created by linx on 2015/7/30.
  */
-public class ArrayListSerializer {
+public class ArrayListSerializer implements Serializer{
 
 
-    public void writeObject(ObjectOutput objectOutput, Field field, Object value, Encoder encoder) throws IllegalAccessException {
+    public void writeObject(ObjectOutput objectOutput, Field field, Object value, Encoder encoder) throws Exception {
             ArrayList list = (ArrayList) value;
             encoder.writeInt(list.size());
             for (Object temp : list) {
