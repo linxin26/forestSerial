@@ -9,10 +9,15 @@ import co.solinx.forestserial.serializer.ObjectInput;
 import co.solinx.forestserial.serializer.ObjectOutput;
 import co.solinx.forestserial.util.StringUtil;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * Created by linx on 2015/7/20.
@@ -23,8 +28,6 @@ public class ForestSerialized {
     ByteDecoder decoder = new ByteDecoder();
 
     public byte[] serialize(Object obj) {
-
-
         return encoder.encoder(obj);
     }
 
@@ -34,100 +37,62 @@ public class ForestSerialized {
         return decoder.decoder(data);
     }
 
-    public byte[] enOutput(Object obj){
-        ObjectOutput output=new ObjectOutput(null);
-        output.writeObject(obj);
-        return output.toBytes();
+    public byte[] serializeToByte(Object obj){
+        return output(obj);
     }
 
-    public Object deInput(byte[] data){
-        ObjectInput input=new ObjectInput(data);
+  public Object deSerializeToObject(byte[] data){
+      return input(data);
+  }
+
+    private byte[] output(Object obj){
+        ObjectOutput output=new ObjectOutput();
+        output.writeObject(obj);
+        byte[] data=output.toBytes();
+        data=   compress(data);
+        return data;
+    }
+
+    private Object input(byte[] data){
+        byte[] proData=uncompress(data);
+        ObjectInput input=new ObjectInput(proData);
+
         return input.readObject();
+    }
+
+    private byte[] uncompress(byte[] data){
+        ByteArrayInputStream inputStream=new ByteArrayInputStream(data);
+        ByteArrayOutputStream outputStream=new ByteArrayOutputStream();
+        byte[] result = new byte[20];
+        try {
+            GZIPInputStream gzipInput=new GZIPInputStream(inputStream);
+            while(gzipInput.read(result) !=-1){
+                outputStream.write(result);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return  outputStream.toByteArray();
+    }
+
+    private byte[] compress(byte[] data){
+        ByteArrayOutputStream arrayOutputStream=new ByteArrayOutputStream();
+        try {
+            GZIPOutputStream goutput=new GZIPOutputStream(arrayOutputStream);
+            goutput.write(data);
+            goutput.finish();
+            goutput.flush();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return arrayOutputStream.toByteArray();
     }
 
 
     public static void main(String[] args){
-        Test forestSerial=new Test();
-        Response response=new Response();
-        response.setSn(199999992);
-        response.setBaseID(9999);
-        response.setBaseClassID(22222);
-        response.setResult(new ClassException("124"));
 
-        forestSerial.setA(221);
-        forestSerial.setB(122);
-
-
-//        forestSerial.setCr('A');
-        forestSerial.setCharNum('Z');
-        forestSerial.setFl(10.9f);
-        forestSerial.setDl(20.3d);
-        forestSerial.setBooleanNum(true);
-        forestSerial.setBl(true);
-        forestSerial.setBa("string");
-
-        Response temp= new Response();
-        temp.setResult("Object");
-        forestSerial.setObj(temp);
-
-
-        forestSerial.setSt((short) 20);
-        forestSerial.setBt((byte) 12);
-        forestSerial.setCc(12345678);
-        forestSerial.setInte(612);
-        forestSerial.setByteNum((byte) 1);
-        forestSerial.setLongNum(987l);
-        forestSerial.setShortNum((short) 3);
-        forestSerial.setFloatNum(20.6f);
-        forestSerial.setSuperSn(888);
-        forestSerial.setResponse(response);
-        forestSerial.setBaseID(7477);
-        forestSerial.setBaseClassID(6666);
-
-        List<Integer> integerList=new ArrayList<>();
-        integerList.add(12);
-        integerList.add(13);
-        integerList.add(8888);
-
-        forestSerial.setIntegerList(integerList);
-
-        List<String> stringList=new ArrayList<>();
-        stringList.add("sList");
-        stringList.add("tempList");
-        forestSerial.setStringList(stringList);
-
-
-        ArrayList<String> arrayList=new ArrayList<>();
-        arrayList.add("arrayList");
-        forestSerial.setArrayList(arrayList);
-
-        ArrayList<Long> longArrayList=new ArrayList<>();
-        longArrayList.add(12l);
-        forestSerial.setLongList(longArrayList);
-
-
-        ArrayList<Character> charList=new ArrayList<>();
-        charList.add('A');
-        charList.add('B');
-        forestSerial.setCharList(charList);
-
-
-        Map<String,Integer> mapString=new HashMap<>();
-        mapString.put("String", 123);
-        mapString.put(String.valueOf(113), 11);
-        forestSerial.setMap(mapString);
-
-        Map<Short,Short> integerMap=new HashMap<>();
-        integerMap.put((short)110,(short)120);
-        forestSerial.setIntegerMap(integerMap);
-
-//        forestSerial.setBackage(Color.red);
-
-        ForestSerialized serialized=new ForestSerialized();
-        byte[] datas= serialized.enOutput(forestSerial);
-
-        System.out.println(StringUtil.bytesToString(datas));
-        System.out.println(serialized.deInput(datas));
     }
 
 }

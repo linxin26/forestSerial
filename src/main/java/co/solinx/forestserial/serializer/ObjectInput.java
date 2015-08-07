@@ -13,6 +13,7 @@ import java.util.*;
 public class ObjectInput {
 
     private ByteDecoder decoder;
+    private SerializeContext serializeContext=new SerializeContext();
 
     public ObjectInput(byte[] bytes){
         decoder=new ByteDecoder(bytes);
@@ -155,8 +156,8 @@ public class ObjectInput {
                 value=readChar();
                 break;
             case ObjectOutput.LIST:
-                ArrayListSerializer serializer = new ArrayListSerializer();
-               value= serializer.instance(this);
+                serializeContext.setSerializer(new ArrayListSerializer());
+               value= serializeContext.instance(this);
                 break;
             case ObjectOutput.MAP:
                 MapSerializer mapSerializer = new MapSerializer();
@@ -195,8 +196,8 @@ public class ObjectInput {
                       ArrayListSerializer serializer = new ArrayListSerializer();
                       field.set(obj, serializer.instance(this));
               } else if (Map.class == type&& readByte()==ObjectOutput.MAP) {
-                      MapSerializer serializer = new MapSerializer();
-                      field.set(obj, serializer.instance(this));
+                  serializeContext.setSerializer(new MapSerializer());
+                      field.set(obj, serializeContext.instance(this));
               }else if(field.getType().isEnum()&&readByte()==ObjectOutput.ENUM){
                   try {
                       field.set(obj, readEnum());
