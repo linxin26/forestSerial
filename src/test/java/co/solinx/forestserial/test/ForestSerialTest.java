@@ -1,10 +1,8 @@
 package co.solinx.forestserial.test;
 
 import co.solinx.forestserial.ForestSerialized;
-import co.solinx.forestserial.coders.ByteDecoder;
-import co.solinx.forestserial.coders.ByteEncoder;
-import co.solinx.forestserial.data.Response;
-import co.solinx.forestserial.data.Test;
+import co.solinx.forestserial.test.data.Response;
+import co.solinx.forestserial.test.data.Test;
 
 import java.util.ArrayList;
 import java.util.List;

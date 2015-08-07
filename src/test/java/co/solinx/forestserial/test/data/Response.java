@@ -1,4 +1,4 @@
-package co.solinx.forestserial.data;
+package co.solinx.forestserial.test.data;
 
 import java.io.Serializable;
 

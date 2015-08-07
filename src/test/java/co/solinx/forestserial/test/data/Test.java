@@ -1,6 +1,7 @@
-package co.solinx.forestserial.data;
+package co.solinx.forestserial.test.data;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +43,7 @@ public class Test extends Response{
     private ArrayList<Character> charList;
     private Map<String,Integer> map;
     private Map<Short,Short> integerMap;
+    private int arry[];
 
 
     public int getA() {
@@ -273,11 +275,18 @@ public class Test extends Response{
         this.backage = backage;
     }
 
+    public int[] getArry() {
+        return arry;
+    }
+
+    public void setArry(int[] arry) {
+        this.arry = arry;
+    }
+
     @Override
     public String toString() {
         return "Test{" +
-                "a=" + a +
-                ", backage=" + backage +
+                "backage=" + backage +
                 ", b=" + b +
                 ", inte=" + inte +
                 ", longNum=" + longNum +
@@ -287,6 +296,7 @@ public class Test extends Response{
                 ", doubleNum=" + doubleNum +
                 ", booleanNum=" + booleanNum +
                 ", byteNum=" + byteNum +
+                ", a=" + a +
                 ", cc=" + cc +
                 ", bb='" + bb + '\'' +
                 ", ba='" + ba + '\'' +
@@ -307,6 +317,7 @@ public class Test extends Response{
                 ", charList=" + charList +
                 ", map=" + map +
                 ", integerMap=" + integerMap +
+                ", arry=" + Arrays.toString(arry) +
                 "} " + super.toString();
     }
 

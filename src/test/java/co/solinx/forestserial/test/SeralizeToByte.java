@@ -1,8 +1,8 @@
 package co.solinx.forestserial.test;
 
 import co.solinx.forestserial.ForestSerialized;
-import co.solinx.forestserial.data.Response;
-import co.solinx.forestserial.data.Test;
+import co.solinx.forestserial.test.data.Response;
+import co.solinx.forestserial.test.data.Test;
 import co.solinx.forestserial.exception.ClassException;
 import co.solinx.forestserial.util.StringUtil;
 
@@ -92,6 +92,10 @@ public class SeralizeToByte {
         forestSerial.setIntegerMap(integerMap);
 
 //        forestSerial.setBackage(Color.red);
+
+        int[] arry=new int[5];
+        arry[0]=1;
+        forestSerial.setArry(arry);
 
         ForestSerialized serialized=new ForestSerialized();
         byte[] datas= serialized.serializeToByte(forestSerial);

@@ -194,6 +194,8 @@ public class ObjectOutput {
                 writeTag(ENUM);
                 encoder.writeString(value.getClass().getName());
                 encoder.writeInt(((Enum)value).ordinal());
+            }else if(typeName.isArray()){
+
             }else{
                         writeObject(value);
             }
