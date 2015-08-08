@@ -204,7 +204,7 @@ public class ObjectInput {
                   } catch (Exception e) {
                       e.printStackTrace();
                   }
-              }else if(field.getType().isArray()){
+              }else if(field.getType().isArray()&&readByte()==ObjectOutput.ARRAY){
 
               } else {
                       field.set(obj, readObject());

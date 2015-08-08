@@ -6,6 +6,7 @@ import co.solinx.forestserial.common.DataType;
 import co.solinx.forestserial.util.FieldUtil;
 
 import java.io.OutputStream;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.*;
@@ -30,6 +31,7 @@ public class ObjectOutput {
     public static final byte MAP=0x21;
     public static final byte BOOLEAN=0x17;
     public static final byte ENUM=0x22;
+    public static final byte ARRAY=0x23;
     private SerializeContext serializeContext=new SerializeContext();
 
 
@@ -195,7 +197,9 @@ public class ObjectOutput {
                 encoder.writeString(value.getClass().getName());
                 encoder.writeInt(((Enum)value).ordinal());
             }else if(typeName.isArray()){
+                writeTag(ARRAY);
 
+                System.out.println("============== "+Arrays.toString((int[]) value));
             }else{
                         writeObject(value);
             }
