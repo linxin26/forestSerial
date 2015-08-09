@@ -198,8 +198,10 @@ public class ObjectOutput {
                 encoder.writeInt(((Enum)value).ordinal());
             }else if(typeName.isArray()){
                 writeTag(ARRAY);
-
-                System.out.println("============== "+Arrays.toString((int[]) value));
+                int length=Array.getLength(value);
+                Class componentType=value.getClass().getComponentType();
+//                encoder.writePrimitiveArray
+                System.out.println("============== "+Arrays.toString((int[]) value)+" | "+length+"|"+componentType);
             }else{
                         writeObject(value);
             }
