@@ -43,8 +43,11 @@ public class Test extends Response{
     private ArrayList<Character> charList;
     private Map<String,Integer> map;
     private Map<Short,Short> integerMap;
-    private int arry[];
-
+    private int[] arry;
+    private byte[] byteArray;
+    private String [] StringArray;
+    private Object[] objectArray;
+    public int[][] arrayArray;
 
     public int getA() {
         return a;
@@ -283,10 +286,43 @@ public class Test extends Response{
         this.arry = arry;
     }
 
+    public byte[] getByteArray() {
+        return byteArray;
+    }
+
+    public void setByteArray(byte[] byteArray) {
+        this.byteArray = byteArray;
+    }
+
+    public String[] getStringArray() {
+        return StringArray;
+    }
+
+    public void setStringArray(String[] stringArray) {
+        StringArray = stringArray;
+    }
+
+    public Object[] getObjectArray() {
+        return objectArray;
+    }
+
+    public void setObjectArray(Object[] objectArray) {
+        this.objectArray = objectArray;
+    }
+
+    public int[][] getArrayArray() {
+        return arrayArray;
+    }
+
+    public void setArrayArray(int[][] arrayArray) {
+        this.arrayArray = arrayArray;
+    }
+
     @Override
     public String toString() {
         return "Test{" +
-                "backage=" + backage +
+                "a=" + a +
+                ", backage=" + backage +
                 ", b=" + b +
                 ", inte=" + inte +
                 ", longNum=" + longNum +
@@ -296,7 +332,6 @@ public class Test extends Response{
                 ", doubleNum=" + doubleNum +
                 ", booleanNum=" + booleanNum +
                 ", byteNum=" + byteNum +
-                ", a=" + a +
                 ", cc=" + cc +
                 ", bb='" + bb + '\'' +
                 ", ba='" + ba + '\'' +
@@ -318,6 +353,10 @@ public class Test extends Response{
                 ", map=" + map +
                 ", integerMap=" + integerMap +
                 ", arry=" + Arrays.toString(arry) +
+                ", byteArray=" + Arrays.toString(byteArray) +
+                ", StringArray=" + Arrays.toString(StringArray) +
+                ", objectArray=" + Arrays.toString(objectArray) +
+                ", arrayArray=" + Arrays.toString(arrayArray) +
                 "} " + super.toString();
     }
 

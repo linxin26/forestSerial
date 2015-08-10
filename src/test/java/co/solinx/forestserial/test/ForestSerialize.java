@@ -1,6 +1,7 @@
 package co.solinx.forestserial.test;
 
 
+import co.solinx.forestserial.test.data.Request;
 import co.solinx.forestserial.util.DataTypeConstant;
 import co.solinx.forestserial.util.StringUtil;
 import co.solinx.forestserial.util.TypeToByteArray;

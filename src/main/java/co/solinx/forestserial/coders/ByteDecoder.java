@@ -1,8 +1,10 @@
 package co.solinx.forestserial.coders;
 
 import co.solinx.forestserial.serializer.ClassInfo;
+import co.solinx.forestserial.util.TypeToByteArray;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 /**
  * Created by linx on 2015-06-22.
@@ -131,5 +133,39 @@ public class ByteDecoder implements Decoder {
     public boolean readBoolean(){
         byte value=buffer.get();
         return value==1?true:false;
+    }
+
+
+    public boolean isPrimitiveArray(Class componentType){
+        return componentType.isPrimitive();
+    }
+
+    public Object readPrimitiveArray(Class componentType) {
+        int len= readInt();
+        Object array = null;
+        if(componentType==int.class){
+            array=readIntArray(len);
+        }
+        if(componentType==byte.class){
+            array=readByteArray(len);
+        }
+        return array;
+    }
+
+    public byte[] readByteArray(int len){
+        byte[] byteArray=new byte[len];
+        buffer.get(byteArray);
+        return byteArray;
+    }
+
+    public int[] readIntArray(int len){
+        int[] intArray=new int[len];
+        for (int i = 0; i < len; i++) {
+            byte[] temp=new byte[4];
+            buffer.get(temp);
+            intArray[i]= TypeToByteArray.hBytesToInt(temp);
+        }
+        System.out.println(len+"====================== "+Arrays.toString(intArray));
+        return intArray;
     }
 }

@@ -3,6 +3,7 @@ package co.solinx.forestserial.serializer;
 import co.solinx.forestserial.coders.ByteDecoder;
 import co.solinx.forestserial.util.FieldUtil;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.*;
@@ -205,11 +206,30 @@ public class ObjectInput {
                       e.printStackTrace();
                   }
               }else if(field.getType().isArray()&&readByte()==ObjectOutput.ARRAY){
-
+                  Object value=readArray(field);
+                  field.set(obj,value);
               } else {
                       field.set(obj, readObject());
               }
           }
+    }
+
+    public Object readArray(Field field){
+        Class componentType=field.getType().getComponentType();
+        Object value;
+        if(decoder.isPrimitiveArray(componentType)) {
+            value=decoder.readPrimitiveArray(componentType);
+        }else{
+             int len=decoder.readInt();
+            Object[] array= (Object[]) Array.newInstance(componentType,len);
+            for (int i = 0; i < len; i++) {
+                array[i]=instanceTagData();
+            }
+            value=array;
+        }
+        System.out.println("+++++++++++++++ +| " + field.getType().getComponentType());
+
+        return value;
     }
 
     public Object readEnum() throws ClassNotFoundException {

@@ -4,6 +4,7 @@ import co.solinx.forestserial.common.ByteBufferTool;
 import co.solinx.forestserial.common.DataType;
 import co.solinx.forestserial.serializer.ClassInfo;
 import co.solinx.forestserial.util.StringUtil;
+import co.solinx.forestserial.util.TypeToByteArray;
 
 import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
@@ -170,6 +171,7 @@ public class ByteEncoder implements Encoder{
     }
 
     public void writeBoolean(boolean val){
+        buffer=ByteBufferTool.dilatation(buffer,1);
         buffer.put((byte) (val?1:0));
     }
 
@@ -208,6 +210,36 @@ public class ByteEncoder implements Encoder{
     public void writeList(List list){
 
     }
+
+    @Override
+    public void writePrimitiveArray(Object array, int len) {
+        Class componentType=array.getClass().getComponentType();
+        if(componentType==byte.class){
+            writeByteArray((byte[]) array,len);
+        }
+        if(componentType==int.class){
+            writeIntArray((int[]) array,len);
+        }
+    }
+
+    public void writeByteArray(byte[] array,int len){
+        buffer=ByteBufferTool.dilatation(buffer,len);
+        buffer.put(array);
+    }
+
+    public void writeIntArray(int[] array,int len){
+        int byteLen=len*4;
+        buffer=ByteBufferTool.dilatation(buffer,byteLen);
+        for (int i = 0; i < len; i++) {
+            buffer.put(TypeToByteArray.intToByteArr(array[i]));
+        }
+    }
+
+    public boolean isPrimitiveArray(Class componentType){
+        return componentType.isPrimitive();
+    }
+
+
 
     public void writeString(String val){
         buffer=ByteBufferTool.dilatation(buffer, 4 + val.getBytes().length);

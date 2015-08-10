@@ -96,6 +96,20 @@ public class SeralizeToByte {
         int[] arry=new int[5];
         arry[0]=1;
         forestSerial.setArry(arry);
+        byte[] byteArray=new byte[1];
+        byteArray[0]=88;
+        forestSerial.setByteArray(byteArray);
+        String[] stringArray=new String[2];
+        stringArray[0]="AB";
+        stringArray[1]="CD";
+        forestSerial.setStringArray(stringArray);
+
+        Object[] objectArray=new Object[1];
+        objectArray[0]="A";
+        forestSerial.setObjectArray(objectArray);
+        int[][] intArrayArray=new int[1][1];
+        intArrayArray[0][0]=1;
+//        forestSerial.setArrayArray(intArrayArray);
 
         ForestSerialized serialized=new ForestSerialized();
         byte[] datas= serialized.serializeToByte(forestSerial);

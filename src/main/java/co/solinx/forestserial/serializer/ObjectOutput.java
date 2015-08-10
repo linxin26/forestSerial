@@ -198,15 +198,37 @@ public class ObjectOutput {
                 encoder.writeInt(((Enum)value).ordinal());
             }else if(typeName.isArray()){
                 writeTag(ARRAY);
-                int length=Array.getLength(value);
-                Class componentType=value.getClass().getComponentType();
-//                encoder.writePrimitiveArray
-                System.out.println("============== "+Arrays.toString((int[]) value)+" | "+length+"|"+componentType);
+                writeArray(field,value);
             }else{
-                        writeObject(value);
+                writeObject(value);
             }
     }
 
+    public void writeArray(Field field, Object value) throws Exception {
+        int len=Array.getLength(value);
+        encoder.writeInt(len);
+        Class componentType=value.getClass().getComponentType();
+//                encoder.writePrimitiveArray
+        if(!componentType.isArray()) {
+            if (encoder.isPrimitiveArray(componentType)) {
+                encoder.writePrimitiveArray(value, len);
+            } else {
+                Object[] arr = (Object[]) value;
+                for (int i = 0; i < len; i++) {
+                    Object write = arr[i];
+                    writeObjectField(field, write, write.getClass());
+                }
+            }
+        }else{
+            Object[] arr = (Object[])value;
+            for (int i = 0; i < len; i++) {
+                System.out.println(Arrays.toString((int[]) arr[i]));
+            }
+//            writeArray(field,value);
+            System.out.println("=====================componentType.isArray");
+        }
+//                System.out.println("============== "+Arrays.toString((int[]) value)+" | "+len+"|"+componentType);
+    }
 
 
     public void initClassInfo(Object clazz){

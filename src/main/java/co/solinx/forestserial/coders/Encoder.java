@@ -35,6 +35,14 @@ public interface Encoder {
 
     void writeList(List list);
 
+    void writePrimitiveArray(Object array, int len);
+
+    void writeByteArray(byte[] array,int len);
+
+    void writeIntArray(int[] array,int len);
+
+    boolean isPrimitiveArray(Class componentType);
+
      byte[] toByte();
 
 }
