@@ -46,6 +46,12 @@ public class ByteDecoder implements Decoder {
         return className;
     }
 
+    public Object readClass(){
+        int length=readInt();
+        String className= readString(length);
+        return className;
+    }
+
     public String readString(int length){
         byte[] temp=new byte[length];
         buffer.get(temp);
@@ -140,16 +146,68 @@ public class ByteDecoder implements Decoder {
         return componentType.isPrimitive();
     }
 
-    public Object readPrimitiveArray(Class componentType) {
+    public Object readPrimitiveArray(Class type) {
         int len= readInt();
         Object array = null;
-        if(componentType==int.class){
+        if(type==int.class){
             array=readIntArray(len);
         }
-        if(componentType==byte.class){
+        if(type==byte.class){
             array=readByteArray(len);
         }
+        if(type==short.class){
+            array=readShortArray(len);
+        }
+        if(type==long.class){
+            array=readLongArray(len);
+        }
+        if(type==float.class){
+            array=readFloatArray(len);
+        }
+        if(type==double.class){
+            array=readDoubleArray(len);
+        }
         return array;
+    }
+
+    private double[] readDoubleArray(int len) {
+        double[] doubleArray=new double[len];
+        for (int i = 0; i < len; i++) {
+            byte[] temp=new byte[8];
+            buffer.get(temp);
+            doubleArray[i]=TypeToByteArray.getDouble(temp);
+        }
+        return  doubleArray;
+    }
+
+    public float[] readFloatArray(int len){
+        float[] floatArray=new float[len];
+        for (int i = 0; i < len; i++) {
+            byte[] temp=new byte[4];
+            buffer.get(temp);
+            floatArray[i]=TypeToByteArray.getFloat(temp);
+        }
+        return floatArray;
+    }
+
+    public long[] readLongArray(int len){
+        long[] longArray=new long[len];
+        for (int i = 0; i < len; i++) {
+            byte[] temp=new byte[8];
+            buffer.get(temp);
+            longArray[i]=TypeToByteArray.getLong(temp);
+        }
+        return  longArray;
+    }
+
+    public short[] readShortArray(int len){
+        short[] shortArray=new short[len];
+        for (int i = 0; i < len; i++) {
+            byte[] temp=new byte[2];
+            buffer.get(temp);
+            shortArray[i]=TypeToByteArray.hBytesToShort(temp);
+        }
+        return shortArray;
     }
 
     public byte[] readByteArray(int len){
@@ -165,7 +223,6 @@ public class ByteDecoder implements Decoder {
             buffer.get(temp);
             intArray[i]= TypeToByteArray.hBytesToInt(temp);
         }
-        System.out.println(len+"====================== "+Arrays.toString(intArray));
         return intArray;
     }
 }

@@ -206,9 +206,9 @@ public class ObjectOutput {
 
     public void writeArray(Field field, Object value) throws Exception {
         int len=Array.getLength(value);
+        encoder.writeClass(value.getClass());
         encoder.writeInt(len);
         Class componentType=value.getClass().getComponentType();
-//                encoder.writePrimitiveArray
         if(!componentType.isArray()) {
             if (encoder.isPrimitiveArray(componentType)) {
                 encoder.writePrimitiveArray(value, len);
@@ -222,12 +222,9 @@ public class ObjectOutput {
         }else{
             Object[] arr = (Object[])value;
             for (int i = 0; i < len; i++) {
-                System.out.println(Arrays.toString((int[]) arr[i]));
+                writeArray(field,arr[i]);
             }
-//            writeArray(field,value);
-            System.out.println("=====================componentType.isArray");
         }
-//                System.out.println("============== "+Arrays.toString((int[]) value)+" | "+len+"|"+componentType);
     }
 
 

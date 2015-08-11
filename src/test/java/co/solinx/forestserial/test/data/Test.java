@@ -47,7 +47,7 @@ public class Test extends Response{
     private byte[] byteArray;
     private String [] StringArray;
     private Object[] objectArray;
-    public int[][] arrayArray;
+    public double[][][] arrayArray;
 
     public int getA() {
         return a;
@@ -310,11 +310,11 @@ public class Test extends Response{
         this.objectArray = objectArray;
     }
 
-    public int[][] getArrayArray() {
+    public double[][][] getArrayArray() {
         return arrayArray;
     }
 
-    public void setArrayArray(int[][] arrayArray) {
+    public void setArrayArray(double[][][] arrayArray) {
         this.arrayArray = arrayArray;
     }
 
@@ -356,7 +356,7 @@ public class Test extends Response{
                 ", byteArray=" + Arrays.toString(byteArray) +
                 ", StringArray=" + Arrays.toString(StringArray) +
                 ", objectArray=" + Arrays.toString(objectArray) +
-                ", arrayArray=" + Arrays.toString(arrayArray) +
+                ", arrayArray=" + Arrays.deepToString(arrayArray) +
                 "} " + super.toString();
     }
 

@@ -213,27 +213,71 @@ public class ByteEncoder implements Encoder{
 
     @Override
     public void writePrimitiveArray(Object array, int len) {
-        Class componentType=array.getClass().getComponentType();
-        if(componentType==byte.class){
+        Class type=array.getClass().getComponentType();
+        if(type==byte.class){
             writeByteArray((byte[]) array,len);
         }
-        if(componentType==int.class){
+        if(type==int.class){
             writeIntArray((int[]) array,len);
+        }
+        if(type==short.class){
+            writeShortArray((short[]) array, len);
+        }
+        if(type==long.class){
+            writeLongArray((long[]) array, len);
+        }
+        if(type==float.class){
+            writeFloatArray((float[]) array,len);
+        }
+        if(type==double.class){
+            writeDoubleArray((double[]) array,len);
+        }
+    }
+
+    public void writeDoubleArray(double[] array,int len){
+        increaseBuffer(len*8);
+        for (int i = 0; i < len; i++) {
+            buffer.put(TypeToByteArray.doubleToByteArr(array[i]));
+        }
+    }
+
+    public void writeFloatArray(float[] array,int len){
+        increaseBuffer(len*4);
+        for (int i = 0; i < len; i++) {
+            buffer.put(TypeToByteArray.floatToByteArr(array[i]));
+        }
+    }
+
+    public void writeLongArray(long[] array,int len){
+        increaseBuffer(len*8);
+        for (int i = 0; i < len; i++) {
+             buffer.put(TypeToByteArray.longToByteArr(array[i]));
         }
     }
 
     public void writeByteArray(byte[] array,int len){
-        buffer=ByteBufferTool.dilatation(buffer,len);
+        increaseBuffer(len);
         buffer.put(array);
     }
 
+    public void writeShortArray(short[] array,int len){
+        increaseBuffer(len*2);
+        for (int i=0;i<len;i++){
+            buffer.put(TypeToByteArray.shortToByteArr(array[i]));
+        }
+    }
     public void writeIntArray(int[] array,int len){
         int byteLen=len*4;
-        buffer=ByteBufferTool.dilatation(buffer,byteLen);
+        increaseBuffer(byteLen);
         for (int i = 0; i < len; i++) {
             buffer.put(TypeToByteArray.intToByteArr(array[i]));
         }
     }
+
+    public void increaseBuffer(int len){
+        buffer=ByteBufferTool.dilatation(buffer,len);
+    }
+
 
     public boolean isPrimitiveArray(Class componentType){
         return componentType.isPrimitive();
@@ -242,7 +286,7 @@ public class ByteEncoder implements Encoder{
 
 
     public void writeString(String val){
-        buffer=ByteBufferTool.dilatation(buffer, 4 + val.getBytes().length);
+        increaseBuffer(4 + val.getBytes().length);
         writeInt(val.getBytes().length);
         buffer.put(val.getBytes());
     }

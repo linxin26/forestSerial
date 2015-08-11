@@ -34,13 +34,13 @@ public class ObjectInput {
         return clazz;
     }
 
-    public void readObject(Object obj,Class cla) throws IllegalAccessException {
+    public void readObject(Object obj,Class cla) throws Exception {
         String className= (String) decoder.readObject();
             readFields(obj, cla);
 
     }
 
-    public Object readFields(Object obj) throws IllegalAccessException {
+    public Object readFields(Object obj) throws Exception {
 
         Field[] fields = obj.getClass().getDeclaredFields();
         FieldUtil fieldUtil=new FieldUtil();
@@ -57,7 +57,7 @@ public class ObjectInput {
         return obj;
     }
 
-    public Object readFields(Object obj,Class clazz) throws IllegalAccessException {
+    public Object readFields(Object obj,Class clazz) throws Exception {
 
         Field[] fields = clazz.getDeclaredFields();
         FieldUtil fieldUtil=new FieldUtil();
@@ -73,7 +73,7 @@ public class ObjectInput {
         return obj;
     }
 
-    public void readSuperClass(Object obj,Class superClass) throws IllegalAccessException {
+    public void readSuperClass(Object obj,Class superClass) throws Exception {
 //        System.out.println("read  " + superClass.getName());
 
        if(!"Object".equals(superClass.getSimpleName())) {
@@ -118,7 +118,7 @@ public class ObjectInput {
         return  val;
     }
 
-    public void readObjectFields(Field[] fields,Object obj) throws IllegalAccessException {
+    public void readObjectFields(Field[] fields,Object obj) throws Exception {
         for(Field field:fields){
              field.setAccessible(true);
             readObjectField(field,obj);
@@ -168,7 +168,7 @@ public class ObjectInput {
         return value;
     }
 
-    public void readObjectField(Field field,Object obj) throws IllegalAccessException {
+    public void readObjectField(Field field,Object obj) throws Exception {
             Type type=field.getType();
           if(isNotNull()) {
               if (Integer.class == type&& readByte()==ObjectOutput.INTEGER) {
@@ -214,21 +214,32 @@ public class ObjectInput {
           }
     }
 
-    public Object readArray(Field field){
-        Class componentType=field.getType().getComponentType();
-        Object value;
-        if(decoder.isPrimitiveArray(componentType)) {
-            value=decoder.readPrimitiveArray(componentType);
-        }else{
-             int len=decoder.readInt();
-            Object[] array= (Object[]) Array.newInstance(componentType,len);
-            for (int i = 0; i < len; i++) {
-                array[i]=instanceTagData();
+    public Object readArray(Field field) throws ClassNotFoundException {
+        Object value = null;
+        String tempClazz=(String) decoder.readClass();
+        if(!tempClazz.equals("")) {
+            Class componentType = Class.forName(tempClazz).getComponentType();
+        if(!componentType.isArray()) {
+            if (decoder.isPrimitiveArray(componentType)) {
+                value = decoder.readPrimitiveArray(componentType);
+            } else {
+                int len = decoder.readInt();
+                Object[] array = (Object[]) Array.newInstance(componentType, len);
+                for (int i = 0; i < len; i++) {
+                    array[i] = instanceTagData();
+                }
+                value = array;
             }
-            value=array;
+        }else{
+            int len=decoder.readInt();
+            Object[] array= (Object[]) Array.newInstance(componentType, len);
+            for (int i = 0; i < len; i++) {
+                Object temp=readArray(field);
+                array[i]=temp;
+            }
+            value = array;
         }
-        System.out.println("+++++++++++++++ +| " + field.getType().getComponentType());
-
+        }
         return value;
     }
 

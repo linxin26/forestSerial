@@ -107,9 +107,17 @@ public class SeralizeToByte {
         Object[] objectArray=new Object[1];
         objectArray[0]="A";
         forestSerial.setObjectArray(objectArray);
-        int[][] intArrayArray=new int[1][1];
-        intArrayArray[0][0]=1;
-//        forestSerial.setArrayArray(intArrayArray);
+        double[][][] intArrayArray=new double[2][2][2];
+        intArrayArray[0][0][0]=1;
+        intArrayArray[0][1][0]=8;
+        intArrayArray[1][0][0]=5;
+        intArrayArray[1][1][0]=9;
+        intArrayArray[0][0][1]=11;
+        intArrayArray[0][1][1]=88;
+        intArrayArray[1][0][1]=55;
+        intArrayArray[1][1][1]=99;
+
+        forestSerial.setArrayArray(intArrayArray);
 
         ForestSerialized serialized=new ForestSerialized();
         byte[] datas= serialized.serializeToByte(forestSerial);
