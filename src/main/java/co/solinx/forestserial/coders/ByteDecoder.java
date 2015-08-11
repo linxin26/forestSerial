@@ -167,9 +167,35 @@ public class ByteDecoder implements Decoder {
         if(type==double.class){
             array=readDoubleArray(len);
         }
+        if(type==boolean.class){
+            array=readBooleanArray(len);
+        }
+        if(type==char.class){
+            array=readCharArray(len);
+        }
         return array;
     }
 
+    private char[] readCharArray(int len){
+        char[] charArray=new char[len];
+        for (int i = 0; i < len; i++) {
+            charArray[i]=buffer.getChar();
+        }
+        return charArray;
+    }
+
+    private boolean[] readBooleanArray(int len){
+        boolean[] booleanArray=new boolean[len];
+        for (int i = 0; i < len; i++) {
+            byte temp= buffer.get();
+            if(temp==1){
+                booleanArray[i]=true;
+            }else{
+                booleanArray[i]=false;
+            }
+        }
+        return booleanArray;
+    }
     private double[] readDoubleArray(int len) {
         double[] doubleArray=new double[len];
         for (int i = 0; i < len; i++) {

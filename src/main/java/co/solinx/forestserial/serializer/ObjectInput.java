@@ -206,7 +206,7 @@ public class ObjectInput {
                       e.printStackTrace();
                   }
               }else if(field.getType().isArray()&&readByte()==ObjectOutput.ARRAY){
-                  Object value=readArray(field);
+                  Object value=readArray();
                   field.set(obj,value);
               } else {
                       field.set(obj, readObject());
@@ -214,7 +214,7 @@ public class ObjectInput {
           }
     }
 
-    public Object readArray(Field field) throws ClassNotFoundException {
+    public Object readArray() throws ClassNotFoundException {
         Object value = null;
         String tempClazz=(String) decoder.readClass();
         if(!tempClazz.equals("")) {
@@ -234,7 +234,7 @@ public class ObjectInput {
             int len=decoder.readInt();
             Object[] array= (Object[]) Array.newInstance(componentType, len);
             for (int i = 0; i < len; i++) {
-                Object temp=readArray(field);
+                Object temp=readArray();
                 array[i]=temp;
             }
             value = array;

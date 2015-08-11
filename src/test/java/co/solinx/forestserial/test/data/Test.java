@@ -48,6 +48,8 @@ public class Test extends Response{
     private String [] StringArray;
     private Object[] objectArray;
     public double[][][] arrayArray;
+    private boolean[] boolArray;
+    private char[] charArray;
 
     public int getA() {
         return a;
@@ -318,11 +320,26 @@ public class Test extends Response{
         this.arrayArray = arrayArray;
     }
 
+    public boolean[] getBoolArray() {
+        return boolArray;
+    }
+
+    public void setBoolArray(boolean[] boolArray) {
+        this.boolArray = boolArray;
+    }
+
+    public char[] getCharArray() {
+        return charArray;
+    }
+
+    public void setCharArray(char[] charArray) {
+        this.charArray = charArray;
+    }
+
     @Override
     public String toString() {
         return "Test{" +
-                "a=" + a +
-                ", backage=" + backage +
+                "backage=" + backage +
                 ", b=" + b +
                 ", inte=" + inte +
                 ", longNum=" + longNum +
@@ -332,6 +349,7 @@ public class Test extends Response{
                 ", doubleNum=" + doubleNum +
                 ", booleanNum=" + booleanNum +
                 ", byteNum=" + byteNum +
+                ", a=" + a +
                 ", cc=" + cc +
                 ", bb='" + bb + '\'' +
                 ", ba='" + ba + '\'' +
@@ -357,6 +375,8 @@ public class Test extends Response{
                 ", StringArray=" + Arrays.toString(StringArray) +
                 ", objectArray=" + Arrays.toString(objectArray) +
                 ", arrayArray=" + Arrays.deepToString(arrayArray) +
+                ", boolArray=" + Arrays.toString(boolArray) +
+                ", charArray=" + Arrays.toString(charArray) +
                 "} " + super.toString();
     }
 

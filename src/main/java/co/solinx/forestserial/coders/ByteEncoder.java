@@ -232,17 +232,35 @@ public class ByteEncoder implements Encoder{
         if(type==double.class){
             writeDoubleArray((double[]) array,len);
         }
+        if(type==boolean.class){
+            writeBooleanArray((boolean[]) array,len);
+        }
+        if(type==char.class){
+            writeCharArray((char[]) array, len);
+        }
     }
 
+    public void writeCharArray(char[] array,int len){
+        increaseBuffer(2*len);
+        for (int i = 0; i < len; i++) {
+            buffer.putChar(array[i]);
+        }
+    }
+    public void writeBooleanArray(boolean[] array,int len){
+        increaseBuffer(1*len);
+        for (int i = 0; i < len; i++) {
+            buffer.put((byte) (array[i]?1:0));
+        }
+    }
     public void writeDoubleArray(double[] array,int len){
-        increaseBuffer(len*8);
+        increaseBuffer(len * 8);
         for (int i = 0; i < len; i++) {
             buffer.put(TypeToByteArray.doubleToByteArr(array[i]));
         }
     }
 
     public void writeFloatArray(float[] array,int len){
-        increaseBuffer(len*4);
+        increaseBuffer(len * 4);
         for (int i = 0; i < len; i++) {
             buffer.put(TypeToByteArray.floatToByteArr(array[i]));
         }
@@ -261,7 +279,7 @@ public class ByteEncoder implements Encoder{
     }
 
     public void writeShortArray(short[] array,int len){
-        increaseBuffer(len*2);
+        increaseBuffer(len * 2);
         for (int i=0;i<len;i++){
             buffer.put(TypeToByteArray.shortToByteArr(array[i]));
         }

@@ -119,6 +119,17 @@ public class SeralizeToByte {
 
         forestSerial.setArrayArray(intArrayArray);
 
+        boolean[]  boolArray=new boolean[2];
+        boolArray[0]=true;
+        boolArray[1]=false;
+        forestSerial.setBoolArray(boolArray);
+
+        char[] charArray=new char[2];
+        charArray[0]='A';
+        charArray[1]='9';
+        forestSerial.setCharArray(charArray);
+
+
         ForestSerialized serialized=new ForestSerialized();
         byte[] datas= serialized.serializeToByte(forestSerial);
 
