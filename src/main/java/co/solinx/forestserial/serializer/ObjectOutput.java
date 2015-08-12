@@ -17,21 +17,6 @@ import java.util.*;
 public class ObjectOutput {
 
     Encoder encoder=new ByteEncoder();
-    ClassInfo classInfo;
-    public static final byte BYTE=0x12;
-    public static final byte INTEGER=0x10;
-    public static final byte SHORT=0x11;
-    public static final byte LONG=0x13;
-    public static final byte CHAR=0x14;
-    public static final byte FLOAT=0x15;
-    public static final byte DOUBLE=0x16;
-    public static final byte STRING=0x19;
-    public static final byte OBJECT=0x18;
-    public static final byte LIST=0x20;
-    public static final byte MAP=0x21;
-    public static final byte BOOLEAN=0x17;
-    public static final byte ENUM=0x22;
-    public static final byte ARRAY=0x23;
     private SerializeContext serializeContext=new SerializeContext();
 
 
@@ -39,7 +24,7 @@ public class ObjectOutput {
 
     }
 
-    public void writeObject(Object obj){
+    public void writeObject(Object obj) throws Exception {
         this.writeObjectHeader(obj.getClass());
         this.initClassInfo(obj);
 
@@ -47,7 +32,7 @@ public class ObjectOutput {
 
     }
 
-   public void writeField(Object obj){
+   public void writeField(Object obj) throws Exception {
 
        Field[] fields=obj.getClass().getDeclaredFields();
        FieldUtil fieldUtil=new FieldUtil();
@@ -55,17 +40,12 @@ public class ObjectOutput {
        Field[] primitiveField= fieldUtil.getPrimitiveTypeField(fields);
        Field[] objectField=fieldUtil.getObjectTypeField(fields);
 
-       try {
-
            this.writePrimitiveField(primitiveField, obj);
            this.writeObjectFields(objectField, obj);
            writeSuperClass(obj, obj.getClass().getSuperclass());
-       }catch(Exception e){
-           e.printStackTrace();
-       }
    }
 
-    public void writeObject(Object obj ,Class clazz){
+    public void writeObject(Object obj ,Class clazz) throws Exception {
         this.writeObjectHeader(clazz);
         this.initClassInfo(obj);
 
@@ -75,26 +55,22 @@ public class ObjectOutput {
         Field[] primitiveField= fieldUtil.getPrimitiveTypeField(fields);
         Field[] objectField=fieldUtil.getObjectTypeField(fields);
 
-        try{
+
             this.writePrimitiveField(primitiveField, obj);
             this.writeObjectFields(objectField, obj);
 
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-
     }
 
-    public void writeSuperClass(Object obj,Class superClass){
-        System.out.println("class ：" + obj.getClass().getName());
-        System.out.println("superClass ：" + superClass.getName());
-//        Class superClass=obj.getClass().getSuperclass();
+    public void writeSuperClass(Object obj,Class superClass) throws Exception {
+//        System.out.println("class ：" + obj.getClass().getName());
+//        System.out.println("superClass ：" + superClass.getName());
         if(!"Object".equals(superClass.getSimpleName())) {
             writeSuperClass(obj,superClass.getSuperclass());
             writeObject(obj, superClass);
-        } else {
-            System.out.println("exit ：" + superClass.getName());
         }
+//        else {
+//            System.out.println("exit ：" + superClass.getName());
+//        }
     }
 
     public void writeObjectHeader(Class clazz){
@@ -155,49 +131,49 @@ public class ObjectOutput {
 
     public void writeObjectField(Field field,Object value,Class typeName) throws Exception {
             if(Integer.class==typeName){
-                   writeTag(INTEGER);
+                   writeTag(DataType.INTEGER);
                     encoder.writeInt((Integer) value);
             }else if(Short.class==typeName){
-                    writeTag(SHORT);
+                    writeTag(DataType.SHORT);
                     encoder.writeShort((Short) value);
             }else if(Byte.class==typeName){
-                    writeTag(BYTE);
+                    writeTag(DataType.BYTE);
                     encoder.writeByte((Byte) value);
             }else if(Long.class==typeName){
-                    writeTag(LONG);
+                    writeTag(DataType.LONG);
                    encoder.writeLong((Long) value);
             }else if(ArrayList.class==typeName|| List.class==typeName){
-                    writeTag(LIST);
+                    writeTag(DataType.LIST);
                 serializeContext.setSerializer(new ArrayListSerializer());
                 serializeContext.writeObject(this, field, value, encoder);
             }else if(Character.class==typeName){
-                  writeTag(CHAR);
+                  writeTag(DataType.CHAR);
                     encoder.writeChar((Character) value);
             }else if(Float.class==typeName){
-                    writeTag(FLOAT);
+                    writeTag(DataType.FLOAT);
                     encoder.writeFloat((Float) value);
             }else if(Double.class==typeName){
-                   writeTag(DOUBLE);
+                   writeTag(DataType.DOUBLE);
                     encoder.writeDouble((Double) value);
             }else if(Boolean.class==typeName){
-                    writeTag(BOOLEAN);
+                    writeTag(DataType.BOOLEAN);
                     encoder.writeBoolean((Boolean) value);
             }else if(Object.class==typeName){
-                    writeTag(OBJECT);
+                    writeTag(DataType.OBJECT);
                     encoder.writeObject(value);
             }else if(String.class==typeName){
-                   writeTag(STRING);
+                   writeTag(DataType.STRING);
                     encoder.writeString((String) value);
             }else if(Map.class==typeName|| HashMap.class==typeName){
-                   writeTag(MAP);
+                   writeTag(DataType.MAP);
                 serializeContext.setSerializer(new MapSerializer());
                 serializeContext.writeObject(this, field, value, encoder);
             }else if(field.getType().isEnum()){
-                writeTag(ENUM);
+                writeTag(DataType.ENUM);
                 encoder.writeString(value.getClass().getName());
                 encoder.writeInt(((Enum)value).ordinal());
             }else if(typeName.isArray()){
-                writeTag(ARRAY);
+                writeTag(DataType.ARRAY);
                 writeArray(field,value);
             }else{
                 writeObject(value);
@@ -229,7 +205,6 @@ public class ObjectOutput {
 
 
     public void initClassInfo(Object clazz){
-//        classInfo=new ClassInfo(clazz);
     }
 
     public byte[] toBytes(){

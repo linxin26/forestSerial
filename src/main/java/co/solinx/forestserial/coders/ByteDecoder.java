@@ -39,10 +39,9 @@ public class ByteDecoder implements Decoder {
     public Object readObject(){
         byte flag= readByte();
         int length=readInt();
-        System.out.println("length ： " + length);
+//        System.out.println("length ： " + length);
         String className= readString(length);
-
-        System.out.println("length ： " + length + "  ClassName ：" + className);
+//        System.out.println("length ： " + length + "  ClassName ：" + className);
         return className;
     }
 

@@ -1,6 +1,7 @@
 package co.solinx.forestserial.serializer;
 
 import co.solinx.forestserial.coders.ByteDecoder;
+import co.solinx.forestserial.common.DataType;
 import co.solinx.forestserial.util.FieldUtil;
 
 import java.lang.reflect.Array;
@@ -14,56 +15,51 @@ import java.util.*;
 public class ObjectInput {
 
     private ByteDecoder decoder;
-    private SerializeContext serializeContext=new SerializeContext();
+    private SerializeContext serializeContext = new SerializeContext();
 
-    public ObjectInput(byte[] bytes){
-        decoder=new ByteDecoder(bytes);
+    public ObjectInput(byte[] bytes) {
+        decoder = new ByteDecoder(bytes);
     }
 
-    public Object readObject(){
-        String className= (String) decoder.readObject();
-        Object clazz=null;
-        try {
-               clazz= Class.forName(className).newInstance();
-            readFields(clazz);
+    public Object readObject() throws Exception {
+        String className = (String) decoder.readObject();
+        Object clazz = Class.forName(className).newInstance();
+        readFields(clazz);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         return clazz;
     }
 
-    public void readObject(Object obj,Class cla) throws Exception {
-        String className= (String) decoder.readObject();
-            readFields(obj, cla);
+    public void readObject(Object obj, Class cla) throws Exception {
+        String className = (String) decoder.readObject();
+        readFields(obj, cla);
 
     }
 
     public Object readFields(Object obj) throws Exception {
 
         Field[] fields = obj.getClass().getDeclaredFields();
-        FieldUtil fieldUtil=new FieldUtil();
-        fields=fieldUtil.fieldSort(fields);
-        Field[] primitiveField= fieldUtil.getPrimitiveTypeField(fields);
-        Field[] objectField=fieldUtil.getObjectTypeField(fields);
+        FieldUtil fieldUtil = new FieldUtil();
+        fields = fieldUtil.fieldSort(fields);
+        Field[] primitiveField = fieldUtil.getPrimitiveTypeField(fields);
+        Field[] objectField = fieldUtil.getObjectTypeField(fields);
 
 
         this.readPrimitiveField(primitiveField, obj);
         this.readObjectFields(objectField, obj);
 
-       readSuperClass(obj, obj.getClass().getSuperclass());
+        readSuperClass(obj, obj.getClass().getSuperclass());
 
         return obj;
     }
 
-    public Object readFields(Object obj,Class clazz) throws Exception {
+    public Object readFields(Object obj, Class clazz) throws Exception {
 
         Field[] fields = clazz.getDeclaredFields();
-        FieldUtil fieldUtil=new FieldUtil();
-        fields=fieldUtil.fieldSort(fields);
-        Field[] primitiveField= fieldUtil.getPrimitiveTypeField(fields);
-        Field[] objectField=fieldUtil.getObjectTypeField(fields);
+        FieldUtil fieldUtil = new FieldUtil();
+        fields = fieldUtil.fieldSort(fields);
+        Field[] primitiveField = fieldUtil.getPrimitiveTypeField(fields);
+        Field[] objectField = fieldUtil.getObjectTypeField(fields);
 
 
         this.readPrimitiveField(primitiveField, obj);
@@ -73,226 +69,217 @@ public class ObjectInput {
         return obj;
     }
 
-    public void readSuperClass(Object obj,Class superClass) throws Exception {
-//        System.out.println("read  " + superClass.getName());
+    public void readSuperClass(Object obj, Class superClass) throws Exception {
+        if (!"Object".equals(superClass.getSimpleName())) {
+            readSuperClass(obj, superClass.getSuperclass());
+            readObject(obj, superClass);
 
-       if(!"Object".equals(superClass.getSimpleName())) {
-           readSuperClass(obj,superClass.getSuperclass());
-           readObject(obj, superClass);
-
-       }
-
-//        readFields(obj,obj.getClass().getSuperclass());
+        }
     }
 
 
-    public void readPrimitiveField(Field[] fields,Object obj) throws IllegalAccessException {
-        for(Field field: fields){
+    public void readPrimitiveField(Field[] fields, Object obj) throws IllegalAccessException {
+        for (Field field : fields) {
             field.setAccessible(true);
-            Type type=field.getType();
-            if(Integer.TYPE==type) {
+            Type type = field.getType();
+            if (Integer.TYPE == type) {
                 field.set(obj, readInt());
-            }else if(Long.TYPE==type){
-                field.set(obj,readLong());
-            }else if(Short.TYPE==type){
-                field.set(obj,readShort());
-            }else if(Byte.TYPE==type){
-                field.set(obj,readByte());
-            }else if(Character.TYPE==type){
-                field.set(obj,readChar());
-            }else if(Float.TYPE==type){
-                field.set(obj,readFloat());
-            }else if(Double.TYPE==type){
-                field.set(obj,readDouble());
-            }else if(Boolean.TYPE==type){
-                field.set(obj,readBoolean()) ;
+            } else if (Long.TYPE == type) {
+                field.set(obj, readLong());
+            } else if (Short.TYPE == type) {
+                field.set(obj, readShort());
+            } else if (Byte.TYPE == type) {
+                field.set(obj, readByte());
+            } else if (Character.TYPE == type) {
+                field.set(obj, readChar());
+            } else if (Float.TYPE == type) {
+                field.set(obj, readFloat());
+            } else if (Double.TYPE == type) {
+                field.set(obj, readDouble());
+            } else if (Boolean.TYPE == type) {
+                field.set(obj, readBoolean());
             }
         }
     }
 
-    public boolean isNotNull(){
-        boolean val=false;
-        if(readByte()==1){
-            val=true;
+    public boolean isNotNull() {
+        boolean val = false;
+        if (readByte() == 1) {
+            val = true;
         }
-        return  val;
+        return val;
     }
 
-    public void readObjectFields(Field[] fields,Object obj) throws Exception {
-        for(Field field:fields){
-             field.setAccessible(true);
-            readObjectField(field,obj);
+    public void readObjectFields(Field[] fields, Object obj) throws Exception {
+        for (Field field : fields) {
+            field.setAccessible(true);
+            readObjectField(field, obj);
         }
     }
 
-    public Object instanceTagData(){
+    public Object instanceTagData() {
         Object value = null;
-        byte tag=readByte();
-        switch(tag){
-            case ObjectOutput.INTEGER:
-                value=readInt();
+        byte tag = readByte();
+        switch (tag) {
+            case DataType.INTEGER:
+                value = readInt();
                 break;
-            case ObjectOutput.SHORT:
-                value=readShort();
+            case DataType.SHORT:
+                value = readShort();
                 break;
-            case ObjectOutput.BYTE:
-                value=readByte();
+            case DataType.BYTE:
+                value = readByte();
                 break;
-            case ObjectOutput.STRING:
-                value=readString();
+            case DataType.STRING:
+                value = readString();
                 break;
-            case ObjectOutput.FLOAT:
-                value=readFloat();
+            case DataType.FLOAT:
+                value = readFloat();
                 break;
-            case ObjectOutput.DOUBLE:
-                value=readDouble();
+            case DataType.DOUBLE:
+                value = readDouble();
                 break;
-            case ObjectOutput.LONG:
-                value=readLong();
+            case DataType.LONG:
+                value = readLong();
                 break;
-            case ObjectOutput.BOOLEAN:
-                value=readBoolean();
+            case DataType.BOOLEAN:
+                value = readBoolean();
                 break;
-            case ObjectOutput.CHAR:
-                value=readChar();
+            case DataType.CHAR:
+                value = readChar();
                 break;
-            case ObjectOutput.LIST:
+            case DataType.LIST:
                 serializeContext.setSerializer(new ArrayListSerializer());
-               value= serializeContext.instance(this);
+                value = serializeContext.instance(this);
                 break;
-            case ObjectOutput.MAP:
+            case DataType.MAP:
                 MapSerializer mapSerializer = new MapSerializer();
-               value= mapSerializer.instance(this);
+                value = mapSerializer.instance(this);
                 break;
         }
         return value;
     }
 
-    public void readObjectField(Field field,Object obj) throws Exception {
-            Type type=field.getType();
-          if(isNotNull()) {
-              if (Integer.class == type&& readByte()==ObjectOutput.INTEGER) {
-                      field.set(obj, readInt());
-              } else if (Short.class == type&& readByte()== ObjectOutput.SHORT) {
-                      field.set(obj, readShort());
-              } else if (Long.class == type&& readByte()==ObjectOutput.LONG) {
-                      field.set(obj, readLong());
-              } else if (Byte.class == type&& readByte()==ObjectOutput.BYTE) {
-                      field.set(obj, readByte());
-              } else if (Character.class == type&& readByte()==ObjectOutput.CHAR) {
-                      field.set(obj, readChar());
-              } else if (Float.class == type&& readByte()==ObjectOutput.FLOAT) {
-                      field.set(obj, readFloat());
-              } else if (Double.class == type&& readByte()==ObjectOutput.DOUBLE) {
-                      field.set(obj, readDouble());
-              } else if (Boolean.class == type&& readByte()==ObjectOutput.BOOLEAN) {
-                      field.set(obj, readBoolean());
-              } else if (Object.class == type&& readByte()==ObjectOutput.OBJECT) {
-                  System.out.println("--------------------------------------------");
-                  System.out.println(field);
-                      field.set(obj, readObjectValue());
-              } else if (String.class == type&& readByte()==ObjectOutput.STRING) {
-                      field.set(obj, readString());
-              } else if ((List.class == type || ArrayList.class == type)&& readByte()==ObjectOutput.LIST) {
-                      ArrayListSerializer serializer = new ArrayListSerializer();
-                      field.set(obj, serializer.instance(this));
-              } else if (Map.class == type&& readByte()==ObjectOutput.MAP) {
-                  serializeContext.setSerializer(new MapSerializer());
-                      field.set(obj, serializeContext.instance(this));
-              }else if(field.getType().isEnum()&&readByte()==ObjectOutput.ENUM){
-                  try {
-                      field.set(obj, readEnum());
-                  } catch (Exception e) {
-                      e.printStackTrace();
-                  }
-              }else if(field.getType().isArray()&&readByte()==ObjectOutput.ARRAY){
-                  Object value=readArray();
-                  field.set(obj,value);
-              } else {
-                      field.set(obj, readObject());
-              }
-          }
+    public void readObjectField(Field field, Object obj) throws Exception {
+        Type type = field.getType();
+        if (isNotNull()) {
+            if (Integer.class == type && readByte() == DataType.INTEGER) {
+                field.set(obj, readInt());
+            } else if (Short.class == type && readByte() == DataType.SHORT) {
+                field.set(obj, readShort());
+            } else if (Long.class == type && readByte() == DataType.LONG) {
+                field.set(obj, readLong());
+            } else if (Byte.class == type && readByte() == DataType.BYTE) {
+                field.set(obj, readByte());
+            } else if (Character.class == type && readByte() == DataType.CHAR) {
+                field.set(obj, readChar());
+            } else if (Float.class == type && readByte() == DataType.FLOAT) {
+                field.set(obj, readFloat());
+            } else if (Double.class == type && readByte() == DataType.DOUBLE) {
+                field.set(obj, readDouble());
+            } else if (Boolean.class == type && readByte() == DataType.BOOLEAN) {
+                field.set(obj, readBoolean());
+            } else if (Object.class == type && readByte() == DataType.OBJECT) {
+                field.set(obj, readObjectValue());
+            } else if (String.class == type && readByte() == DataType.STRING) {
+                field.set(obj, readString());
+            } else if ((List.class == type || ArrayList.class == type) && readByte() == DataType.LIST) {
+                ArrayListSerializer serializer = new ArrayListSerializer();
+                field.set(obj, serializer.instance(this));
+            } else if (Map.class == type && readByte() == DataType.MAP) {
+                serializeContext.setSerializer(new MapSerializer());
+                field.set(obj, serializeContext.instance(this));
+            } else if (field.getType().isEnum() && readByte() == DataType.ENUM) {
+                    field.set(obj, readEnum());
+            } else if (field.getType().isArray() && readByte() == DataType.ARRAY) {
+                Object value = readArray();
+                field.set(obj, value);
+            } else {
+                field.set(obj, readObject());
+            }
+        }
     }
 
     public Object readArray() throws ClassNotFoundException {
         Object value = null;
-        String tempClazz=(String) decoder.readClass();
-        if(!tempClazz.equals("")) {
+        String tempClazz = (String) decoder.readClass();
+        if (!tempClazz.equals("")) {
             Class componentType = Class.forName(tempClazz).getComponentType();
-        if(!componentType.isArray()) {
-            if (decoder.isPrimitiveArray(componentType)) {
-                value = decoder.readPrimitiveArray(componentType);
+            if (!componentType.isArray()) {
+                if (decoder.isPrimitiveArray(componentType)) {
+                    value = decoder.readPrimitiveArray(componentType);
+                } else {
+                    int len = decoder.readInt();
+                    Object[] array = (Object[]) Array.newInstance(componentType, len);
+                    for (int i = 0; i < len; i++) {
+                        array[i] = instanceTagData();
+                    }
+                    value = array;
+                }
             } else {
                 int len = decoder.readInt();
                 Object[] array = (Object[]) Array.newInstance(componentType, len);
                 for (int i = 0; i < len; i++) {
-                    array[i] = instanceTagData();
+                    Object temp = readArray();
+                    array[i] = temp;
                 }
                 value = array;
             }
-        }else{
-            int len=decoder.readInt();
-            Object[] array= (Object[]) Array.newInstance(componentType, len);
-            for (int i = 0; i < len; i++) {
-                Object temp=readArray();
-                array[i]=temp;
-            }
-            value = array;
-        }
         }
         return value;
     }
 
     public Object readEnum() throws ClassNotFoundException {
-        Class clazz= Class.forName(readString());
-        int ordinal= readInt();
-        Object[] enumConstants= clazz.getEnumConstants();
+        Class clazz = Class.forName(readString());
+        int ordinal = readInt();
+        Object[] enumConstants = clazz.getEnumConstants();
         return enumConstants[ordinal];
     }
 
-    public String readString(int size){
+    public String readString(int size) {
         return decoder.readString(size);
     }
-    public Object readField(Object obj){
+
+    public Object readField(Object obj) {
 
         return null;
     }
 
-    public int readInt(){
+    public int readInt() {
 
         return decoder.readInt();
     }
 
-    public long readLong(){
+    public long readLong() {
         return decoder.readLong();
     }
 
-    public short readShort(){
+    public short readShort() {
         return decoder.readShort();
     }
 
-    public byte readByte(){
+    public byte readByte() {
         return decoder.readByte();
     }
 
 
-    public char readChar(){
+    public char readChar() {
         return decoder.readChar();
     }
 
-    public float readFloat(){
+    public float readFloat() {
         return decoder.readFloat();
     }
 
-    public double readDouble(){
+    public double readDouble() {
         return decoder.readDouble();
     }
 
-    public boolean readBoolean(){
+    public boolean readBoolean() {
         return decoder.readBoolean();
     }
 
-    public String readString(){
+    public String readString() {
         return decoder.readString();
     }
 
