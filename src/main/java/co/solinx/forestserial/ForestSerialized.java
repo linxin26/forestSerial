@@ -63,6 +63,11 @@ public class ForestSerialized {
         return result;
     }
 
+    /**
+     * 解压
+     * @param data
+     * @return
+     */
     private byte[] uncompress(byte[] data) {
         ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -79,6 +84,11 @@ public class ForestSerialized {
         return outputStream.toByteArray();
     }
 
+    /**
+     * 压缩
+     * @param data
+     * @return
+     */
     private byte[] compress(byte[] data) {
         ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
         try {

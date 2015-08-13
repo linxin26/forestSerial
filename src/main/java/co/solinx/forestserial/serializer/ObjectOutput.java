@@ -180,15 +180,22 @@ public class ObjectOutput {
             }
     }
 
+    /**
+     * 数组
+     * @param field
+     * @param value
+     * @throws Exception
+     */
     public void writeArray(Field field, Object value) throws Exception {
         int len=Array.getLength(value);
         encoder.writeClass(value.getClass());
         encoder.writeInt(len);
         Class componentType=value.getClass().getComponentType();
+        //非多维数组
         if(!componentType.isArray()) {
-            if (encoder.isPrimitiveArray(componentType)) {
+            if (encoder.isPrimitiveArray(componentType)) {  //基本类型数组
                 encoder.writePrimitiveArray(value, len);
-            } else {
+            } else {//对象数组
                 Object[] arr = (Object[]) value;
                 for (int i = 0; i < len; i++) {
                     Object write = arr[i];
