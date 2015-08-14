@@ -211,6 +211,11 @@ public class ByteEncoder implements Encoder{
 
     }
 
+    /**
+     * 基本类型数组
+     * @param array
+     * @param len
+     */
     @Override
     public void writePrimitiveArray(Object array, int len) {
         Class type=array.getClass().getComponentType();

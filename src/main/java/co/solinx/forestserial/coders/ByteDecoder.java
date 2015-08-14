@@ -145,6 +145,11 @@ public class ByteDecoder implements Decoder {
         return componentType.isPrimitive();
     }
 
+    /**
+     * 读取基本类型数组
+     * @param type
+     * @return
+     */
     public Object readPrimitiveArray(Class type) {
         int len= readInt();
         Object array = null;

@@ -78,6 +78,12 @@ public class ObjectOutput {
         encoder.writeClass(clazz);
     }
 
+    /**
+     * 基本类型字段
+     * @param fields
+     * @param obj
+     * @throws IllegalAccessException
+     */
     public void writePrimitiveField(Field[] fields,Object obj) throws IllegalAccessException {
         for (Field field:fields){
             field.setAccessible(true);
@@ -129,6 +135,13 @@ public class ObjectOutput {
         encoder.writeByte(tag);
     }
 
+    /**
+     * 对象类型字段
+     * @param field
+     * @param value
+     * @param typeName
+     * @throws Exception
+     */
     public void writeObjectField(Field field,Object value,Class typeName) throws Exception {
             if(Integer.class==typeName){
                    writeTag(DataType.INTEGER);
