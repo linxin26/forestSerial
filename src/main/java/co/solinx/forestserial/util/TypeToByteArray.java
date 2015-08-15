@@ -1,9 +1,8 @@
 package co.solinx.forestserial.util;
 
-import java.util.Arrays;
-
 /**
  * Created by linx on 2015/6/17.
+ * 类型字符转换
  */
 public class TypeToByteArray {
 

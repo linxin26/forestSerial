@@ -2,6 +2,7 @@ package co.solinx.forestserial.util;
 
 /**
  * Created by linx on 2015/6/18.
+ * 数据类型
  */
 public class DataTypeConstant {
 

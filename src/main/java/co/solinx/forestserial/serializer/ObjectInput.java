@@ -160,6 +160,12 @@ public class ObjectInput {
         return value;
     }
 
+    /**
+     * 对象
+     * @param field
+     * @param obj
+     * @throws Exception
+     */
     public void readObjectField(Field field, Object obj) throws Exception {
         Type type = field.getType();
         if (isNotNull()) {
