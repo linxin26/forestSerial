@@ -71,11 +71,6 @@ public class TypeToByteArray {
         byte[] f = new byte[4];
         int l = Float.floatToIntBits(param);
         f = intToByteArr(l);
-//        System.out.println("+++++++++++++I "+l);
-//        for (int i = 0; i < f.length; i++) {
-//            f[i] = new Integer(l).byteValue();
-//            l = l >> 8;
-//        }
         return f;
 
     }
@@ -87,22 +82,37 @@ public class TypeToByteArray {
         return f;
     }
 
+    /**
+     * byte[]转为double
+     * @param b
+     * @return
+     */
     public static double getDouble(byte[] b) {
         long temp = ( (long) b[7] & 0xffl) | ( (long) b[6] << 8 & 0xff00l) | ( (long) b[5] << 16 & 0xff0000l) | ( (long) b[4] << 24 & 0xff000000l) | ( (long) b[3] << 32 & 0xff00000000l) |
                 ( (long) b[2] << 40 & 0xff0000000000l) | ( (long) b[1] << 48 & 0xff000000000000l) | ( (long) b[0] << 56 & 0xff00000000000000l);
         return Double.longBitsToDouble(temp);
     }
 
+    /**
+     * byte[]转为float
+     * @param b
+     * @return
+     */
     public static float getFloat(byte[] b) {
         int temp = (b[3] & 0xff) | (b[2] << 8 & 0xff00) | (b[1] << 16 & 0xff0000) | (b[0] << 24 & 0xff000000);
         return Float.intBitsToFloat(temp);
     }
 
+    /**
+     * byte[]转为short
+     * @param b
+     * @return
+     */
     public static short hBytesToShort(byte[] b) {
         return (short) ((b[1] & 0xff) | (b[0] << 8 & 0xff00));
     }
 
-    /*
+    /**
      * 将高字节数组转换为int
      *
      * @param b byte[]
