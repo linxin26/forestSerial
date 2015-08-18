@@ -1,15 +1,26 @@
 package co.solinx.forestserial.coders;
 
+import co.solinx.forestserial.serializer.ClassInfo;
+
 import java.util.List;
 
 /**
  * Created by lin8x_000 on 2015-08-17.
+ * json编码
  */
 public class JSONEncoder implements Encoder {
 
+    String jsonString;
     @Override
     public byte[] encoder(Object obj) {
         return new byte[0];
+    }
+
+    public String encoderObject(Object obj){
+        ClassInfo classInfo=new ClassInfo(obj);
+         jsonString=classInfo.getClassName();
+        classInfo.getDeclaredFields();
+        return jsonString;
     }
 
     @Override

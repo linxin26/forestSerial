@@ -2,6 +2,7 @@ package co.solinx.forestserial.test.fst;
 
 import co.solinx.forestserial.util.StringUtil;
 import co.solinx.forestserial.util.TypeToByteArray;
+import com.fasterxml.jackson.core.JsonFactory;
 import org.nustaq.serialization.FSTConfiguration;
 
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ public class fstSerialize {
         request.setSn(21);
 
         FSTConfiguration conf=FSTConfiguration.createDefaultConfiguration();
-
+        FSTConfiguration jsonconf=FSTConfiguration.createJsonConfiguration();
 
         Test test=new Test();
 
@@ -44,6 +45,7 @@ public class fstSerialize {
         byte[] datas= conf.asByteArray(test);
 
         System.out.println(StringUtil.bytesToString(datas));
+        System.out.println(jsonconf.asJsonString(test));
         System.out.println(new String(datas));
         System.out.println( ((Test)conf.asObject(datas)));
 

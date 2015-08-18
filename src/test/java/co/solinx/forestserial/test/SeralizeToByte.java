@@ -135,6 +135,9 @@ public class SeralizeToByte {
 
         System.out.println(StringUtil.bytesToString(datas));
         System.out.println(serialized.deSerializeToObject(datas));
+        System.out.println("json----------------------------------------");
+        System.out.println(serialized.toJsonString(forestSerial));
+
     }
 
 
