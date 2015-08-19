@@ -180,7 +180,7 @@ public class ByteDecoder implements Decoder {
         return array;
     }
 
-    private char[] readCharArray(int len){
+    public char[] readCharArray(int len){
         char[] charArray=new char[len];
         for (int i = 0; i < len; i++) {
             charArray[i]=buffer.getChar();
@@ -188,7 +188,7 @@ public class ByteDecoder implements Decoder {
         return charArray;
     }
 
-    private boolean[] readBooleanArray(int len){
+    public boolean[] readBooleanArray(int len){
         boolean[] booleanArray=new boolean[len];
         for (int i = 0; i < len; i++) {
             byte temp= buffer.get();
@@ -200,7 +200,7 @@ public class ByteDecoder implements Decoder {
         }
         return booleanArray;
     }
-    private double[] readDoubleArray(int len) {
+    public double[] readDoubleArray(int len) {
         double[] doubleArray=new double[len];
         for (int i = 0; i < len; i++) {
             byte[] temp=new byte[8];
