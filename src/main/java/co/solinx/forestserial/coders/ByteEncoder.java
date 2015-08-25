@@ -19,47 +19,6 @@ public class ByteEncoder implements Encoder{
 
 
     public static void main(String[] args) throws Exception {
-//        Test request = new Test();
-//        request.setA(10);
-//        request.setB(5);
-//        request.setCc(254);
-//        request.setBl(false);
-//        request.setBt((byte) 12);
-//        request.setCr('A');
-//        request.setSt((short) 27);
-//        request.setFl(12.3f);
-//        request.setDl(13.2);
-//        request.setBa("Ba");
-//        request.setBb("Bb");
-//        request.setInte(132);
-//        request.setLongNum(345l);
-//        request.setCharNum('B');
-//        request.setBooleanNum(true);
-//        request.setFloatNum(19.5f);
-//        request.setDoubleNum(20.1d);
-//        request.setShortNum((short) 21);
-//        request.setByteNum((byte) 29);
-//        request.setStringString("Stringing");
-//        request.setZzzz(9999999l);
-//        request.setObj(12);
-//
-//        Response response = new Response();
-//        response.setResult("类字段");
-//        response.setSn(998);
-//        response.setBaseID(188);
-//
-//        request.setResponse(response);
-//        request.setBaseClassID(190000);
-//        request.setResult("result");
-//        request.setSuperSn(18880);
-//        request.setBaseID(199);
-//
-//        ByteEncoder encoder = new ByteEncoder();
-//        ByteDecoder decoder = new ByteDecoder();
-//        byte[] dataByte = encoder.encoder(request);
-//        Test temp = (Test) decoder.decoder(dataByte);
-//
-//        System.out.println(temp.toString());
     }
 
 
