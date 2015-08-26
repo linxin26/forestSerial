@@ -204,18 +204,35 @@ public class ByteEncoder implements Encoder{
         }
     }
 
+    /**
+     * 写入char数组
+     * @param array
+     * @param len
+     */
     public void writeCharArray(char[] array,int len){
         increaseBuffer(2*len);
         for (int i = 0; i < len; i++) {
             buffer.putChar(array[i]);
         }
     }
+
+    /**
+     * 写入boolean数组
+     * @param array
+     * @param len
+     */
     public void writeBooleanArray(boolean[] array,int len){
         increaseBuffer(1*len);
         for (int i = 0; i < len; i++) {
             buffer.put((byte) (array[i]?1:0));
         }
     }
+
+    /**
+     * 写入double数组
+     * @param array
+     * @param len
+     */
     public void writeDoubleArray(double[] array,int len){
         increaseBuffer(len * 8);
         for (int i = 0; i < len; i++) {
@@ -223,6 +240,11 @@ public class ByteEncoder implements Encoder{
         }
     }
 
+    /**
+     * 写入float数组
+     * @param array
+     * @param len
+     */
     public void writeFloatArray(float[] array,int len){
         increaseBuffer(len * 4);
         for (int i = 0; i < len; i++) {
@@ -230,6 +252,11 @@ public class ByteEncoder implements Encoder{
         }
     }
 
+    /**
+     * 写入long数组
+     * @param array
+     * @param len
+     */
     public void writeLongArray(long[] array,int len){
         increaseBuffer(len*8);
         for (int i = 0; i < len; i++) {
@@ -237,17 +264,33 @@ public class ByteEncoder implements Encoder{
         }
     }
 
+    /**
+     * 写入byte数组
+     * @param array
+     * @param len
+     */
     public void writeByteArray(byte[] array,int len){
         increaseBuffer(len);
         buffer.put(array);
     }
 
+    /**
+     * 写入short数组
+     * @param array
+     * @param len
+     */
     public void writeShortArray(short[] array,int len){
         increaseBuffer(len * 2);
         for (int i=0;i<len;i++){
             buffer.put(TypeToByteArray.shortToByteArr(array[i]));
         }
     }
+
+    /**
+     * 写入int数组
+     * @param array
+     * @param len
+     */
     public void writeIntArray(int[] array,int len){
         int byteLen=len*4;
         increaseBuffer(byteLen);
@@ -256,11 +299,19 @@ public class ByteEncoder implements Encoder{
         }
     }
 
+    /**
+     * buffer扩容
+     * @param len 扩容长度
+     */
     public void increaseBuffer(int len){
         buffer=ByteBufferTool.dilatation(buffer,len);
     }
 
-
+    /**
+     * 是否为原生数组
+     * @param componentType
+     * @return
+     */
     public boolean isPrimitiveArray(Class componentType){
         return componentType.isPrimitive();
     }
