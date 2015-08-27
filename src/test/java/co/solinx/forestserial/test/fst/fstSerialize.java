@@ -45,7 +45,7 @@ public class fstSerialize {
         byte[] datas= conf.asByteArray(test);
 
         System.out.println(StringUtil.bytesToString(datas));
-        System.out.println(jsonconf.asJsonString(test));
+        System.out.println(jsonconf.asJsonString(request));
         System.out.println(new String(datas));
         System.out.println( ((Test)conf.asObject(datas)));
 

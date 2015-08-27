@@ -2,6 +2,7 @@ package co.solinx.forestserial.serializer;
 
 import co.solinx.forestserial.coders.ByteEncoder;
 import co.solinx.forestserial.coders.Encoder;
+import co.solinx.forestserial.coders.JSONEncoder;
 import co.solinx.forestserial.common.DataType;
 import co.solinx.forestserial.util.FieldUtil;
 
@@ -88,6 +89,9 @@ public class ObjectOutput {
         for (Field field:fields){
             field.setAccessible(true);
             Type type=field.getType();
+            if(encoder instanceof JSONEncoder){
+                encoder.writeString(field.getName());
+            }
             if(Integer.TYPE==type){
                 int value=field.getInt(obj);
                 encoder.writeInt(value);
@@ -121,6 +125,9 @@ public class ObjectOutput {
             for (Field field: fields){
                 field.setAccessible(true);
                 Object value=field.get(obj);
+                if(encoder instanceof JSONEncoder){
+                    encoder.writeString(field.getName());
+                }
                 if(value!=null) {
                     encoder.writeByte((byte) 1);
                     this.writeObjectField(field, value, field.getType());
@@ -231,4 +238,11 @@ public class ObjectOutput {
         return encoder.toByte();
     }
 
+    public String toJsonString(){
+        return encoder.toJsonString();
+    }
+
+    public void setEncoder(Encoder encoder) {
+        this.encoder = encoder;
+    }
 }

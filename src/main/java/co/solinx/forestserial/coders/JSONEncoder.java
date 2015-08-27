@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class JSONEncoder implements Encoder {
 
-    String jsonString;
+    String jsonString="";
     @Override
     public byte[] encoder(Object obj) {
         return new byte[0];
@@ -18,69 +18,71 @@ public class JSONEncoder implements Encoder {
 
     public String encoderObject(Object obj){
         ClassInfo classInfo=new ClassInfo(obj);
-         jsonString=classInfo.getClassName();
+         jsonString=classInfo.getClassName()+"{";
         classInfo.getDeclaredFields();
         return jsonString;
     }
 
     @Override
     public void writeClass(Class clazz) {
-
+        jsonString+=clazz.getSimpleName()+"{";
     }
 
     @Override
     public void writeTag(byte tag) {
-
+        System.out.println("tag ");
     }
 
     @Override
     public void writeInt(int val) {
-
+//        System.out.println(jsonString+" int  "+val);
+        jsonString+=val+",";
     }
 
     @Override
     public void writeLong(long val) {
-
+        jsonString+=val+",";
     }
 
     @Override
     public void writeString(String val) {
-
+        System.out.println(" String  "+val);
+        jsonString+=val+":";
     }
 
     @Override
     public void writeByte(byte val) {
-
+        jsonString+=val+",";
     }
 
     @Override
     public void writeShort(short val) {
-
+        jsonString+=val+",";
     }
 
     @Override
     public void writeChar(char val) {
-
+        jsonString+=val+",";
     }
 
     @Override
     public void writeFloat(float val) {
-
+        jsonString+=val+",";
     }
 
     @Override
     public void writeDouble(double val) {
-
+        jsonString+=val+",";
     }
 
     @Override
     public void writeBoolean(boolean val) {
-
+        jsonString+=val+",";
     }
 
     @Override
     public void writeObject(Object obj) {
-
+//        jsonString+=obj+",";
     }
 
     @Override
@@ -111,5 +113,10 @@ public class JSONEncoder implements Encoder {
     @Override
     public byte[] toByte() {
         return new byte[0];
+    }
+
+    @Override
+    public String toJsonString() {
+        return jsonString;
     }
 }

@@ -45,4 +45,6 @@ public interface Encoder {
 
      byte[] toByte();
 
+    String toJsonString();
+
 }

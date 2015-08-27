@@ -27,6 +27,14 @@ public class ForestSerialized {
     }
 
     public String toJsonString(Object obj){
+        try {
+            ObjectOutput output=new ObjectOutput();
+            output.setEncoder(new JSONEncoder());
+            output.writeObject(obj);
+            return output.toJsonString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return jsonEncoder.encoderObject(obj);
     }
 

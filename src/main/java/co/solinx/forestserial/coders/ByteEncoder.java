@@ -12,6 +12,7 @@ import java.util.List;
 
 /**
  * Created by linx on 2015/6/19.
+ *
  */
 public class ByteEncoder implements Encoder{
 
@@ -82,6 +83,12 @@ public class ByteEncoder implements Encoder{
         byte[] bytes=new byte[buffer.capacity() - buffer.remaining()];
       System.arraycopy(buffer.array(), 0, bytes, 0, bytes.length);
         return bytes;
+    }
+
+    //todo  优化掉
+    @Override
+    public String toJsonString() {
+        return null;
     }
 
     public void writeInt(int val) {
