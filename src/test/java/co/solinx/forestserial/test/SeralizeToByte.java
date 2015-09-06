@@ -5,6 +5,7 @@ import co.solinx.forestserial.test.data.Response;
 import co.solinx.forestserial.test.data.Test;
 import co.solinx.forestserial.exception.ClassException;
 import co.solinx.forestserial.util.StringUtil;
+import org.nustaq.serialization.FSTConfiguration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -131,10 +132,19 @@ public class SeralizeToByte {
 
 
         ForestSerialized serialized=new ForestSerialized();
-        byte[] datas= serialized.serializeToByte(forestSerial);
+        byte[] datas= serialized.serializeToByte(new Test());
 
         System.out.println(StringUtil.bytesToString(datas));
         System.out.println(serialized.deSerializeToObject(datas));
+
+
+
+        FSTConfiguration conf=FSTConfiguration.createDefaultConfiguration();
+
+        byte[] fstDatas= conf.asByteArray(new Test());
+
+        System.out.println(StringUtil.bytesToString(fstDatas));
+        System.out.println( ((Test)conf.asObject(fstDatas)));
 
     }
 

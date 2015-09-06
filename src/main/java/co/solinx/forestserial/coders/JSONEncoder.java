@@ -46,8 +46,8 @@ public class JSONEncoder implements Encoder {
 
     @Override
     public void writeString(String val) {
-        System.out.println(" String  "+val);
-        jsonString+=val+":";
+//        System.out.println(" String  "+val);
+        jsonString+="\""+val+"\""+":";
     }
 
     @Override
@@ -117,6 +117,8 @@ public class JSONEncoder implements Encoder {
 
     @Override
     public String toJsonString() {
-        return jsonString;
+        char[] temp=jsonString.toCharArray();
+        temp[jsonString.lastIndexOf(",")]='}';
+        return new String(temp);
     }
 }
