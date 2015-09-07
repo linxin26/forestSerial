@@ -118,9 +118,4 @@ public class ForestSerialized {
         return arrayOutputStream.toByteArray();
     }
 
-
-    public static void main(String[] args) {
-
-    }
-
 }
