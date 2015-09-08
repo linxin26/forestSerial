@@ -55,6 +55,13 @@ public class JSONEncoder implements Encoder {
         jsonString+=val+",";
     }
 
+
+    @Override
+    public void writeNull(){
+        jsonString+="null,";
+    }
+
+
     @Override
     public void writeShort(short val) {
         jsonString+=val+",";

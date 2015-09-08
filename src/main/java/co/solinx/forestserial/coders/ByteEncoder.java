@@ -171,7 +171,10 @@ public class ByteEncoder implements Encoder{
     }
 
 
+    @Override
+    public void writeNull(){
 
+    }
 
     public void writeList(List list){
 

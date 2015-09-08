@@ -21,6 +21,8 @@ public interface Encoder {
 
     void writeByte(byte val);
 
+    void writeNull();
+
     void writeShort(short val);
 
     void writeChar(char val);
