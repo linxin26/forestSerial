@@ -10,9 +10,9 @@ import java.lang.reflect.Field;
 public interface Output {
 
 
-    void writeObject(Object obj);
+    void writeObject(Object obj) throws Exception;
 
-    void writeField(Object obj);
+    void writeField(Object obj) throws Exception;
 
     void writeObject(Object obj,Class clazz);
 
@@ -20,9 +20,9 @@ public interface Output {
 
     void writeObjectHeader(Class clazz);
 
-    void writePrimitiveField(Field[] fields,Object obj);
+    void writePrimitiveField(Field[] fields,Object obj) throws Exception;
 
-    void writeObjectFields(Field[] fields,Object obj);
+    void writeObjectFields(Field[] fields,Object obj) throws IllegalAccessException, Exception;
 
     void writeTag(byte tag);
 

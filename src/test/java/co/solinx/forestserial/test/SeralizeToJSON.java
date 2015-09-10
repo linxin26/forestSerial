@@ -16,7 +16,8 @@ public class SeralizeToJSON {
         test.setA(1234);
         test.setStringArray(new String[]{"1","2"});
         ForestSerialized forestSerialize=new ForestSerialized();
-        System.out.println(forestSerialize.toJsonString(test));
+
+        System.out.println("json "+forestSerialize.toJsonString(test));
 
         System.out.println(JSON.toJSONString(test));
 

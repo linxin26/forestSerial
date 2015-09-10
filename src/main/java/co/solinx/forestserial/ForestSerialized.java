@@ -4,6 +4,7 @@ import co.solinx.forestserial.coders.ByteDecoder;
 import co.solinx.forestserial.coders.ByteEncoder;
 import co.solinx.forestserial.coders.Encoder;
 import co.solinx.forestserial.coders.JSONEncoder;
+import co.solinx.forestserial.serializer.JsonOutput;
 import co.solinx.forestserial.serializer.ObjectInput;
 import co.solinx.forestserial.serializer.ObjectOutput;
 
@@ -28,7 +29,7 @@ public class ForestSerialized {
 
     public String toJsonString(Object obj){
         try {
-            ObjectOutput output=new ObjectOutput();
+            JsonOutput output=new JsonOutput();
             output.setEncoder(new JSONEncoder());
             output.writeObject(obj);
             return output.toJsonString();

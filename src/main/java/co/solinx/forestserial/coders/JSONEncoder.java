@@ -124,8 +124,9 @@ public class JSONEncoder implements Encoder {
 
     @Override
     public String toJsonString() {
-        char[] temp=jsonString.toCharArray();
-        temp[jsonString.lastIndexOf(",")]='}';
-        return new String(temp);
+//        char[] temp=jsonString.toCharArray();
+//        temp[jsonString.lastIndexOf(",")]='}';
+//        return new String(temp);
+        return jsonString;
     }
 }
