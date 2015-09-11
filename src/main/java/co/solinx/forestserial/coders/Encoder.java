@@ -19,6 +19,10 @@ public interface Encoder {
 
     void writeString(String val);
 
+    void writeSymbol(String val);
+
+    void writeFieldName(String val);
+
     void writeByte(byte val);
 
     void writeNull();
@@ -42,6 +46,20 @@ public interface Encoder {
     void writeByteArray(byte[] array,int len);
 
     void writeIntArray(int[] array,int len);
+
+    void writeShortArray(short[] array,int len);
+
+    void  writeLongArray(long[] array,int len);
+
+    void   writeFloatArray(float[] array,int len);
+
+    void writeDoubleArray(double[] array,int len);
+
+    void writeBooleanArray(boolean[] array,int len);
+
+    void writeCharArray(char[] array,int  len);
+
+    void writeStringArray(String[] val);
 
     boolean isPrimitiveArray(Class componentType);
 

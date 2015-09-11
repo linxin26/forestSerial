@@ -46,8 +46,20 @@ public class JSONEncoder implements Encoder {
 
     @Override
     public void writeString(String val) {
-//        System.out.println(" String  "+val);
+        jsonString+="\""+val+"\"";
+    }
+
+    public void writeFieldName(String val){
         jsonString+="\""+val+"\""+":";
+    }
+
+    @Override
+    public void writeSymbol(String val) {
+        jsonString+=val;
+    }
+
+    public void writeStringArray(String val){
+
     }
 
     @Override
@@ -99,7 +111,31 @@ public class JSONEncoder implements Encoder {
 
     @Override
     public void writePrimitiveArray(Object array, int len) {
-
+        Class type=array.getClass().getComponentType();
+        if(type==byte.class){
+            writeByteArray((byte[]) array,len);
+        }
+        if(type==int.class){
+            writeIntArray((int[]) array,len);
+        }
+        if(type==short.class){
+            writeShortArray((short[]) array, len);
+        }
+        if(type==long.class){
+            writeLongArray((long[]) array, len);
+        }
+        if(type==float.class){
+            writeFloatArray((float[]) array,len);
+        }
+        if(type==double.class){
+            writeDoubleArray((double[]) array,len);
+        }
+        if(type==boolean.class){
+            writeBooleanArray((boolean[]) array,len);
+        }
+        if(type==char.class){
+            writeCharArray((char[]) array, len);
+        }
     }
 
     @Override
@@ -109,12 +145,61 @@ public class JSONEncoder implements Encoder {
 
     @Override
     public void writeIntArray(int[] array, int len) {
+        jsonString+="[";
+            for (int i = 0; i < array.length; i++) {
+               jsonString+=array[i];
+                if(i!=array.length-1){
+                    jsonString+=",";
+                }
+            }
+        jsonString+="],";
+    }
+
+    @Override
+    public void writeShortArray(short[] array, int len) {
 
     }
 
     @Override
+    public void writeLongArray(long[] array, int len) {
+
+    }
+
+    @Override
+    public void writeFloatArray(float[] array, int len) {
+
+    }
+
+    @Override
+    public void writeDoubleArray(double[] array, int len) {
+
+    }
+
+    @Override
+    public void writeBooleanArray(boolean[] array, int len) {
+
+    }
+
+    @Override
+    public void writeCharArray(char[] array, int len) {
+
+    }
+
+    @Override
+    public void writeStringArray(String[] array) {
+        jsonString+="[";
+        for (int i = 0; i < array.length; i++) {
+            jsonString+="\""+array[i]+"\"";
+            if(i!=array.length-1){
+                jsonString+=",";
+            }
+        }
+        jsonString+="],";
+    }
+
+    @Override
     public boolean isPrimitiveArray(Class componentType) {
-        return false;
+        return componentType.isPrimitive();
     }
 
     @Override
@@ -124,9 +209,25 @@ public class JSONEncoder implements Encoder {
 
     @Override
     public String toJsonString() {
-//        char[] temp=jsonString.toCharArray();
-//        temp[jsonString.lastIndexOf(",")]='}';
-//        return new String(temp);
+        int end=jsonString.lastIndexOf(":");
+        int comma=jsonString.lastIndexOf(",");
+        int lastIndex=jsonString.length()-1;
+
+
+        if(end!=-1&&end==lastIndex){
+            char[] temp= jsonString.toCharArray();
+            temp[end]='}';
+            jsonString=new String(temp);
+        }else if(comma!=-1&&comma==lastIndex){
+                char[] temp = jsonString.toCharArray();
+                temp[comma] = '}';
+                jsonString = new String(temp);
+        }else{
+            if(jsonString.charAt(lastIndex)==']'){
+                jsonString+="}";
+            }
+        }
+
         return jsonString;
     }
 }

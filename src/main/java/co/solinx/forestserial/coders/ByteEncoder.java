@@ -226,6 +226,11 @@ public class ByteEncoder implements Encoder{
         }
     }
 
+    @Override
+    public void writeStringArray(String[] val) {
+
+    }
+
     /**
      * 写入boolean数组
      * @param array
@@ -332,6 +337,16 @@ public class ByteEncoder implements Encoder{
         increaseBuffer(4 + val.getBytes().length);
         writeInt(val.getBytes().length);
         buffer.put(val.getBytes());
+    }
+
+    @Override
+    public void writeSymbol(String val) {
+
+    }
+
+    @Override
+    public void writeFieldName(String val) {
+
     }
 
 }
