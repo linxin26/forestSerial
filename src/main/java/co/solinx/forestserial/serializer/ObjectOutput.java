@@ -15,7 +15,7 @@ import java.util.*;
 /**
  * Created by linx on 2015/7/22.
  */
-public class ObjectOutput {
+public class ObjectOutput implements Output{
 
     Encoder encoder = new ByteEncoder();
     private SerializeContext serializeContext = new SerializeContext();

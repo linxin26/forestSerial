@@ -9,7 +9,7 @@ import java.lang.reflect.Field;
  */
 public interface Serializer {
 
-    void writeObject(ObjectOutput output, Field field, Object value, Encoder encoder) throws Exception ;
+    void writeObject(Output output, Field field, Object value, Encoder encoder) throws Exception ;
 
     Object instance(ObjectInput input);
 

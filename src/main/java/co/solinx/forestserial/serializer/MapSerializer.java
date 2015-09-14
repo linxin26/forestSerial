@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public class MapSerializer implements Serializer{
 
-    public void writeObject(ObjectOutput objectOutput, Field field, Object value, Encoder encoder) throws Exception {
+    public void writeObject(Output objectOutput, Field field, Object value, Encoder encoder) throws Exception {
         Map map= (Map) value;
         encoder.writeInt(map.size());
         for (Iterator iterator= map.entrySet().iterator();iterator.hasNext();){

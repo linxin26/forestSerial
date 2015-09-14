@@ -46,7 +46,7 @@ public class JSONEncoder implements Encoder {
 
     @Override
     public void writeString(String val) {
-        jsonString+="\""+val+"\"";
+        jsonString+="\""+val+"\""+",";
     }
 
     public void writeFieldName(String val){
@@ -143,6 +143,16 @@ public class JSONEncoder implements Encoder {
 
     }
 
+    public void replaceLastSymbol(String old,char news){
+        int oldIndex=jsonString.lastIndexOf(old);
+        int lastIndex=jsonString.length()-1;
+        if(oldIndex==lastIndex){
+            char[] temp = jsonString.toCharArray();
+            temp[oldIndex] =news;
+            jsonString = new String(temp);
+        }
+    }
+
     @Override
     public void writeIntArray(int[] array, int len) {
         jsonString+="[";
@@ -207,26 +217,12 @@ public class JSONEncoder implements Encoder {
         return new byte[0];
     }
 
+
+
     @Override
     public String toJsonString() {
-        int end=jsonString.lastIndexOf(":");
-        int comma=jsonString.lastIndexOf(",");
-        int lastIndex=jsonString.length()-1;
 
-
-        if(end!=-1&&end==lastIndex){
-            char[] temp= jsonString.toCharArray();
-            temp[end]='}';
-            jsonString=new String(temp);
-        }else if(comma!=-1&&comma==lastIndex){
-                char[] temp = jsonString.toCharArray();
-                temp[comma] = '}';
-                jsonString = new String(temp);
-        }else{
-            if(jsonString.charAt(lastIndex)==']'){
-                jsonString+="}";
-            }
-        }
+        this.replaceLastSymbol(",",'}');
 
         return jsonString;
     }

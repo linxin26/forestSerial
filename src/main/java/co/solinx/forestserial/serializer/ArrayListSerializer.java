@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class ArrayListSerializer implements Serializer{
 
 
-    public void writeObject(ObjectOutput objectOutput, Field field, Object value, Encoder encoder) throws Exception {
+    public void writeObject(Output objectOutput, Field field, Object value, Encoder encoder) throws Exception {
             ArrayList list = (ArrayList) value;
             encoder.writeInt(list.size());
             for (Object temp : list) {

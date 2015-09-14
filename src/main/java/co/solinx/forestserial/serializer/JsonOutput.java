@@ -9,6 +9,8 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created by linx on 2015/9/8.
@@ -77,9 +79,12 @@ public class JsonOutput implements Output{
                 encoder.writeByte(value);
             }else if(Character.TYPE==type){
                 String value=StringUtil.convert(String.valueOf(field.getChar(obj)));
+                   if(!"\\u0000".equals(value.toString())){
+                       value=String.valueOf(field.getChar(obj));
+                   }
                 encoder.writeFieldName(field.getName());
                 encoder.writeString(value);
-                encoder.writeSymbol(",");
+//                encoder.writeSymbol(",");
             }else if(Float.TYPE==type){
                 float value=field.getFloat(obj);
                 encoder.writeFieldName(field.getName());
@@ -102,6 +107,7 @@ public class JsonOutput implements Output{
             field.setAccessible(true);
             Object value=field.get(obj);
             if(value!=null) {
+                encoder.writeFieldName(field.getName());
                 this.writeObjectField(field, value, field.getType());
             }
         }
@@ -114,19 +120,47 @@ public class JsonOutput implements Output{
 
     @Override
     public void writeObjectField(Field field, Object value, Class typeName) {
-
         if(String.class==typeName){
-            encoder.writeFieldName(field.getName());
             encoder.writeString((String) value);
         }else if(Integer.class==typeName){
-            encoder.writeFieldName(field.getName());
             encoder.writeInt((Integer) value);
         }else if(typeName.isArray()){
             this.writeArray(field,value);
+        }else if(Short.class==typeName){
+            encoder.writeShort((Short) value);
+        }else if(Long.class==typeName){
+            encoder.writeLong((Long) value);
+        }else if(Float.class==typeName){
+            encoder.writeFloat((Float) value);
+        }else if(Double.class==typeName){
+            encoder.writeDouble((Double) value);
+        }else if(Boolean.class==typeName){
+            encoder.writeBoolean((Boolean) value);
+        }else if(Character.class==typeName){
+            encoder.writeChar((Character) value);
+        }else if(Byte.class==typeName){
+            encoder.writeByte((Byte) value);
+        }else if(Map.class==typeName){
+            this.writeMap(field,value);
         }
-
-
     }
+
+
+    public void writeMap(Field field,Object value){
+        Map map= (Map) value;
+//        encoder.writeFieldName(field.getName());
+        encoder.writeSymbol("{");
+        for(Iterator iterator=map.entrySet().iterator();iterator.hasNext();){
+            Map.Entry temp= (Map.Entry) iterator.next();
+            encoder.writeFieldName(temp.getKey().toString());
+            this.writeObjectField(null,temp.getValue(),temp.getValue().getClass());
+//            encoder.writeString(temp.getValue().toString());
+        }
+        encoder.replaceLastSymbol(",",'\0');
+        encoder.writeSymbol("}");
+        encoder.writeSymbol(",");
+    }
+
 
     @Override
     public void writeArray(Field field, Object value) {
@@ -134,19 +168,19 @@ public class JsonOutput implements Output{
         Class componentType=value.getClass().getComponentType();
         if(!componentType.isArray()){
             if(encoder.isPrimitiveArray(componentType)){
-                encoder.writeFieldName(field.getName());
+//                encoder.writeFieldName(field.getName());
                 encoder.writePrimitiveArray(value,len);
             }else{
                 Object[] arr = (Object[]) value;
-                encoder.writeFieldName(field.getName());
+//                encoder.writeFieldName(field.getName());
                 encoder.writeSymbol("[");
                 for (int i = 0; i < len; i++) {
-//                    Object write = arr[i];
                     this.writeObjectArray(arr[i], arr[0].getClass());
                     if(i!=len-1){
-                        encoder.writeSymbol(",");
+//                        encoder.writeSymbol(",");
                     }
                 }
+                encoder.replaceLastSymbol(",",'\0');
                 encoder.writeSymbol("]");
                 encoder.writeSymbol(",");
             }

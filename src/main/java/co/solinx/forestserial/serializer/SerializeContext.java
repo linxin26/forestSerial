@@ -15,7 +15,7 @@ public class SerializeContext {
         serializer = seriali;
     }
 
-    public void writeObject(ObjectOutput output, Field field, Object value, Encoder encoder) throws Exception {
+    public void writeObject(Output output, Field field, Object value, Encoder encoder) throws Exception {
         serializer.writeObject(output, field, value, encoder);
     }
 

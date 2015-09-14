@@ -289,6 +289,11 @@ public class ByteEncoder implements Encoder{
         buffer.put(array);
     }
 
+    @Override
+    public void replaceLastSymbol(String old, char news) {
+
+    }
+
     /**
      * 写入short数组
      * @param array

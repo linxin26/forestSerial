@@ -45,6 +45,8 @@ public interface Encoder {
 
     void writeByteArray(byte[] array,int len);
 
+    void replaceLastSymbol(String old,char news);
+
     void writeIntArray(int[] array,int len);
 
     void writeShortArray(short[] array,int len);
