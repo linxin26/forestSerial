@@ -25,7 +25,8 @@ public class JSONEncoder implements Encoder {
 
     @Override
     public void writeClass(Class clazz) {
-        jsonString+=clazz.getSimpleName()+"{";
+//        jsonString+=clazz.getSimpleName()+"{";
+        jsonString+="{";
     }
 
     @Override

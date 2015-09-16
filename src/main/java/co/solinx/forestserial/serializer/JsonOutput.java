@@ -10,6 +10,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -39,16 +40,28 @@ public class JsonOutput implements Output{
 
         this.writePrimitiveField(primitiveField, obj);
         this.writeObjectFields(objectField, obj);
+        this.writeSuperClass(obj,obj.getClass().getSuperclass());
     }
 
     @Override
-    public void writeObject(Object obj, Class clazz) {
+    public void writeObject(Object obj, Class clazz) throws Exception{
+        Field[] fields = clazz.getDeclaredFields();
+        FieldUtil fieldUtil = new FieldUtil();
+        fields = fieldUtil.fieldSort(fields);
+        Field[] primitiveField = fieldUtil.getPrimitiveTypeField(fields);
+        Field[] objectField = fieldUtil.getObjectTypeField(fields);
 
+
+        this.writePrimitiveField(primitiveField, obj);
+        this.writeObjectFields(objectField, obj);
     }
 
     @Override
-    public void writeSuperClass(Object obj, Class superClass) {
-
+    public void writeSuperClass(Object obj, Class superClass) throws Exception{
+        if(!"Object".equals(superClass.getSimpleName())) {
+            this.writeSuperClass(obj,superClass.getSuperclass());
+            this.writeObject(obj, superClass);
+        }
     }
 
     @Override
@@ -61,41 +74,37 @@ public class JsonOutput implements Output{
         for (Field field:fields){
             field.setAccessible(true);
             Type type=field.getType();
+            if(!field.getName().equals("serialVersionUID")) {
+                encoder.writeFieldName(field.getName());
+            }
             if(Integer.TYPE==type){
                 int value=field.getInt(obj);
-                encoder.writeFieldName(field.getName());
                 encoder.writeInt(value);
             }else if(Long.TYPE==type){
+                if(!field.getName().equals("serialVersionUID")) {
                 long value=field.getLong(obj);
-                encoder.writeFieldName(field.getName());
                 encoder.writeLong(value);
+                }
             }else if(Short.TYPE==type){
                 short value=field.getShort(obj);
-                encoder.writeFieldName(field.getName());
                 encoder.writeShort(value);
             }else if(Byte.TYPE==type){
                 byte value=field.getByte(obj);
-                encoder.writeFieldName(field.getName());
                 encoder.writeByte(value);
             }else if(Character.TYPE==type){
                 String value=StringUtil.convert(String.valueOf(field.getChar(obj)));
                    if(!"\\u0000".equals(value.toString())){
                        value=String.valueOf(field.getChar(obj));
                    }
-                encoder.writeFieldName(field.getName());
                 encoder.writeString(value);
-//                encoder.writeSymbol(",");
             }else if(Float.TYPE==type){
                 float value=field.getFloat(obj);
-                encoder.writeFieldName(field.getName());
                 encoder.writeFloat(value);
             }else if(Double.TYPE==type){
                 double value=field.getDouble(obj);
-                encoder.writeFieldName(field.getName());
                 encoder.writeDouble(value);
             }else if(Boolean.TYPE==type){
                 boolean value=field.getBoolean(obj);
-                encoder.writeFieldName(field.getName());
                 encoder.writeBoolean(value);
             }
         }
@@ -141,20 +150,31 @@ public class JsonOutput implements Output{
         }else if(Byte.class==typeName){
             encoder.writeByte((Byte) value);
         }else if(Map.class==typeName){
-            this.writeMap(field,value);
+            this.writeMap(value);
+        }else if(List.class==typeName){
+            this.writeList(value);
         }
     }
 
+    public void writeList(Object value){
+        List list= (List) value;
+        encoder.writeSymbol("{");
+        for (Object temp:list){
+            this.writeObjectField(null,temp,temp.getClass());
+        }
+        encoder.replaceLastSymbol(",",'\0');
+        encoder.writeSymbol("}");
+        encoder.writeSymbol(",");
+    }
 
-    public void writeMap(Field field,Object value){
+
+    public void writeMap(Object value){
         Map map= (Map) value;
-//        encoder.writeFieldName(field.getName());
         encoder.writeSymbol("{");
         for(Iterator iterator=map.entrySet().iterator();iterator.hasNext();){
             Map.Entry temp= (Map.Entry) iterator.next();
             encoder.writeFieldName(temp.getKey().toString());
             this.writeObjectField(null,temp.getValue(),temp.getValue().getClass());
-//            encoder.writeString(temp.getValue().toString());
         }
         encoder.replaceLastSymbol(",",'\0');
         encoder.writeSymbol("}");
@@ -168,17 +188,12 @@ public class JsonOutput implements Output{
         Class componentType=value.getClass().getComponentType();
         if(!componentType.isArray()){
             if(encoder.isPrimitiveArray(componentType)){
-//                encoder.writeFieldName(field.getName());
                 encoder.writePrimitiveArray(value,len);
             }else{
                 Object[] arr = (Object[]) value;
-//                encoder.writeFieldName(field.getName());
                 encoder.writeSymbol("[");
                 for (int i = 0; i < len; i++) {
                     this.writeObjectArray(arr[i], arr[0].getClass());
-                    if(i!=len-1){
-//                        encoder.writeSymbol(",");
-                    }
                 }
                 encoder.replaceLastSymbol(",",'\0');
                 encoder.writeSymbol("]");

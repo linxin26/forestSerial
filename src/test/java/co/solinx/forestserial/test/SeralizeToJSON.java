@@ -5,7 +5,9 @@ import co.solinx.forestserial.test.data.Test;
 import com.alibaba.fastjson.JSON;
 import org.nustaq.serialization.FSTConfiguration;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,9 +36,13 @@ public class SeralizeToJSON {
         test.setFl(99.9f);
         test.setDoubleNum(99.99);
         Map map=new HashMap<>();
-        map.put("key","2");
-        map.put("key4",4);
+        map.put("key", "2");
+        map.put("key4", 4);
         test.setMap(map);
+        ArrayList list=new ArrayList<>();
+        list.add("1");
+        list.add(2);
+//        test.setIntegerList(list);
         ForestSerialized forestSerialize=new ForestSerialized();
 
         System.out.println(forestSerialize.toJsonString(test));
